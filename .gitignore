@@ -1,3 +1,4 @@
 *.exe
-.gitignore
-tries
+.vscode
+.idea
+try
