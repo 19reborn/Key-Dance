@@ -28,7 +28,8 @@ int main(void)
     InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera first person");
 
     // Load Textures
-    Texture2D background = LoadTexture("resources/single_conflict_resized.png");
+    Texture2D texture_background = LoadTexture("resources/single_conflict_resized.png");
+    Texture2D texture_tap = LoadTexture("resources/tap-v1.png");
 
     // Define the camera to look into our 3d world (position, target, up vector)
     Camera camera = { 0 };
@@ -60,7 +61,7 @@ int main(void)
 
             ClearBackground(GRAY);
 
-            DrawTextureEx(background, (Vector2){ 0, 0 }, 0.0f, 1.0f, WHITE);
+            DrawTextureEx(texture_background, (Vector2){ 0, 0 }, 0.0f, 1.0f, WHITE);
 
             BeginMode3D(camera);
 
@@ -70,10 +71,10 @@ int main(void)
                 DrawCubeWires((Vector3){ 0.0f, -0.7f, -0.8f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
                 DrawCubeWires((Vector3){ 0.0f, -0.7f, -2.4f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
 
-                DrawCube((Vector3){ 1.3f, -0.4f, 0.85f }, 0.5f, 1.0f, 1.57f, SKYBLUE);
-                DrawCube((Vector3){ 1.3f, -0.4f, 2.6f }, 0.5f, 1.0f, 1.5f, SKYBLUE);
-                DrawCube((Vector3){ 1.3f, -0.4f, -0.85f }, 0.5f, 1.0f, 1.57f, SKYBLUE);
-                DrawCube((Vector3){ 1.3f, -0.4f, -2.6f }, 0.5f, 1.0f, 1.5f, SKYBLUE);                
+                DrawCubeTexture(texture_tap, (Vector3){ 1.3f, -0.4f, 0.85f }, 0.5f, 1.0f, 1.57f, WHITE);
+                DrawCubeTexture(texture_tap, (Vector3){ 1.3f, -0.4f, 2.6f }, 0.5f, 1.0f, 1.5f, WHITE);
+                DrawCubeTexture(texture_tap, (Vector3){ 1.3f, -0.4f, -0.85f }, 0.5f, 1.0f, 1.57f, WHITE);
+                DrawCubeTexture(texture_tap, (Vector3){ 1.3f, -0.4f, -2.6f }, 0.5f, 1.0f, 1.5f, WHITE);                
             EndMode3D();
 
             DrawRectangle( 10, 10, 220, 70, Fade(SKYBLUE, 0.5f));
