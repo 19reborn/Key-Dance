@@ -24,6 +24,11 @@ void draw_block(float t,int i,float k){
     }
 }
 
+int calc_score(int totNotes, int pures, int fars, int losts = 0) {
+    int perScore = 10000000 / totNotes;
+    return perScore * pures + perScore * fars / 2;
+}
+
 int main(void)
 {
     // Initialization
@@ -52,8 +57,14 @@ int main(void)
     int currentFrame = 0;
     int framesCounter = 0;
     int framesSpeed = 8;            // Number of spritesheet frames shown by second
-    Rectangle frameRec_tap_effect = { 0.0f, 0.0f, (float)texture_tap_effect.width/3, (float)texture_tap_effect.height };
+    Rectangle frameRec_tap_effect = { 0.0f, 0.0f, (float)texture_tap_effect.width/3, (float)texture_tap_effect.height};
 
+    // Score
+    int score_score = 0;
+    int score_combo = 0;
+    int score_pure = 0;
+    int score_far = 0;
+    int score_lost = 0;
 
     SetCameraMode(camera, CAMERA_CUSTOM); // Set a first person camera mode
 
@@ -109,6 +120,12 @@ int main(void)
             DrawTextureRec(texture_tap_effect, frameRec_tap_effect, TRACK3, WHITE);  // Draw part of the texture
             DrawTextureRec(texture_tap_effect, frameRec_tap_effect, TRACK4, WHITE);  // Draw part of the texture
 
+           // score board:
+           DrawText(TextFormat("SCORE: %08i", score_score), 1200, 10, 40, LIME);
+           DrawText(TextFormat("%i COMBO!", score_combo), 600, 560, 80, VIOLET);
+           DrawText(TextFormat("PURE: %i", score_pure), 1200, 50, 40, PINK);
+           DrawText(TextFormat("FAR: %i", score_far), 1200, 90, 40, ORANGE);
+           DrawText(TextFormat("LOST: %i", score_lost), 1200, 130, 40, GRAY);
 
         EndDrawing();
         //----------------------------------------------------------------------------------
