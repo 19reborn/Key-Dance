@@ -27,7 +27,7 @@ void update_Block(vector<Block> & block_list){
     for(int i=0;i<4;i++){
         if (IsKeyPressed(tem_keyboard[i])) 
             block_list.push_back(Block(GetTime(),i));
-        if (IsKeyDown(KEY_D)){
+        if (IsKeyDown(tem_keyboard[i])){
             int n = block_list.size();
             for(int j = n - 1; j>= 0;j--){
                 if(block_list[j].column == i){
