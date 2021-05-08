@@ -4,4 +4,4 @@ CFLAGS = -Wall -std=c99 -Wno-missing-braces -s -O1 -Iinclude/ -Llib/ $(LIBS)
 game: render.c
 	$(CC) -o $@ $^ $(CFLAGS)
 clean:
-	rm -f $(OBJS) game
+	rm -f $(OBJS) game.exe

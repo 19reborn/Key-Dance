@@ -22,6 +22,9 @@ int main(void)
 
     InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera first person");
 
+    // Load Textures
+    Texture2D background = LoadTexture("resources/tracktest.png");
+
     // Define the camera to look into our 3d world (position, target, up vector)
     Camera camera = { 0 };
     camera.position = (Vector3){ 4.0f, 2.0f, 0.0f };
@@ -52,16 +55,21 @@ int main(void)
 
             ClearBackground(RAYWHITE);
 
+            // Draw a 2D background
+            // DrawTextureEx(background, (Vector2){ 0, 0 }, 0.0f, 2.0f, WHITE);
+
             BeginMode3D(camera);
 
                 DrawPlane((Vector3){ 0.0f, 0.0f, 0.0f }, (Vector2){ 10.0f, 10.0f }, LIGHTGRAY); // Draw ground
                 DrawCube((Vector3){ 0.0f, 0.0f, 2.0f }, 2.0f, 2.0f, 1.0f, MAROON);
+                
+                // Draw a background "plane" in 3D
+                DrawCubeTexture(background, (Vector3){0.0f, 0.0f, 0.0f}, 10.0f, 0.0f, 10.0f, WHITE);
 
             EndMode3D();
 
             DrawRectangle( 10, 10, 220, 70, Fade(SKYBLUE, 0.5f));
             DrawRectangleLines( 10, 10, 220, 70, BLUE);
-
 
         EndDrawing();
         //----------------------------------------------------------------------------------
