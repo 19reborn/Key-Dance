@@ -2,6 +2,8 @@
 
 测试代码：
 ```shell
+make clean
+
 make
 ./game
 ```
