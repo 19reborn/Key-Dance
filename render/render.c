@@ -12,6 +12,12 @@
 #include "raylib.h"
 
 #define SPEED 5
+
+const Vector2 TRACK1 = {160.0f, 700.0f};
+const Vector2 TRACK2 = {550.0f, 700.0f};
+const Vector2 TRACK3 = {930.0f, 700.0f};
+const Vector2 TRACK4 = {1320.0f, 700.0f};
+
 void draw_block(float t,int i,float k){
     if(!t){
         DrawCube((Vector3){ 1.3f, -0.4f, 0.85f }, 0.5f, 1.0f, 1.57f, SKYBLUE);
@@ -30,6 +36,7 @@ int main(void)
     // Load Textures
     Texture2D texture_background = LoadTexture("resources/single_conflict_resized.png");
     Texture2D texture_tap = LoadTexture("resources/tap-v1.png");
+    Texture2D texture_tap_effect = LoadTexture("resources/tap-effect.png");
 
     // Define the camera to look into our 3d world (position, target, up vector)
     Camera camera = { 0 };
@@ -40,6 +47,12 @@ int main(void)
     camera.projection = CAMERA_PERSPECTIVE;
 
     // Generates some random columns
+
+    // Effects
+    int currentFrame = 0;
+    int framesCounter = 0;
+    int framesSpeed = 8;            // Number of spritesheet frames shown by second
+    Rectangle frameRec_tap_effect = { 0.0f, 0.0f, (float)texture_tap_effect.width/3, (float)texture_tap_effect.height };
 
 
     SetCameraMode(camera, CAMERA_CUSTOM); // Set a first person camera mode
@@ -53,6 +66,15 @@ int main(void)
         // Update
         //----------------------------------------------------------------------------------
         UpdateCamera(&camera);                  // Update camera
+
+        // Update Effects
+        framesCounter++;
+        if (framesCounter >= (60/framesSpeed)) {
+            framesCounter = 0;
+            currentFrame++;
+            if (currentFrame > 2) currentFrame = 0;
+            frameRec_tap_effect.x = (float)currentFrame*(float)texture_tap_effect.width/3;
+        }
         //----------------------------------------------------------------------------------
 
         // Draw
@@ -75,10 +97,17 @@ int main(void)
                 DrawCubeTexture(texture_tap, (Vector3){ 1.3f, -0.4f, 2.6f }, 0.5f, 1.0f, 1.5f, WHITE);
                 DrawCubeTexture(texture_tap, (Vector3){ 1.3f, -0.4f, -0.85f }, 0.5f, 1.0f, 1.57f, WHITE);
                 DrawCubeTexture(texture_tap, (Vector3){ 1.3f, -0.4f, -2.6f }, 0.5f, 1.0f, 1.5f, WHITE);                
+            
+            
             EndMode3D();
 
             DrawRectangle( 10, 10, 220, 70, Fade(SKYBLUE, 0.5f));
             DrawRectangleLines( 10, 10, 220, 70, BLUE);
+
+            DrawTextureRec(texture_tap_effect, frameRec_tap_effect, TRACK1, WHITE);  // Draw part of the texture
+            DrawTextureRec(texture_tap_effect, frameRec_tap_effect, TRACK2, WHITE);  // Draw part of the texture
+            DrawTextureRec(texture_tap_effect, frameRec_tap_effect, TRACK3, WHITE);  // Draw part of the texture
+            DrawTextureRec(texture_tap_effect, frameRec_tap_effect, TRACK4, WHITE);  // Draw part of the texture
 
 
         EndDrawing();
@@ -89,6 +118,7 @@ int main(void)
     //--------------------------------------------------------------------------------------
     UnloadTexture(texture_background);
     UnloadTexture(texture_tap);
+    UnloadTexture(texture_tap_effect);
     
     CloseWindow();        // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
