@@ -27,6 +27,9 @@ int main(void)
 
     InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera first person");
 
+    // Load Textures
+    Texture2D background = LoadTexture("resources/single_conflict_resized.png");
+
     // Define the camera to look into our 3d world (position, target, up vector)
     Camera camera = { 0 };
     camera.position = (Vector3){ 2.0f, 2.8f, 0.0f };
@@ -57,9 +60,11 @@ int main(void)
 
             ClearBackground(GRAY);
 
+            DrawTextureEx(background, (Vector2){ 0, 0 }, 0.0f, 1.0f, WHITE);
+
             BeginMode3D(camera);
 
-                DrawPlane((Vector3){ 0.0f, 0.0f, 0.0f }, (Vector2){ 1000.0f, 7.17f },  WHITE); // Draw ground
+                DrawPlane((Vector3){ 0.0f, 0.0f, 0.0f }, (Vector2){ 1000.0f, 7.17f }, (Color){255, 255, 255, 120}); // Draw ground
                 DrawCubeWires((Vector3){ 0.0f, -0.7f, 0.8f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
                 DrawCubeWires((Vector3){ 0.0f, -0.7f, 2.4f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
                 DrawCubeWires((Vector3){ 0.0f, -0.7f, -0.8f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
