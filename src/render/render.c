@@ -11,7 +11,12 @@
 
 #include "raylib.h"
 
-#define MAX_COLUMNS 20
+#define SPEED 5
+void draw_block(float t,int i,float k){
+    if(!t){
+        DrawCube((Vector3){ 1.3f, -0.4f, 0.85f }, 0.5f, 1.0f, 1.57f, SKYBLUE);
+    }
+}
 
 int main(void)
 {
@@ -22,15 +27,12 @@ int main(void)
 
     InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera first person");
 
-    // Load Textures
-    Texture2D background = LoadTexture("resources/tracktest.png");
-
     // Define the camera to look into our 3d world (position, target, up vector)
     Camera camera = { 0 };
-    camera.position = (Vector3){ 4.0f, 2.0f, 0.0f };
-    camera.target = (Vector3){ 0.0f, 0.5f, 0.0f };
-    camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
-    camera.fovy = 60.0f;
+    camera.position = (Vector3){ 2.0f, 2.8f, 0.0f };
+    camera.target = (Vector3){ 0.0f, 0.75f, 0.0f };
+    camera.up = (Vector3){ 0.0f, 0.5f, 0.0f };
+    camera.fovy = 80.0f;
     camera.projection = CAMERA_PERSPECTIVE;
 
     // Generates some random columns
@@ -53,23 +55,25 @@ int main(void)
         //----------------------------------------------------------------------------------
         BeginDrawing();
 
-            ClearBackground(RAYWHITE);
-
-            // Draw a 2D background
-            // DrawTextureEx(background, (Vector2){ 0, 0 }, 0.0f, 2.0f, WHITE);
+            ClearBackground(GRAY);
 
             BeginMode3D(camera);
 
-                DrawPlane((Vector3){ 0.0f, 0.0f, 0.0f }, (Vector2){ 10.0f, 10.0f }, LIGHTGRAY); // Draw ground
-                DrawCube((Vector3){ 0.0f, 0.0f, 2.0f }, 2.0f, 2.0f, 1.0f, MAROON);
-                
-                // Draw a background "plane" in 3D
-                DrawCubeTexture(background, (Vector3){0.0f, 0.0f, 0.0f}, 10.0f, 0.0f, 10.0f, WHITE);
+                DrawPlane((Vector3){ 0.0f, 0.0f, 0.0f }, (Vector2){ 1000.0f, 7.17f },  WHITE); // Draw ground
+                DrawCubeWires((Vector3){ 0.0f, -0.7f, 0.8f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
+                DrawCubeWires((Vector3){ 0.0f, -0.7f, 2.4f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
+                DrawCubeWires((Vector3){ 0.0f, -0.7f, -0.8f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
+                DrawCubeWires((Vector3){ 0.0f, -0.7f, -2.4f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
 
+                DrawCube((Vector3){ 1.3f, -0.4f, 0.85f }, 0.5f, 1.0f, 1.57f, SKYBLUE);
+                DrawCube((Vector3){ 1.3f, -0.4f, 2.6f }, 0.5f, 1.0f, 1.5f, SKYBLUE);
+                DrawCube((Vector3){ 1.3f, -0.4f, -0.85f }, 0.5f, 1.0f, 1.57f, SKYBLUE);
+                DrawCube((Vector3){ 1.3f, -0.4f, -2.6f }, 0.5f, 1.0f, 1.5f, SKYBLUE);                
             EndMode3D();
 
             DrawRectangle( 10, 10, 220, 70, Fade(SKYBLUE, 0.5f));
             DrawRectangleLines( 10, 10, 220, 70, BLUE);
+
 
         EndDrawing();
         //----------------------------------------------------------------------------------
