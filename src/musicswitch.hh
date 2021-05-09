@@ -31,6 +31,7 @@ private:
     vector<Texture2D> BGlst;
     int curSongidx;
     bool isEnd = false;
+    bool quit = false;
     
     bool isKeyPressed(KeyboardKey key){
       if(IsKeyPressed(key)){
@@ -63,6 +64,8 @@ public:
 
         musicList = init_music_vector();
         mlistSize = musicList.size();
+
+        quit = false;
 
         for(auto& music: musicList) {
             string path = "../songs/" + music.name + ".wav";
@@ -175,6 +178,10 @@ public:
             selectedOpern = musicList[mlistidx].get_opern().username;
             isEnd = true;
         }
+        if(isKeyPressed(KEY_ESCAPE)) {
+            isEnd = true;
+            quit = true;
+        }
     }
     InterfaceState end() {
         UnloadTexture(texture_return_button);
@@ -194,6 +201,8 @@ public:
         SELECTED_OPERN = selectedOpern;
 
         //CloseWindow(); 
+        if(quit) return INTERFACE_STATE_MAIN;
+
         if(selectedOpern == "") {
             mode = MODE_GENERATE;
         } else {
