@@ -14,6 +14,7 @@
 #include <vector>
 #include <iostream>
 #include <string>
+#include <cstring>
 #include <cmath>
 #include <list>
 using namespace std;
@@ -109,7 +110,8 @@ public:
 } scoreboard;
 
 #define MODE 1
-#define SPEED 10.0f   // Number of spritesheet frames shown by second
+#define SPEED 15.0f   // Number of spritesheet frames shown by second
+#define OFFSET 0.05f   // offset of grade judging
 const int length = 27.50;
 
 /*struct block{
@@ -152,6 +154,7 @@ void draw_block(float t,int i,float k){
     }
 }
 
+// 文件结尾不要有换行符
 void input(string filename) {
     FILE * fp = NULL;
     fp = fopen(filename.c_str(),"r");
@@ -164,7 +167,7 @@ void input(string filename) {
 
     char line[100];
     while(!feof(fp)){
-        fgets(line,100,fp);
+        fgets(line, 100, fp);
         //第一个数表示block出现时间,第二个数表示block属于第几列,第三个数表示block的持续时间.
         Block B(0,0);
         string s="";
@@ -238,26 +241,26 @@ void draw_frame(int mode,vector <Block> &block_group){
         DrawCubeWires({ 0.0f, -0.7f, -2.4f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
 
         if(IsKeyDown(tem_keyboard[1]))
-            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 0.85f }, 0.5f, 0.8f, 1.57f, BLUE);
+            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 0.85f }, 0.5f, 0.9f, 1.57f, BLUE);
         else
             DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 0.85f }, 0.5f, 1.0f, 1.57f, WHITE);
         if(IsKeyDown(tem_keyboard[0]))
-            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 2.6f }, 0.5f, 1.0f, 1.5f, BLUE);
+            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 2.6f }, 0.5f, 0.9f, 1.5f, BLUE);
         else
             DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 2.6f }, 0.5f, 1.0f, 1.5f, WHITE);
         if(IsKeyDown(tem_keyboard[2]))
-            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -0.85f }, 0.5f, 1.0f, 1.57f, BLUE);
+            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -0.85f }, 0.5f, 0.9f, 1.57f, BLUE);
         else
             DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -0.85f }, 0.5f, 1.0f, 1.57f, WHITE);
         if(IsKeyDown(tem_keyboard[3]))
-            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -2.6f }, 0.5f, 1.0f, 1.5f, BLUE);    
+            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -2.6f }, 0.5f, 0.9f, 1.5f, BLUE);    
         else
             DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -2.6f }, 0.5f, 1.0f, 1.5f, WHITE);    
 
         auto i=block_group.begin(); 
         while(i!=block_group.end()){
             //单个节奏块
-            float dis = length-(GetTime()-i->init_time)*SPEED;
+            float dis = length-(GetTime()-i->init_time-OFFSET)*SPEED;
             // 1.2 >= dis >=0.7 lost
             // 0.7 >= dis >=0.5 far
             // 0.5 >= dis >=0.3 pure
@@ -302,8 +305,8 @@ void draw_frame(int mode,vector <Block> &block_group){
                 }
             }            
             else{
-                float start_dis = -length+(GetTime()-i->init_time+i->last_time/2)*SPEED+0.2f;
-                float end_dis = -length+(GetTime()-i->init_time-i->last_time/2)*SPEED+0.2f;
+                float start_dis = -length+(GetTime()-i->init_time+i->last_time/2 - OFFSET)*SPEED+0.2f;
+                float end_dis = -length+(GetTime()-i->init_time-i->last_time/2 - OFFSET)*SPEED+0.2f;
                 if(i->to_be_erase){
                     if(end_dis<=0.0f){
                         draw_block(length-(GetTime()-i->init_time)*SPEED,i->column,i->last_time*SPEED);
