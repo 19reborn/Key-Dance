@@ -11,7 +11,9 @@
 
 #include "raylib.h"
 #include "../backend/music_switch.cc"
+#include "../backend/fileio.h"
 #include <vector>
+#include <algorithm>
 #include <iostream>
 #include <string>
 #include <cstring>
@@ -25,7 +27,8 @@ int mlistidx;
 string selectedSongName;
 string selectedOpern;
 vector<Music> BGMlst;
-int curBGMidx;
+vector<Texture2D> BGlst;
+int curSongidx;
 
 int main(void)
 {
@@ -35,10 +38,9 @@ int main(void)
     const int screenHeight = 900;
     InitWindow(screenWidth, screenHeight, "Select your song");
     // Load Textures
-    Texture2D texture_test = LoadTexture("resources/goodtek.png");
-    Texture2D texture_return_button = LoadTexture("resources/return.png");
-    Texture2D texture_settings_button = LoadTexture("resources/settings.png");
-    Font font_caption = LoadFontEx("resources/bb2180.ttf", 96, 0, 0);
+    Texture2D texture_return_button = LoadTexture("../resources/return.png");
+    Texture2D texture_settings_button = LoadTexture("../resources/settings.png");
+    Font font_caption = LoadFontEx("../resources/bb2180.ttf", 96, 0, 0);
 
     InitAudioDevice();
 
@@ -48,6 +50,16 @@ int main(void)
     for(auto& music: musicList) {
         string path = "../songs/" + music.name + ".wav";
         BGMlst.push_back(LoadMusicStream(path.c_str()));
+        path = "../resources/song_bg/";
+        vector<string> bg_lst;
+        getJustCurrentFile(path.c_str(), bg_lst);
+        if(find(bg_lst.begin(), bg_lst.end(), music.name+".png") != bg_lst.end()) {
+            string curPath = path + music.name + ".png";
+            BGlst.push_back(LoadTexture(curPath.c_str()));
+        } else {
+            string curPath = path + "default.png";
+            BGlst.push_back(LoadTexture(curPath.c_str()));
+        }
     }
 
     SetTargetFPS(60);                           // Set our game to run at 60 frames-per-second
@@ -57,11 +69,11 @@ int main(void)
     while (!WindowShouldClose())                // Detect window close button or ESC key
     {
         // 播放
-        play_repeat(BGMlst[curBGMidx]);
+        play_repeat(BGMlst[curSongidx]);
         //----------------------------------------------------------------------------------
         BeginDrawing();
             ClearBackground(GRAY);
-            DrawTextureEx(texture_test, { 0, 0 }, 0.0f, screenWidth / (float)texture_test.width, WHITE);
+            DrawTextureEx(BGlst[curSongidx], { 0, 0 }, 0.0f, screenWidth / (float)BGlst[curSongidx].width, WHITE);
             // 手动光栅化！
             // 左上
                 // 遮罩
@@ -126,13 +138,13 @@ int main(void)
 
             //====================键盘操控=================
             if(IsKeyPressed(KEY_W) || IsKeyPressed(KEY_UP)) {
-                curBGMidx = (curBGMidx - 1 + BGMlst.size()) % BGMlst.size();
-                PlayMusicStream(BGMlst[curBGMidx]); 
+                curSongidx = (curSongidx - 1 + BGMlst.size()) % BGMlst.size();
+                PlayMusicStream(BGMlst[curSongidx]); 
                 mlistidx = (mlistidx + mlistSize - 1) % mlistSize;
             }
             if(IsKeyPressed(KEY_S) || IsKeyPressed(KEY_DOWN)) {
-                curBGMidx = (curBGMidx + 1) % BGMlst.size();
-                PlayMusicStream(BGMlst[curBGMidx]); 
+                curSongidx = (curSongidx + 1) % BGMlst.size();
+                PlayMusicStream(BGMlst[curSongidx]); 
                 mlistidx = (mlistidx + 1) % mlistSize;
             }
             if(IsKeyPressed(KEY_A) || IsKeyPressed(KEY_LEFT)) {
@@ -151,13 +163,16 @@ int main(void)
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
-    UnloadTexture(texture_test);
     UnloadTexture(texture_return_button);
     UnloadTexture(texture_settings_button);
     UnloadFont(font_caption);
 
     for(auto& music: BGMlst) {
         UnloadMusicStream(music);
+    }
+
+    for(auto& text: BGlst) {
+        UnloadTexture(text);
     }
 
     CloseWindow();        // Close window and OpenGL context
