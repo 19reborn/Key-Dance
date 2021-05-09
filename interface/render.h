@@ -12,9 +12,21 @@ using namespace std;
 
 extern ModeState mode;
 static int MODE = 1;
+typedef enum{
+	PLAY_NORMAL,
+	PLAY_BACK,
+	PLAY_AGAIN,
+	PLAY_STALL,
+	PLAY_FINISH
+}PLAY_STATUS;
+PLAY_STATUS status=PLAY_NORMAL;
 
 class InterfacePlay: public InterfaceBase{
 	private:
+		static double zero_time;
+		static double getTime(){
+			return GetTime()-zero_time;
+		}
 		bool isKeyDown(KeyboardKey &key){
 			if(IsKeyDown(key)){
 				play_once(taps[1]);
@@ -137,8 +149,8 @@ class InterfacePlay: public InterfaceBase{
 				column = _column;
 			}
 			void update_down(){
-				init_time = GetTime();
-				last_time = GetTime() - real_init_time;
+				init_time = getTime();
+				last_time = getTime() - real_init_time;
 			}
 		};
 		int SPEED;
@@ -156,7 +168,7 @@ class InterfacePlay: public InterfaceBase{
 		void update_Block(vector<Block> & block_list){
 			for(int i=0;i<4;i++){
 				if (IsKeyPressed(tem_keyboard[i])) 
-					block_list.push_back(Block(GetTime(),i));
+					block_list.push_back(Block(getTime(),i));
 				if (IsKeyDown(tem_keyboard[i])){
 					int n = block_list.size();
 					for(int j = n - 1; j>= 0;j--){
@@ -290,7 +302,7 @@ class InterfacePlay: public InterfaceBase{
 		        else
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -2.6f }, 0.5f, 1.0f, 1.5f, WHITE);    
 		        for(auto i:block_group){
-		            draw_block((GetTime()-i.init_time+i.last_time/2)*SPEED+0.5f,i.column,-i.last_time*SPEED);
+		            draw_block((getTime()-i.init_time+i.last_time/2)*SPEED+0.5f,i.column,-i.last_time*SPEED);
 		        }
 
 		        EndMode3D();
@@ -340,7 +352,7 @@ class InterfacePlay: public InterfaceBase{
 		        auto i=block_group.begin(); 
 		        while(i!=block_group.end()){
 		            //单个节奏块
-		            float dis = length-(GetTime()-i->init_time-OFFSET)*SPEED;
+		            float dis = length-(getTime()-i->init_time-OFFSET)*SPEED;
 		            // 1.2 >= dis >=0.7 lost
 		            // 0.7 >= dis >=0.5 far
 		            // 0.5 >= dis >=0.3 pure
@@ -377,7 +389,7 @@ class InterfacePlay: public InterfaceBase{
 		                }
 		                else{
 		                    if(dis>=-0.8f){
-		                        draw_block(length-(GetTime()-i->init_time)*SPEED,i->column,i->last_time*SPEED);
+		                        draw_block(length-(getTime()-i->init_time)*SPEED,i->column,i->last_time*SPEED);
 		                        i++;
 		                    }
 		                    else{
@@ -388,11 +400,11 @@ class InterfacePlay: public InterfaceBase{
 		                }
 		            }            
 		            else{
-		                float start_dis = -length+(GetTime()-i->init_time+i->last_time/2 - OFFSET)*SPEED+0.2f;
-		                float end_dis = -length+(GetTime()-i->init_time-i->last_time/2 - OFFSET)*SPEED+0.2f;
+		                float start_dis = -length+(getTime()-i->init_time+i->last_time/2 - OFFSET)*SPEED+0.2f;
+		                float end_dis = -length+(getTime()-i->init_time-i->last_time/2 - OFFSET)*SPEED+0.2f;
 		                if(i->to_be_erase){
 		                    if(end_dis<=0.0f){
-		                        draw_block(length-(GetTime()-i->init_time)*SPEED,i->column,i->last_time*SPEED);
+		                        draw_block(length-(getTime()-i->init_time)*SPEED,i->column,i->last_time*SPEED);
 		                        i++;              
 		                    }   
 		                    else{
@@ -434,7 +446,7 @@ class InterfacePlay: public InterfaceBase{
 		                        //    block_group.erase(i);
 		                        //}
 		                        if(end_dis<=0.0f){
-		                            draw_block((i->last_time*SPEED-(-length+(GetTime()-i->init_time+i->last_time/2)*SPEED+0.2f))/2,i->column,i->last_time*SPEED-(-length+(GetTime()-i->init_time+i->last_time/2)*SPEED+0.2f));
+		                            draw_block((i->last_time*SPEED-(-length+(getTime()-i->init_time+i->last_time/2)*SPEED+0.2f))/2,i->column,i->last_time*SPEED-(-length+(getTime()-i->init_time+i->last_time/2)*SPEED+0.2f));
 		                            i++;
 		                        }
 		                        else{
@@ -462,13 +474,13 @@ class InterfacePlay: public InterfaceBase{
 		                                scoreboard.update("pure");
 		                            }
 		                            i->to_be_erase=true;
-		                            draw_block(length-(GetTime()-i->init_time)*SPEED,i->column,i->last_time*SPEED);
+		                            draw_block(length-(getTime()-i->init_time)*SPEED,i->column,i->last_time*SPEED);
 		                            i++;
 		                        }
 		                    }
 		                    else{
 		                        if(end_dis<=1.0f){
-		                            draw_block(length-(GetTime()-i->init_time)*SPEED,i->column,i->last_time*SPEED);
+		                            draw_block(length-(getTime()-i->init_time)*SPEED,i->column,i->last_time*SPEED);
 		                            i++;              
 		                        }   
 		                        else{
@@ -514,6 +526,7 @@ class InterfacePlay: public InterfaceBase{
 		    //const int screenWidth = 1600;
 		    //const int screenHeight = 900;
 		    block_group.clear();
+			zero_time=GetTime();
 			SPEED=15.0f;
 			OFFSET=0.05f;
 		    if(MODE==1){
@@ -523,12 +536,12 @@ class InterfacePlay: public InterfaceBase{
 		    init_taps();
 		    //InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera first person");
 		    // Load Textures
-		    texture_background = LoadTexture("../resources/single_conflict_resized.png");
-		    texture_tap = LoadTexture("../resources/tap-v1.png");
-		    texture_tap_effect = LoadTexture("../resources/tap-effect.png");
-		    texture_pure_effect = LoadTexture("../resources/pure-effect.png");
-		    texture_far_effect = LoadTexture("../resources/far-effect.png");
-		    texture_lost_effect = LoadTexture("../resources/lost-effect.png");
+		    texture_background = LoadTexture("resources/single_conflict_resized.png");
+		    texture_tap = LoadTexture("resources/tap-v1.png");
+		    texture_tap_effect = LoadTexture("resources/tap-effect.png");
+		    texture_pure_effect = LoadTexture("resources/pure-effect.png");
+		    texture_far_effect = LoadTexture("resources/far-effect.png");
+		    texture_lost_effect = LoadTexture("resources/lost-effect.png");
 
 		    // Define the camera to look into our 3d world (position, target, up vector)
 		    camera.position = { 2.0f, 2.8f, 0.0f };
@@ -549,20 +562,48 @@ class InterfacePlay: public InterfaceBase{
 	        }
 	        if(MODE!=1)
 	            update_Block(block_group);
+			//根据按键或鼠标操作控制暂停/返回上一界面/重新开始
+
+
         }
         void draw(){
         	draw_frame(MODE,block_group);
         }
-		void end(){
-			UnloadTexture(texture_background);
-			UnloadTexture(texture_tap);    
-			UnloadTexture(texture_tap_effect);
-			UnloadTexture(texture_pure_effect);    
-			UnloadTexture(texture_far_effect);
-			UnloadTexture(texture_lost_effect);
+		bool is_end(){
+			if(status!=PLAY_NORMAL)
+				return true;
+			else;
+				return false;
+		}
+		InterfaceState end(){
+			if(status==PLAY_STALL){
+				zero_time=GetTime();
+				return INTERFACE_STATE_PLAY;
+			}
+			else if(status==PLAY_BACK){
+				UnloadTexture(texture_background);
+				UnloadTexture(texture_tap);    
+				UnloadTexture(texture_tap_effect);
+				UnloadTexture(texture_pure_effect);    
+				UnloadTexture(texture_far_effect);
+				UnloadTexture(texture_lost_effect);	
 
+				return INTERFACE_STATE_MUSIC_SWITCH;
+			}
+			else if(status==PLAY_AGAIN){
+				zero_time=GetTime();
+				block_group.clear();
+				if(MODE==1)
+					init_song("./tmp.txt");
+				return INTERFACE_STATE_PLAY;
+			}
+			else if(status=PLAY_FINISH){
+				save(block_group);
+			}
 			//CloseWindow();        // Close window and OpenGL context
 
 			save(block_group);			
 		}
 };
+
+double InterfacePlay::zero_time = 0.0f;
