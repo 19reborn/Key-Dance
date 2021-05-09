@@ -64,21 +64,21 @@ public:
 list<Effect> curEffects;
 bool isKeyDown(KeyboardKey &key){
     if(IsKeyDown(key)){
-        play_once(taps[1]);
+        //play_once(taps[1]);
         return true;
     }
     return false;
 }
 bool isKeyPressed(KeyboardKey &key){
     if(IsKeyPressed(key)){
-        play_once(taps[2]);
+        play_once(taps[14]);
         return true;
     }
     return false;
 }
 bool isKeyReleased(KeyboardKey &key){
     if(IsKeyReleased(key)){
-        play_once(taps[3]);
+        //play_once(taps[3]);
         return true;
     }
     return false;
@@ -262,19 +262,19 @@ void draw_frame(int mode,vector <Block> &block_group){
         DrawCubeWires({ 0.0f, -0.7f, -0.8f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
         DrawCubeWires({ 0.0f, -0.7f, -2.4f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
 
-        if(isKeyDown(tem_keyboard[1]))
+        if(isKeyPressed(tem_keyboard[1]))
             DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 0.85f }, 0.5f, 0.9f, 1.57f, BLUE);
         else
             DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 0.85f }, 0.5f, 1.0f, 1.57f, WHITE);
-        if(isKeyDown(tem_keyboard[0]))
+        if(isKeyPressed(tem_keyboard[0]))
             DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 2.6f }, 0.5f, 0.9f, 1.5f, BLUE);
         else
             DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 2.6f }, 0.5f, 1.0f, 1.5f, WHITE);
-        if(isKeyDown(tem_keyboard[2]))
+        if(isKeyPressed(tem_keyboard[2]))
             DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -0.85f }, 0.5f, 0.9f, 1.57f, BLUE);
         else
             DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -0.85f }, 0.5f, 1.0f, 1.57f, WHITE);
-        if(isKeyDown(tem_keyboard[3]))
+        if(isKeyPressed(tem_keyboard[3]))
             DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -2.6f }, 0.5f, 0.9f, 1.5f, BLUE);    
         else
             DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -2.6f }, 0.5f, 1.0f, 1.5f, WHITE);    
@@ -446,19 +446,19 @@ void draw_frame(int mode,vector <Block> &block_group){
         DrawCubeWires({ 0.0f, -0.7f, -0.8f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
         DrawCubeWires({ 0.0f, -0.7f, -2.4f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
 
-        if(isKeyDown(tem_keyboard[1]))
+        if(isKeyPressed(tem_keyboard[1]))
             DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 0.85f }, 0.5f, 0.9f, 1.57f, BLUE);
         else
             DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 0.85f }, 0.5f, 1.0f, 1.57f, WHITE);
-        if(isKeyDown(tem_keyboard[0]))
+        if(isKeyPressed(tem_keyboard[0]))
             DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 2.6f }, 0.5f, 0.9f, 1.5f, BLUE);
         else
             DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 2.6f }, 0.5f, 1.0f, 1.5f, WHITE);
-        if(isKeyDown(tem_keyboard[2]))
+        if(isKeyPressed(tem_keyboard[2]))
             DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -0.85f }, 0.5f, 0.9f, 1.57f, BLUE);
         else
             DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -0.85f }, 0.5f, 1.0f, 1.57f, WHITE);
-        if(isKeyDown(tem_keyboard[3]))
+        if(isKeyPressed(tem_keyboard[3]))
             DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -2.6f }, 0.5f, 0.9f, 1.5f, BLUE);    
         else
             DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -2.6f }, 0.5f, 1.0f, 1.5f, WHITE);    

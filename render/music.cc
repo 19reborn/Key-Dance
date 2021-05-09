@@ -30,6 +30,14 @@ vector<Music> BGMlst;
 vector<Texture2D> BGlst;
 int curSongidx;
 
+bool isKeyPressed(KeyboardKey key){
+    if(IsKeyPressed(key)){
+        play_once(taps[0]);
+        return true;
+    }
+    return false;
+}
+
 int main(void)
 {
     // Initialization
@@ -43,6 +51,7 @@ int main(void)
     Font font_caption = LoadFontEx("../resources/bb2180.ttf", 96, 0, 0);
 
     InitAudioDevice();
+    init_taps();
 
     musicList = init_music_vector();
     mlistSize = musicList.size();
@@ -137,23 +146,23 @@ int main(void)
             DrawTextEx(font_caption, TextFormat("%d/%d", mlistidx+1, mlistSize), {1425, 790}, 60, 0, BLACK);
 
             //====================键盘操控=================
-            if(IsKeyPressed(KEY_W) || IsKeyPressed(KEY_UP)) {
+            if(isKeyPressed(KEY_W) || isKeyPressed(KEY_UP)) {
                 curSongidx = (curSongidx - 1 + BGMlst.size()) % BGMlst.size();
                 PlayMusicStream(BGMlst[curSongidx]); 
                 mlistidx = (mlistidx + mlistSize - 1) % mlistSize;
             }
-            if(IsKeyPressed(KEY_S) || IsKeyPressed(KEY_DOWN)) {
+            if(isKeyPressed(KEY_S) || isKeyPressed(KEY_DOWN)) {
                 curSongidx = (curSongidx + 1) % BGMlst.size();
                 PlayMusicStream(BGMlst[curSongidx]); 
                 mlistidx = (mlistidx + 1) % mlistSize;
             }
-            if(IsKeyPressed(KEY_A) || IsKeyPressed(KEY_LEFT)) {
+            if(isKeyPressed(KEY_A) || isKeyPressed(KEY_LEFT)) {
                 musicList[mlistidx].prev_opern();
             }
-            if(IsKeyPressed(KEY_D) || IsKeyPressed(KEY_RIGHT)) {
+            if(isKeyPressed(KEY_D) || isKeyPressed(KEY_RIGHT)) {
                 musicList[mlistidx].next_opern();
             }
-            if(IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE)) {
+            if(isKeyPressed(KEY_ENTER) || isKeyPressed(KEY_SPACE)) {
                 selectedSongName = musicList[mlistidx].name;
             }
 
