@@ -1,11 +1,12 @@
 #include "raylib.h"
 #include "interface.h"
-#include "render.h"
+// #include "render.h"
 #include <cstdio>
 
 InterfaceState state = INTERFACE_STATE_MAIN;
 ModeState mode = MODE_NULL;
 InterfaceBase* interfaces[INTERFACE_STATE_TOT];
+
 
 int main()
 {
@@ -13,7 +14,7 @@ int main()
     interfaces[INTERFACE_STATE_MAIN] = new InterfaceMain();
     interfaces[INTERFACE_STATE_MODE_SWITCH] = new InterfaceModeSwitch();
     interfaces[INTERFACE_STATE_MUSIC_SWITCH] = new InterfaceMusicSwitch();
-    interfaces[INTERFACE_STATE_PLAY] = new InterfacePlay();
+    // interfaces[INTERFACE_STATE_PLAY] = new InterfacePlay();
     InterfaceBase* g = interfaces[state];
 
     InitWindow(g->screenWidth, g->screenHeight, "sample game");
@@ -21,9 +22,7 @@ int main()
     printf("[debug] init window successful!\n");
 #endif
     g->init();
-
     SetTargetFPS(60);
-
     //Main game loop
     //Detect window close button or ESC key
     while (!WindowShouldClose()) 
@@ -36,8 +35,10 @@ int main()
 
         /* Draw */
         g->draw();
+        if(g->is_end()){
+            state=g->end();
+        }
     }
-    g->end();
     //Close window and OpenGL context
     CloseWindow();
 
