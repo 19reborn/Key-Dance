@@ -424,7 +424,6 @@ class InterfacePlay: public InterfaceBase{
 		                }
 		                else{
 		                    if(IsKeyPressed(tem_keyboard[i->column])&&start_dis>=-0.2f&&start_dis<=0.9f){
-		                        //printf("%f\n",dis);
 		                        //正确地消除
 		                        if(start_dis>=0.8f){
 		                            show_effect("lost",i->column);
@@ -524,6 +523,9 @@ class InterfacePlay: public InterfaceBase{
 		        scoreboard.draw();
 
 		    }
+			if(status==PLAY_STALL){
+				DrawRectangle( 0, 50, 1700, 700, Fade(BLACK, 0.5f));
+			}
 		    EndDrawing();  			
 		}
 		void init_song(string songName){
@@ -597,6 +599,9 @@ class InterfacePlay: public InterfaceBase{
 				if(MODE==1)
 					init_song("./tmp.txt");
 			}
+			//if(getTime()>=){
+			//	status=PLAY_FINISH;
+			//}
         }
         void draw(){
         	draw_frame(MODE,block_group);
@@ -620,6 +625,7 @@ class InterfacePlay: public InterfaceBase{
 			}
 			else if(status==PLAY_FINISH){
 				save(block_group);
+				return INTERFACE_STATE_SUMMARY;
 			}
 			//CloseWindow();        // Close window and OpenGL context
 

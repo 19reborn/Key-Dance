@@ -5,7 +5,7 @@
 #include "scoredisp.hh"
 #include <cstdio>
 
-InterfaceState state = INTERFACE_STATE_MAIN;
+InterfaceState state = INTERFACE_STATE_PLAY;
 ModeState mode = MODE_GENERATE;
 InterfaceBase* interfaces[INTERFACE_STATE_TOT];
 
