@@ -4,7 +4,7 @@
 #include <cstdio>
 
 InterfaceState state = INTERFACE_STATE_PLAY;
-ModeState mode = MODE_NULL;
+ModeState mode = (ModeState)1;
 InterfaceBase* interfaces[INTERFACE_STATE_TOT];
 
 int main()

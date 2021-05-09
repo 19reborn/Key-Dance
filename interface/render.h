@@ -8,11 +8,10 @@
 #include <cstring>
 #include <cmath>
 #include <list>
-#include "interface.h"
 using namespace std;
 
 extern ModeState mode;
-static int MODE = 0;
+static int MODE = 1;
 
 class InterfacePlay: public InterfaceBase{
 	private:
@@ -321,19 +320,19 @@ class InterfacePlay: public InterfaceBase{
 		        DrawCubeWires({ 0.0f, -0.7f, -0.8f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
 		        DrawCubeWires({ 0.0f, -0.7f, -2.4f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
 
-		        if(isKeyDown(tem_keyboard[1]))
+		        if(IsKeyDown(tem_keyboard[1]))
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 0.85f }, 0.5f, 0.9f, 1.57f, BLUE);
 		        else
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 0.85f }, 0.5f, 1.0f, 1.57f, WHITE);
-		        if(isKeyDown(tem_keyboard[0]))
+		        if(IsKeyDown(tem_keyboard[0]))
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 2.6f }, 0.5f, 0.9f, 1.5f, BLUE);
 		        else
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 2.6f }, 0.5f, 1.0f, 1.5f, WHITE);
-		        if(isKeyDown(tem_keyboard[2]))
+		        if(IsKeyDown(tem_keyboard[2]))
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -0.85f }, 0.5f, 0.9f, 1.57f, BLUE);
 		        else
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -0.85f }, 0.5f, 1.0f, 1.57f, WHITE);
-		        if(isKeyDown(tem_keyboard[3]))
+		        if(IsKeyDown(tem_keyboard[3]))
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -2.6f }, 0.5f, 0.9f, 1.5f, BLUE);    
 		        else
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -2.6f }, 0.5f, 1.0f, 1.5f, WHITE);    
@@ -348,8 +347,7 @@ class InterfacePlay: public InterfaceBase{
 		            // 0.3 >= dis >=0.1 far 
 		            // 0.1 >= dis >=0.0 lost
 		            if(i->last_time*SPEED<0.5f){
-		                if(isKeyPressed(tem_keyboard[i->column])&&dis<=0.9f&&dis>=-0.2f){
-		                    //printf("%f\n",dis);
+		                if(IsKeyPressed(tem_keyboard[i->column])&&dis<=0.9f&&dis>=-0.2f){
 		                    //正确地消除
 		                    if(dis>=0.8f){
 		                        show_effect("lost",i->column);
@@ -357,18 +355,22 @@ class InterfacePlay: public InterfaceBase{
 		                    }
 		                    else if(dis>=0.7f){
 		                        show_effect("far",i->column);
+								play_once(taps[1]);
 		                        scoreboard.update("far");
 		                    }
 		                    else if(dis>=0.2f){
 		                        show_effect("pure",i->column);
+								play_once(taps[1]);
 		                        scoreboard.update("pure");
 		                    }
 		                    else if(dis>=-0.1f){
 		                        show_effect("far",i->column);
+								play_once(taps[1]);
 		                        scoreboard.update("far");
 		                    }
 		                    else{
 		                        show_effect("lost",i->column);
+								play_once(taps[1]);
 		                        scoreboard.update("lost");
 		                    }
 		                    block_group.erase(i);
@@ -398,7 +400,7 @@ class InterfacePlay: public InterfaceBase{
 		                    }          
 		                }
 		                else{
-		                    if(isKeyPressed(tem_keyboard[i->column])&&start_dis>=-0.2f&&start_dis<=0.9f){
+		                    if(IsKeyPressed(tem_keyboard[i->column])&&start_dis>=-0.2f&&start_dis<=0.9f){
 		                        //printf("%f\n",dis);
 		                        //正确地消除
 		                        if(start_dis>=0.8f){
@@ -407,22 +409,26 @@ class InterfacePlay: public InterfaceBase{
 		                        }
 		                        else if(start_dis>=0.7f){
 		                            show_effect("far",i->column);
+									play_once(taps[1]);
 		                            scoreboard.update("far");
 		                        }
 		                        else if(start_dis>=0.2f){
 		                            show_effect("pure",i->column);
+									play_once(taps[1]);
 		                            scoreboard.update("pure");
 		                        }
 		                        else if(start_dis>=-0.1f){
 		                            show_effect("far",i->column);
+									play_once(taps[1]);
 		                            scoreboard.update("far");
 		                        }
 		                        else{
 		                            show_effect("lost",i->column);
+									play_once(taps[1]);
 		                            scoreboard.update("lost");
 		                        }                 
 		                    }
-		                    if(isKeyDown(tem_keyboard[i->column])&&start_dis>=0.0f){
+		                    if(IsKeyDown(tem_keyboard[i->column])&&start_dis>=0.0f){
 		                        //if(end_dis>=0.5f){
 		                        //    show_effect("lost",i->column);
 		                        //    block_group.erase(i);
@@ -433,11 +439,12 @@ class InterfacePlay: public InterfaceBase{
 		                        }
 		                        else{
 		                            show_effect("pure",i->column);
+									play_once(taps[1]);
 		                            scoreboard.update("pure");
 		                            block_group.erase(i);
 		                        }
 		                    }
-		                    else if(isKeyReleased(tem_keyboard[i->column])&&start_dis>=0.0f){
+		                    else if(IsKeyReleased(tem_keyboard[i->column])&&start_dis>=0.0f){
 		                        if(end_dis<0.0f){
 		                            float dis=-end_dis;
 		                            if(dis>=1.0f){
@@ -446,10 +453,12 @@ class InterfacePlay: public InterfaceBase{
 		                            }
 		                            else if(dis>=0.5){
 		                                show_effect("far",i->column);
+										play_once(taps[1]);
 		                                scoreboard.update("far");
 		                            }
 		                            else{
 		                                show_effect("pure",i->column);
+										play_once(taps[1]);
 		                                scoreboard.update("pure");
 		                            }
 		                            i->to_be_erase=true;
