@@ -17,13 +17,16 @@ typedef enum{
 	PLAY_BACK,
 	PLAY_AGAIN,
 	PLAY_STALL,
-	PLAY_FINISH
+	PLAY_FINISH,
+	PLAY_NULL
 }PLAY_STATUS;
-PLAY_STATUS status=PLAY_NORMAL;
+PLAY_STATUS status;
 
 class InterfacePlay: public InterfaceBase{
 	private:
 		static double zero_time;
+		static double start_time;
+		static double end_time;
 		static double getTime(){
 			return GetTime()-zero_time;
 		}
@@ -525,6 +528,7 @@ class InterfacePlay: public InterfaceBase{
 			MODE = (int)mode;
 		    //const int screenWidth = 1600;
 		    //const int screenHeight = 900;
+			status = PLAY_NORMAL;
 		    block_group.clear();
 			zero_time=GetTime();
 			SPEED=15.0f;
@@ -532,7 +536,7 @@ class InterfacePlay: public InterfaceBase{
 		    if(MODE==1){
 		        init_song("./tmp.txt");
 		    }
-		    InitAudioDevice();
+		   	//InitAudioDevice();
 		    init_taps();
 		    //InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera first person");
 		    // Load Textures
@@ -563,24 +567,31 @@ class InterfacePlay: public InterfaceBase{
 	        if(MODE!=1)
 	            update_Block(block_group);
 			//根据按键或鼠标操作控制暂停/返回上一界面/重新开始
-
-
+			if(IsKeyPressed(KEY_ENTER)){
+				if(status==PLAY_NORMAL){
+					start_time=GetTime();
+					status=PLAY_STALL;
+				}
+				else if(status==PLAY_STALL){
+					status=PLAY_NORMAL;
+				}
+			}
+			if(IsKeyPressed(KEY_Q))
+				status=PLAY_BACK;
+			if(IsKeyPressed(KEY_R))
+				status=PLAY_AGAIN;
         }
         void draw(){
         	draw_frame(MODE,block_group);
         }
 		bool is_end(){
-			if(status!=PLAY_NORMAL)
-				return true;
-			else;
+			if(status==PLAY_NORMAL||status==PLAY_STALL)
 				return false;
+			else;
+				return true;
 		}
 		InterfaceState end(){
-			if(status==PLAY_STALL){
-				zero_time=GetTime();
-				return INTERFACE_STATE_PLAY;
-			}
-			else if(status==PLAY_BACK){
+			if(status==PLAY_BACK){
 				UnloadTexture(texture_background);
 				UnloadTexture(texture_tap);    
 				UnloadTexture(texture_tap_effect);
@@ -597,7 +608,7 @@ class InterfacePlay: public InterfaceBase{
 					init_song("./tmp.txt");
 				return INTERFACE_STATE_PLAY;
 			}
-			else if(status=PLAY_FINISH){
+			else if(status==PLAY_FINISH){
 				save(block_group);
 			}
 			//CloseWindow();        // Close window and OpenGL context
@@ -607,3 +618,5 @@ class InterfacePlay: public InterfaceBase{
 };
 
 double InterfacePlay::zero_time = 0.0f;
+double InterfacePlay::start_time = 0.0f;
+double InterfacePlay::end_time = 0.0f;

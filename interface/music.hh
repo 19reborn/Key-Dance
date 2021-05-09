@@ -46,7 +46,7 @@ public:
         texture_settings_button = LoadTexture("../resources/settings.png");
         font_caption = LoadFontEx("../resources/bb2180.ttf", 96, 0, 0);
 
-        InitAudioDevice();
+        //InitAudioDevice();
 		init_taps();
         
         musicList = init_music_vector();
