@@ -25,6 +25,18 @@ vector<MUSIC_STATUS> init_music_vector(){
     }
     return Music_list;
 }
+
+vector<Music> init_taps(){
+    //一定要预先InitAudioDevice()
+    vector<Music> taps;
+    for(int i = 1;i<=14;i++){
+        char tap_filename[30] = "../backend/music/Tap 00.wav";
+        tap_filename[21] = '0' + i/10;
+        tap_filename[22] = '0' + i%10;  
+        taps.push_back(LoadMusicStream(tap_filename));
+    }
+    return taps;
+}
 void play_once(Music &music){
     //在主函数首先要调用InitAudioDevice()
     PlayMusicStream(music);
