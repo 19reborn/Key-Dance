@@ -9,7 +9,7 @@
 *
 ********************************************************************************************/
 
-#include "raylib.h"
+#include "include/raylib.h"
 #include <vector>
 #include <cstdio>
 #include <string>
