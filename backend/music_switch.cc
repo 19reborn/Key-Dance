@@ -1,4 +1,5 @@
 #include "include/raylib.h"
+#include "fileio.h"
 #include <string>
 #include <vector>
 using std::vector;
@@ -30,14 +31,23 @@ public:
         opernIdx = (opernIdx + opern.size() - 1) % opern.size();
     }
 };
-const int music_num = 4;
-string music_list[music_num] = {"AboutUs0.wav","AnotherMe.wav","cryout.wav","Burn.wav"};
+// const int music_num = 4;
+// string music_list[music_num] = {"AboutUs0.wav","AnotherMe.wav","cryout.wav","Burn.wav"};
+vector<string> music_list;
 vector<Sound> taps;
+
+int init_music_list() {
+    getJustCurrentFile("../songs/", music_list);
+    return music_list.size();
+}
+
 vector<MUSIC_STATUS> init_music_vector(){
+    int music_num = init_music_list();
+
     vector<MUSIC_STATUS> Music_list;
     for(int i=0;i<music_num;i++){
         Music_list.push_back(MUSIC_STATUS());
-        Music_list[i].name = "music/"+music_list[i];
+        Music_list[i].name = music_list[i].substr(0, music_list[i].find(".wav"));
         //todo 新增读入opern
         // 下面这个是用于表示创作模式的虚拟节点
         Music_list[i].opern.push_back(MUSIC_OPERN("", "", -1, -1));
@@ -48,7 +58,7 @@ vector<MUSIC_STATUS> init_music_vector(){
 void init_taps(){
     //一定要预先InitAudioDevice()
     for(int i = 1;i<=14;i++){
-        char tap_filename[30] = "../backend/music/Tap 00.wav";
+        char tap_filename[30] = "../sounds/Tap 00.wav";
         tap_filename[21] = '0' + i/10;
         tap_filename[22] = '0' + i%10;  
         taps.push_back(LoadSound(tap_filename));
