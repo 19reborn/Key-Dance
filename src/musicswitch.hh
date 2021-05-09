@@ -3,8 +3,8 @@
 
 #include "interface.h"
 #include "raylib.h"
-#include "../backend/fileio.h"
-#include "../backend/music_switch.cc"
+#include "fileio.h"
+#include "./music.cc"
 // #include "./interfaces/public.cc"
 #include <vector>
 #include <algorithm>

@@ -1,7 +1,7 @@
 #include "interface.h"
 #include "raylib.h"
 #include <cstdio>
-#include "music.hh"
+#include "musicswitch.hh"
 #include "render.h"
 #include "scoredisp.hh"
 #include <string>
