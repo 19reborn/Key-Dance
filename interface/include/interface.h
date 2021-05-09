@@ -3,12 +3,11 @@
 #ifndef __INTERFACE_H__
 #define __INTERFACE_H__
 
-#define DEBUG 0
+#define DEBUG 1
 
 typedef enum {
     INTERFACE_STATE_NULL, 
     INTERFACE_STATE_MAIN, 
-    INTERFACE_STATE_MODE_SWITCH, 
     INTERFACE_STATE_MUSIC_SWITCH, 
     INTERFACE_STATE_PLAY,
     INTERFACE_STATE_GENERATE,
@@ -61,20 +60,6 @@ class InterfaceMain: public InterfaceBase {
     public:
 
         InterfaceMain();
-        void init();
-        void update();
-        void draw();
-        InterfaceState end();
-        bool is_end();
-};
-
-class InterfaceModeSwitch: public InterfaceBase {
-    private:
-        static const InterfaceState origin_state = INTERFACE_STATE_MODE_SWITCH;
-        Button bt_play;
-        Button bt_generate;
-    public:
-        InterfaceModeSwitch();
         void init();
         void update();
         void draw();

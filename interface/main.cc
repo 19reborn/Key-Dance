@@ -4,7 +4,7 @@
 #include "render.h"
 #include <cstdio>
 
-InterfaceState state = INTERFACE_STATE_MUSIC_SWITCH;
+InterfaceState state = INTERFACE_STATE_MAIN;
 ModeState mode = MODE_PLAY;
 InterfaceBase* interfaces[INTERFACE_STATE_TOT];
 
@@ -12,7 +12,6 @@ int main()
 {
     /* Register interfaces */
     interfaces[INTERFACE_STATE_MAIN] = new InterfaceMain();
-    interfaces[INTERFACE_STATE_MODE_SWITCH] = new InterfaceModeSwitch();
     interfaces[INTERFACE_STATE_MUSIC_SWITCH] = new InterfaceMusic();
     interfaces[INTERFACE_STATE_PLAY] = new InterfacePlay();
     InterfaceBase* g = interfaces[state];
@@ -29,17 +28,19 @@ int main()
     //Detect window close button or ESC key
     while (!WindowShouldClose()) 
     {
-        /* Switch Interface */
-        g = interfaces[state];
+
 
         /* Update */
         g->update();
 
-        if(g->is_end()){
+        if (g->is_end()) {
             #if DEBUG
             printf("[debug] switching to interface %d\n", state);
             #endif
             state=g->end();
+            /* Switch Interface */
+            g = interfaces[state];
+            g->init();
         }
         else {
             /* Draw */

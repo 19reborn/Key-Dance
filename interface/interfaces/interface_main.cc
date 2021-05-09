@@ -27,7 +27,7 @@ void InterfaceMain::draw()
 void InterfaceMain::update()
 {
     if (bt_start.isClicked())
-        state = INTERFACE_STATE_MODE_SWITCH;
+        state = INTERFACE_STATE_MUSIC_SWITCH;
     else if (bt_quit.isClicked())
         state = INTERFACE_STATE_NULL;
 }

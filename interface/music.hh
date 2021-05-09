@@ -37,6 +37,7 @@ public:
     string selectedOpern;
 
     void init() {
+        printf("[debug] calling music init");
         //const int screenWidth = 1600;
         //const int screenHeight = 900;
         //InitWindow(screenWidth, screenHeight, "Select your song");
