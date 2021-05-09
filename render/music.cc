@@ -46,8 +46,8 @@ int main(void)
             DrawRectangle(0, 20, 120, 100, Fade(BLACK, 0.5f));
             DrawTriangle({120, 120}, {160, 20}, {120, 20}, Fade(BLACK, 0.5f));
                 // 曲名信息
-            DrawRectangle(0, 150, 600, 200, Fade(BLACK, 0.5f));
-            DrawTriangle({600, 350}, {660, 150}, {600, 150}, Fade(BLACK, 0.5f));
+            DrawRectangle(0, 150, 500, 200, Fade(BLACK, 0.5f));
+            DrawTriangle({500, 350}, {660, 150}, {500, 150}, Fade(BLACK, 0.5f));
                 // 遮罩
             DrawTriangle({0, 0}, {0, 1200}, {400, 0}, Fade(BLACK, 0.2f)); 
             // 右上
@@ -62,7 +62,10 @@ int main(void)
             DrawRectangle(0, 780, 400, 100, Fade(BLACK, 0.5f));
             DrawTriangle({400, 880}, {460, 780}, {400, 780}, Fade(BLACK, 0.5f));
             // 右下
+                // 歌曲位置, 例: 2/57
             DrawRectangle(1400, 760, 200, 120, Fade(WHITE, 0.5f));
+            DrawTriangle({1400, 880}, {1400, 760}, {1340, 880}, Fade(WHITE, 0.5f));
+                // 遮罩
             DrawTriangle({1600, 400}, {1440, 900}, {1600, 900}, Fade(BLACK, 0.2f));
 
         EndDrawing();
