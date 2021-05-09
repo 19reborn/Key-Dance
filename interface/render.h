@@ -92,7 +92,7 @@ class InterfacePlay: public InterfaceBase{
 		}
 		bool isKeyPressed(KeyboardKey &key){
 			if(IsKeyPressed(key)){
-				play_once(taps[14]);
+				play_once(taps[0]);
 				return true;
 			}
 			return false;
@@ -378,22 +378,22 @@ class InterfacePlay: public InterfaceBase{
 		                    }
 		                    else if(dis>=0.7f){
 		                        show_effect("far",i->column);
-								play_once(taps[1]);
+								play_once(taps[0]);
 		                        scoreboard.update("far");
 		                    }
 		                    else if(dis>=0.2f){
 		                        show_effect("pure",i->column);
-								play_once(taps[1]);
+								play_once(taps[0]);
 		                        scoreboard.update("pure");
 		                    }
 		                    else if(dis>=-0.1f){
 		                        show_effect("far",i->column);
-								play_once(taps[1]);
+								play_once(taps[0]);
 		                        scoreboard.update("far");
 		                    }
 		                    else{
 		                        show_effect("lost",i->column);
-								play_once(taps[1]);
+								play_once(taps[0]);
 		                        scoreboard.update("lost");
 		                    }
 		                    block_group.erase(i);
@@ -432,22 +432,22 @@ class InterfacePlay: public InterfaceBase{
 		                        }
 		                        else if(start_dis>=0.7f){
 		                            show_effect("far",i->column);
-									play_once(taps[1]);
+									play_once(taps[0]);
 		                            scoreboard.update("far");
 		                        }
 		                        else if(start_dis>=0.2f){
 		                            show_effect("pure",i->column);
-									play_once(taps[1]);
+									play_once(taps[0]);
 		                            scoreboard.update("pure");
 		                        }
 		                        else if(start_dis>=-0.1f){
 		                            show_effect("far",i->column);
-									play_once(taps[1]);
+									play_once(taps[0]);
 		                            scoreboard.update("far");
 		                        }
 		                        else{
 		                            show_effect("lost",i->column);
-									play_once(taps[1]);
+									play_once(taps[0]);
 		                            scoreboard.update("lost");
 		                        }                 
 		                    }
@@ -462,7 +462,7 @@ class InterfacePlay: public InterfaceBase{
 		                        }
 		                        else{
 		                            show_effect("pure",i->column);
-									play_once(taps[1]);
+									play_once(taps[0]);
 		                            scoreboard.update("pure");
 		                            block_group.erase(i);
 		                        }
@@ -476,12 +476,12 @@ class InterfacePlay: public InterfaceBase{
 		                            }
 		                            else if(dis>=0.5){
 		                                show_effect("far",i->column);
-										play_once(taps[1]);
+										play_once(taps[0]);
 		                                scoreboard.update("far");
 		                            }
 		                            else{
 		                                show_effect("pure",i->column);
-										play_once(taps[1]);
+										play_once(taps[0]);
 		                                scoreboard.update("pure");
 		                            }
 		                            i->to_be_erase=true;
@@ -584,16 +584,25 @@ class InterfacePlay: public InterfaceBase{
 					status=PLAY_NORMAL;
 				}
 			}
+			if(status==PLAY_STALL){
+				zero_time+=GetTime()-start_time;
+				start_time=GetTime();
+			}
 			if(IsKeyPressed(KEY_Q))
 				status=PLAY_BACK;
-			if(IsKeyPressed(KEY_R))
-				status=PLAY_AGAIN;
+			if(IsKeyPressed(KEY_R)){
+				status=PLAY_NORMAL;
+				zero_time=GetTime();
+				block_group.clear();
+				if(MODE==1)
+					init_song("./tmp.txt");
+			}
         }
         void draw(){
         	draw_frame(MODE,block_group);
         }
 		bool is_end(){
-			if(status==PLAY_NORMAL||status==PLAY_STALL)
+			if(status==PLAY_NORMAL||status==PLAY_STALL||status==PLAY_AGAIN)
 				return false;
 			else;
 				return true;
@@ -608,13 +617,6 @@ class InterfacePlay: public InterfaceBase{
 				UnloadTexture(texture_lost_effect);	
 
 				return INTERFACE_STATE_MUSIC_SWITCH;
-			}
-			else if(status==PLAY_AGAIN){
-				zero_time=GetTime();
-				block_group.clear();
-				if(MODE==1)
-					init_song("./tmp.txt");
-				return INTERFACE_STATE_PLAY;
 			}
 			else if(status==PLAY_FINISH){
 				save(block_group);

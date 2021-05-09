@@ -55,23 +55,10 @@ class InterfaceTest: public InterfaceBase {
 class InterfaceMain: public InterfaceBase {
     private:
         static const InterfaceState origin_state = INTERFACE_STATE_MAIN;
-        Button bt_start;
-        Button bt_quit;
+        Texture2D background;
     public:
 
         InterfaceMain();
-        void init();
-        void update();
-        void draw();
-        InterfaceState end();
-        bool is_end();
-};
-
-class InterfaceMusicSwitch: public InterfaceBase {
-    private:
-        static const InterfaceState origin_state = INTERFACE_STATE_MUSIC_SWITCH;
-    public:
-        InterfaceMusicSwitch();
         void init();
         void update();
         void draw();

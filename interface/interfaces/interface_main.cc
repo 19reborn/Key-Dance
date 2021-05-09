@@ -6,30 +6,28 @@ extern ModeState mode;
 
 /* MAIN */
 
-InterfaceMain::InterfaceMain() : 
-bt_start(screenWidth/2. - screenWidth/10., screenHeight/3., screenWidth/5., screenHeight/5.),
-bt_quit(screenWidth/2. - screenWidth/10., screenHeight/3.*2., screenWidth/5., screenHeight/5.)
-{}
+InterfaceMain::InterfaceMain() {}
 
-void InterfaceMain::init() {}
+void InterfaceMain::init()
+{
+    background = LoadTexture("../resources/bg_purple.png");
+}
 
 void InterfaceMain::draw()
 {
     BeginDrawing();
     ClearBackground(RAYWHITE);
-    DrawText("This is main page", 0, 0, 50, BLACK);
-    DrawRectangleRec(bt_start.bound, GREEN);
-    DrawText("START", bt_start.bound.x, bt_start.bound.y, 20, BLACK);
-    DrawRectangleRec(bt_quit.bound, SKYBLUE);
+    DrawTexture(background, 0, 0, WHITE);
+    DrawText("KEY DANCE", 450, 100, 120, WHITE);
+    if (((int)(GetTime() * 1.)) % 2 == 1)
+        DrawText("Press Enter to Start", 420, 600, 70, WHITE);
     EndDrawing();
 }
 
 void InterfaceMain::update()
 {
-    if (bt_start.isClicked())
+    if (IsKeyReleased(KEY_ENTER))
         state = INTERFACE_STATE_MUSIC_SWITCH;
-    else if (bt_quit.isClicked())
-        state = INTERFACE_STATE_NULL;
 }
 
 InterfaceState InterfaceMain::end() { return state; }
