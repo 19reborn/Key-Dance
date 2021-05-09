@@ -55,11 +55,6 @@ public:
         for(auto& music: musicList) {
             string path = "../songs/" + music.name + ".wav";
             BGMlst.push_back(LoadMusicStream(path.c_str()));
-        }
-
-        for(auto& music: musicList) {
-            string path = "../songs/" + music.name + ".wav";
-            BGMlst.push_back(LoadMusicStream(path.c_str()));
             path = "../resources/song_bg/";
             vector<string> bg_lst;
             getJustCurrentFile(path.c_str(), bg_lst);
@@ -182,7 +177,11 @@ public:
             UnloadTexture(text);
         }
         //CloseWindow(); 
-        mode = MODE_GENERATE;
+        if(selectedOpern == "") {
+            mode = MODE_GENERATE;
+        } else {
+            mode = MODE_PLAY;
+        }
         return INTERFACE_STATE_PLAY;
     }
     bool is_end() {

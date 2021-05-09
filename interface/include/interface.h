@@ -3,7 +3,9 @@
 #ifndef __INTERFACE_H__
 #define __INTERFACE_H__
 
+#ifndef DEBUG
 #define DEBUG 1
+#endif
 
 typedef enum {
     INTERFACE_STATE_NULL, 
