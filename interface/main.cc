@@ -1,9 +1,10 @@
 #include "raylib.h"
 #include "interface.h"
-// #include "render.h"
+#include "music.hh"
+#include "render.h"
 #include <cstdio>
 
-InterfaceState state = INTERFACE_STATE_MAIN;
+InterfaceState state = INTERFACE_STATE_MUSIC_SWITCH;
 ModeState mode = MODE_PLAY;
 InterfaceBase* interfaces[INTERFACE_STATE_TOT];
 
@@ -12,11 +13,11 @@ int main()
     /* Register interfaces */
     interfaces[INTERFACE_STATE_MAIN] = new InterfaceMain();
     interfaces[INTERFACE_STATE_MODE_SWITCH] = new InterfaceModeSwitch();
-    interfaces[INTERFACE_STATE_MUSIC_SWITCH] = new InterfaceMusicSwitch();
-    // interfaces[INTERFACE_STATE_PLAY] = new InterfacePlay();
+    interfaces[INTERFACE_STATE_MUSIC_SWITCH] = new InterfaceMusic();
+    interfaces[INTERFACE_STATE_PLAY] = new InterfacePlay();
     InterfaceBase* g = interfaces[state];
 
-    InitWindow(g->screenWidth, g->screenHeight, "sample game");
+    InitWindow(g->screenWidth, g->screenHeight, "game");
 #if DEBUG
     printf("[debug] init window successful!\n");
 #endif

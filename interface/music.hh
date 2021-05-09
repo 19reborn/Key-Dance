@@ -10,6 +10,7 @@
 #include <cmath>
 #include <list>
 using namespace std;
+extern ModeState mode;
 
 class InterfaceMusic: public InterfaceBase {
 private:
@@ -36,9 +37,9 @@ public:
     string selectedOpern;
 
     void init() {
-        const int screenWidth = 1600;
-        const int screenHeight = 900;
-        InitWindow(screenWidth, screenHeight, "Select your song");
+        //const int screenWidth = 1600;
+        //const int screenHeight = 900;
+        //InitWindow(screenWidth, screenHeight, "Select your song");
         // Load Textures
         texture_return_button = LoadTexture("../resources/return.png");
         texture_settings_button = LoadTexture("../resources/settings.png");
@@ -167,7 +168,7 @@ public:
             isEnd = true;
         }
     }
-    void end() {
+    InterfaceState end() {
         UnloadTexture(texture_return_button);
         UnloadTexture(texture_settings_button);
         UnloadFont(font_caption);
@@ -179,8 +180,9 @@ public:
         for(auto& text: BGlst) {
             UnloadTexture(text);
         }
-
-        CloseWindow(); 
+        //CloseWindow(); 
+        mode = MODE_GENERATE;
+        return INTERFACE_STATE_PLAY;
     }
     bool is_end() {
         if(!isEnd) return false;
