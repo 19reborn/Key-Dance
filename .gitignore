@@ -1,3 +1,6 @@
 *.exe
 .vscode
 .idea
+backend/data/blocks_1.txt
+raylib.h
+libraylib.a
