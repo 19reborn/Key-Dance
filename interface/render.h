@@ -6,6 +6,9 @@
 // #include "./interfaces/public.cc"
 // #include "../backend/block_build.cc"
 // #include "../backend/music_switch.cc"
+#include <direct.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include <vector>
 #include <algorithm>
 #include <iostream>
@@ -174,10 +177,10 @@ class InterfacePlay: public InterfaceBase{
 		};
 		void input(string filename){
 		    FILE * fp = NULL;
-		    fp = fopen(filename.c_str(),"r");
+		    fp = fopen(filename.c_str(), "r");
 		    if(!fp){
 		        printf("[ERROR] render file open error!\n");
-				// printf("[INFO] filePath: %s\n", filename.c_str());
+				printf("[INFO] filePath: %s\n", filename.c_str());
 		        exit(1);
 		    }
 
@@ -235,27 +238,45 @@ class InterfacePlay: public InterfaceBase{
 		};
 		void save(vector <Block> &block_group){
 		    FILE *fp;
+			string path;
+			int highscore;
+
 			//todo 修改为用户名
-			string path = "../songs/" + SELECTED_SONG + "/" + "saved.txt";
+			SELECTED_OPERN = "saved";
+
+			//todo 创建文件夹
+			// path = string(GetWorkingDirectory())  +  "\\..\\songs\\" + SELECTED_SONG + "\\" + SELECTED_OPERN;
+			// string command = "mkdir " + path;
+			// printf("[INFO] %s\n", command.c_str());
+			// if(access((path+"\\score.txt").c_str(), F_OK) != -1);
+			// 	system(command.c_str());
+			// printf("[INFO] mkdir Done!");
+			path = "../songs/" + SELECTED_SONG + "/" + SELECTED_OPERN + "/score.txt";
+			printf("[INFO] %s\n", path.c_str());
+			// if(_access(path.c_str(), F_OK) != -1) {
+			// 	fp = fopen(path.c_str(), "r");
+			// 	char line[100];
+			// 	fgets(line, 100, fp);
+			// 	highscore = atoi(line);
+			// }
+			if(scoreboard.get_score() >= highscore) {
+				fp = fopen(path.c_str(), "w+");
+				if(!fp){
+					printf("[ERROR] render file open error!\n");
+					exit(1);
+				}
+				fprintf(fp, "%d\n%.2f", scoreboard.get_score(), scoreboard.get_acc());
+			}
+
+			//todo 修改为用户名
+			path = "../songs/" + SELECTED_SONG + "/" + SELECTED_OPERN + ".txt";
+			printf("[INFO] %s\n", path.c_str());
 		    fp = fopen(path.c_str(), "w+");
 			int bgsize = block_group.size();
 		    for(int i=0; i<bgsize; i++){
 				if(i) fprintf(fp, "\n");
 				fprintf(fp,"%f %d %f", block_group[i].init_time, block_group[i].column, block_group[i].last_time);
 		    }
-
-			//todo 创建文件夹
-			string command = "md ../songs/" + SELECTED_SONG + "/" + SELECTED_OPERN;
-			system(command.c_str());
-			path = "../songs/" + SELECTED_SONG + "/" + SELECTED_OPERN + "/score.txt";
-			fp = fopen(path.c_str(), "r");
-			char line[100];
-			fgets(line, 100, fp);
-			int highscore = atoi(line);
-			if(scoreboard.get_score() > highscore) {
-				fp = fopen(path.c_str(), "w+");
-				fprintf(fp, "%d\n%.2f", scoreboard.get_score(), scoreboard.get_acc());
-			}
 		}
 		void draw_frame(int mode,vector <Block> &block_group){
 			if(status == PLAY_NORMAL)
@@ -507,11 +528,11 @@ class InterfacePlay: public InterfaceBase{
 			}
 		    EndDrawing();  			
 		}
-		void init_song(){
+		void init_song() {
 			string songPath = "../songs/" + SELECTED_SONG + ".wav";
 			// printf("[INFO] songPath=%s\n", songPath.c_str());
 			string opernPath = "../songs/" + SELECTED_SONG + "/" + SELECTED_OPERN + ".txt";
-			input(opernPath);
+			if(MODE == 1) input(opernPath);
 			song = LoadMusicStream(songPath.c_str());
 			//todo 这里并不能这样，因为一个hold并不算作1个note
 			scoreboard = ScoreBoard(block_group.size());    		
@@ -528,9 +549,9 @@ class InterfacePlay: public InterfaceBase{
 			zero_time=GetTime();
 			SPEED=15.0f;
 			OFFSET=0.05f;
-		    if(MODE==1){
-		        init_song();
-		    }
+
+			init_song();
+
 		    init_taps();
 		    //InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera first person");
 		    // Load Textures
@@ -583,8 +604,8 @@ class InterfacePlay: public InterfaceBase{
 
 				zero_time=GetTime();
 				block_group.clear();
-				if(MODE==1)
-					init_song();
+
+				init_song();
 			}
 			if(GetMusicTimePlayed(song) >= GetMusicTimeLength(song) - 0.1) {
 				status = PLAY_FINISH;

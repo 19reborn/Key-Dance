@@ -79,6 +79,7 @@ public:
 	ScoreBoard() {}
 	ScoreBoard(int tot): totNotes(tot) {}
 	int get_score() {
+		if(totNotes == 0) return 0;
 		int perScore = 10000000 / totNotes + 1;
 		return min(perScore * pure + perScore * far / 2, 10000000);
 	}

@@ -55,13 +55,6 @@ public:
         }
         
         SetTargetFPS(60);
-
-        //todo delete this
-        scoreboard.totNotes = 786;
-        scoreboard.maxCombo = 666;
-        scoreboard.pure = 678;
-        scoreboard.far = 100;
-        scoreboard.lost = 8;
     }
     void update() {
         // do nothing.

@@ -1,4 +1,4 @@
-// 这里的代码全部来自https://www.cnblogs.com/tgyf/p/3839894.html
+// 这里的代码大全部来自https://www.cnblogs.com/tgyf/p/3839894.html
 // 谢谢他！
 #ifndef FILEIO_H
 #define FILEIO_H
