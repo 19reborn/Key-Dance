@@ -200,32 +200,117 @@ void draw_frame(int mode,vector <Block> &block_group){
         auto i=block_group.begin(); 
         while(i!=block_group.end()){
             //单个节奏块
+            float dis = length-(GetTime()-i->init_time)*SPEED;
+            // 1.2 >= dis >=0.7 lost
+            // 0.7 >= dis >=0.5 far
+            // 0.5 >= dis >=0.3 pure
+            // 0.3 >= dis >=0.1 far 
+            // 0.1 >= dis >=0.0 lost
             if(i->last_time*SPEED<0.5f){
-                if(IsKeyPressed(tem_keyboard[i->column])&&length-(GetTime()-i->init_time)*SPEED<=0.8f){
+                if(IsKeyPressed(tem_keyboard[i->column])&&dis<=0.9f&&dis>=-0.2f){
+                    //printf("%f\n",dis);
                     //正确地消除
-                    show_effect("pure", i->column);
-                    printf("[INFO] i->column: %d\n", i->column);
-
+                    if(dis>=0.8f){
+                        show_effect("lost",i->column);
+                    }
+                    else if(dis>=0.7f){
+                        show_effect("far",i->column);
+                    }
+                    else if(dis>=0.2f){
+                        show_effect("pure",i->column);
+                    }
+                    else if(dis>=-0.1f){
+                        show_effect("far",i->column);
+                    }
+                    else{
+                        show_effect("lost",i->column);
+                    }
                     block_group.erase(i);
                 }
                 else{
-                    draw_block(length-(GetTime()-i->init_time)*SPEED,i->column,i->last_time*SPEED);
-                    i++;
+                    if(dis>=-0.8f){
+                        draw_block(length-(GetTime()-i->init_time)*SPEED,i->column,i->last_time*SPEED);
+                        i++;
+                    }
+                    else{
+                            show_effect("lost",i->column);
+                            block_group.erase(i);                        
+                    }
                 }
             }            
             else{
-                if(IsKeyDown(tem_keyboard[i->column])&&-length+(GetTime()-i->init_time+i->last_time/2)*SPEED>=-0.2f){
-                    if(-length+(GetTime()-i->init_time-i->last_time/2)*SPEED>=-0.2f){
-                        block_group.erase(i);
-                    }
+                float start_dis = -length+(GetTime()-i->init_time+i->last_time/2)*SPEED+0.2f;
+                float end_dis = -length+(GetTime()-i->init_time-i->last_time/2)*SPEED+0.2f;
+                if(i->to_be_erase){
+                    if(end_dis<=0.0f){
+                        draw_block(length-(GetTime()-i->init_time)*SPEED,i->column,i->last_time*SPEED);
+                        i++;              
+                    }   
                     else{
-                        draw_block((i->last_time*SPEED-(-length+(GetTime()-i->init_time+i->last_time/2)*SPEED+0.2f))/2,i->column,i->last_time*SPEED-(-length+(GetTime()-i->init_time+i->last_time/2)*SPEED+0.2f));
-                        i++;
-                    }
+                        block_group.erase(i);
+                    }          
                 }
                 else{
-                    draw_block(length-(GetTime()-i->init_time)*SPEED,i->column,i->last_time*SPEED);
-                    i++;
+                    if(IsKeyPressed(tem_keyboard[i->column])&&start_dis>=-0.2f&&start_dis<=0.9f){
+                        //printf("%f\n",dis);
+                        //正确地消除
+                        if(start_dis>=0.8f){
+                            show_effect("lost",i->column);
+                        }
+                        else if(start_dis>=0.7f){
+                            show_effect("far",i->column);
+                        }
+                        else if(start_dis>=0.2f){
+                            show_effect("pure",i->column);
+                        }
+                        else if(start_dis>=-0.1f){
+                            show_effect("far",i->column);
+                        }
+                        else{
+                            show_effect("lost",i->column);
+                        }                 
+                    }
+                    if(IsKeyDown(tem_keyboard[i->column])&&start_dis>=0.0f){
+                        //if(end_dis>=0.5f){
+                        //    show_effect("lost",i->column);
+                        //    block_group.erase(i);
+                        //}
+                        if(end_dis<=0.0f){
+                            draw_block((i->last_time*SPEED-(-length+(GetTime()-i->init_time+i->last_time/2)*SPEED+0.2f))/2,i->column,i->last_time*SPEED-(-length+(GetTime()-i->init_time+i->last_time/2)*SPEED+0.2f));
+                            i++;
+                        }
+                        else{
+                            show_effect("pure",i->column);
+                            block_group.erase(i);
+                        }
+                    }
+                    else if(IsKeyReleased(tem_keyboard[i->column])&&start_dis>=0.0f){
+                        if(end_dis<0.0f){
+                            float dis=-end_dis;
+                            if(dis>=1.0f){
+                                show_effect("lost",i->column);
+                            }
+                            else if(dis>=0.5){
+                                show_effect("far",i->column);
+                            }
+                            else{
+                                show_effect("pure",i->column);
+                            }
+                            i->to_be_erase=true;
+                            draw_block(length-(GetTime()-i->init_time)*SPEED,i->column,i->last_time*SPEED);
+                            i++;
+                        }
+                    }
+                    else{
+                        if(end_dis<=1.0f){
+                            draw_block(length-(GetTime()-i->init_time)*SPEED,i->column,i->last_time*SPEED);
+                            i++;              
+                        }   
+                        else{
+                            show_effect("lost",i->column);
+                            block_group.erase(i);
+                        }   
+                    }
                 }
             }
         }
@@ -305,7 +390,6 @@ int calc_score(int totNotes, int pures, int fars, int losts = 0) {
     int perScore = 10000000 / totNotes + 1;
     return min(perScore * pures + perScore * fars / 2, 10000000);
 }
-
 // 2 => pure, 1 => far, 0 => lost
 int calc_note_grade(float standard, float actual) {
     float bias = fabs(actual - standard);
