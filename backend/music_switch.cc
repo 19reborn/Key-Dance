@@ -15,7 +15,7 @@ struct MUSIC_STATUS{
     vector<MUSIC_OPERN> opern;
 };
 const int music_num = 4;
-string music_list[music_num] = {"AboutUs0.wav","AnotherMe.wav","Aventyr.wav","Burn.wav"};
+string music_list[music_num] = {"AboutUs0.wav","AnotherMe.wav","cryout.wav","Burn.wav"};
 vector<Sound> taps;
 vector<MUSIC_STATUS> init_music_vector(){
     vector<MUSIC_STATUS> Music_list;
