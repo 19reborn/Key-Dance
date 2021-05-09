@@ -40,17 +40,29 @@ int main(void)
         BeginDrawing();
             ClearBackground(GRAY);
             DrawTextureEx(texture_test, { 0, 0 }, 0.0f, screenWidth / (float)texture_test.width, WHITE);
+            // 手动光栅化！
             // 左上
-            DrawRectangle(0, 20, 160, 100, Fade(BLACK, 0.5f));
+                // 返回
+            DrawRectangle(0, 20, 120, 100, Fade(BLACK, 0.5f));
+            DrawTriangle({120, 120}, {160, 20}, {120, 20}, Fade(BLACK, 0.5f));
+                // 曲名信息
             DrawRectangle(0, 150, 600, 200, Fade(BLACK, 0.5f));
+            DrawTriangle({600, 350}, {660, 150}, {600, 150}, Fade(BLACK, 0.5f));
+                // 遮罩
             DrawTriangle({0, 0}, {0, 1200}, {400, 0}, Fade(BLACK, 0.2f)); 
             // 右上
-            DrawRectangle(1440, 20, 160, 100, Fade(BLACK, 0.5f));
+                // 设置
+            DrawRectangle(1480, 20, 160, 100, Fade(BLACK, 0.5f));
+            DrawTriangle({1480, 120}, {1480, 20}, {1440, 20}, Fade(BLACK, 0.5f));
             // 左下
+                // 最高分、ACC
             DrawRectangle(0, 600, 700, 150, Fade(BLACK, 0.5f));
+            DrawTriangle({700, 750}, {790, 600}, {700, 600}, Fade(BLACK, 0.5f));
+                // 所选谱面
             DrawRectangle(0, 780, 400, 100, Fade(BLACK, 0.5f));
+            DrawTriangle({400, 880}, {460, 780}, {400, 780}, Fade(BLACK, 0.5f));
             // 右下
-            DrawRectangle(1400, 760, 200, 120, Fade(BLACK, 0.5f));
+            DrawRectangle(1400, 760, 200, 120, Fade(WHITE, 0.5f));
             DrawTriangle({1600, 400}, {1440, 900}, {1600, 900}, Fade(BLACK, 0.2f));
 
         EndDrawing();
