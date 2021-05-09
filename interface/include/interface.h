@@ -18,9 +18,9 @@ typedef enum {
 } InterfaceState;
 
 typedef enum {
-    MODE_NULL,
+    MODE_GENERATE,
     MODE_PLAY,
-    MODE_GENERATE
+    MODE_NULL
 } ModeState;
 
 class InterfaceBase {
@@ -31,23 +31,27 @@ class InterfaceBase {
         virtual void init();
         virtual void update();
         virtual void draw();
-        virtual void end();
+        virtual InterfaceState end();
+        virtual bool is_end();
 };
 
 // just fot test
 class InterfaceTest: public InterfaceBase {
     private:
+        static const InterfaceState origin_state = INTERFACE_STATE_TEST;
         Vector2 pos;
     public:
         InterfaceTest();
         void init();
         void update();
         void draw();
-        void end();
+        InterfaceState end();
+        bool is_end();
 };
 
 class InterfaceMain: public InterfaceBase {
     private:
+        static const InterfaceState origin_state = INTERFACE_STATE_MAIN;
     public:
         Button bt_start;
         Button bt_quit;
@@ -56,11 +60,13 @@ class InterfaceMain: public InterfaceBase {
         void init();
         void update();
         void draw();
-        void end();
+        InterfaceState end();
+        bool is_end();
 };
 
 class InterfaceModeSwitch: public InterfaceBase {
     private:
+        static const InterfaceState origin_state = INTERFACE_STATE_MODE_SWITCH;
     public:
         Button bt_play;
         Button bt_generate;
@@ -69,17 +75,20 @@ class InterfaceModeSwitch: public InterfaceBase {
         void init();
         void update();
         void draw();
-        void end();
+        InterfaceState end();
+        bool is_end();
 };
 
 class InterfaceMusicSwitch: public InterfaceBase {
     private:
+        static const InterfaceState origin_state = INTERFACE_STATE_MUSIC_SWITCH;
     public:
         InterfaceMusicSwitch();
         void init();
         void update();
         void draw();
-        void end();
+        InterfaceState end();
+        bool is_end();
 };
 
 

@@ -504,12 +504,12 @@ int main(void)
     init_taps();
     InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera first person");
     // Load Textures
-    texture_background = LoadTexture("resources/single_conflict_resized.png");
-    texture_tap = LoadTexture("resources/tap-v1.png");
-    texture_tap_effect = LoadTexture("resources/tap-effect.png");
-    texture_pure_effect = LoadTexture("resources/pure-effect.png");
-    texture_far_effect = LoadTexture("resources/far-effect.png");
-    texture_lost_effect = LoadTexture("resources/lost-effect.png");
+    texture_background = LoadTexture("../resources/single_conflict_resized.png");
+    texture_tap = LoadTexture("../resources/tap-v1.png");
+    texture_tap_effect = LoadTexture("../resources/tap-effect.png");
+    texture_pure_effect = LoadTexture("../resources/pure-effect.png");
+    texture_far_effect = LoadTexture("../resources/far-effect.png");
+    texture_lost_effect = LoadTexture("../resources/lost-effect.png");
 
     // Define the camera to look into our 3d world (position, target, up vector)
     camera.position = { 2.0f, 2.8f, 0.0f };

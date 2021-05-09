@@ -36,4 +36,6 @@ void InterfaceModeSwitch::update()
     }
 }
 
-void InterfaceModeSwitch::end() {}
+InterfaceState InterfaceModeSwitch::end() { return state; }
+
+bool InterfaceModeSwitch::is_end() { return state != origin_state; }

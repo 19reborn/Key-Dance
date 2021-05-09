@@ -4,6 +4,7 @@
 Button::Button(float x_topleft, float y_topleft, float width, float height)
 {
     bound = {x_topleft, y_topleft, width, height};
+    
 }
 
 bool Button::isClicked(MouseButton mousebutton) {

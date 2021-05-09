@@ -20,4 +20,6 @@ void InterfaceMusicSwitch::draw()
 
 void InterfaceMusicSwitch::update() {}
 
-void InterfaceMusicSwitch::end() {}
+InterfaceState InterfaceMusicSwitch::end() { return state; }
+
+bool InterfaceMusicSwitch::is_end() { return state != origin_state; }

@@ -18,7 +18,6 @@ class MUSIC_STATUS {
 public:
     string name;
     string authorName;  //todo 曲师名字
-    string bgPath;      //todo 曲绘(背景图片)路径
     int opernIdx;
     vector<MUSIC_OPERN> opern;
     MUSIC_OPERN& get_opern() {
@@ -76,7 +75,7 @@ vector<MUSIC_STATUS> init_music_vector(){
 
 void init_taps(){
     //一定要预先InitAudioDevice()
-    for(int i = 1;i<=14;i++){
+    for(int i = 1;i<=15;i++){
         char tap_filename[30] = "../sounds/Tap 00.wav";
         tap_filename[21] = '0' + i/10;
         tap_filename[22] = '0' + i%10;  
@@ -103,7 +102,7 @@ void play_stop(Music & music){
     }
     else{
         StopMusicStream(music);
-        IF_BGM_PLAYING = true;
+        IF_BGM_PLAYING = false;
     }
 }
 /*int main(){
