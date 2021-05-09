@@ -24,6 +24,8 @@ int mlistSize;
 int mlistidx;
 string selectedSongName;
 string selectedOpern;
+vector<Music> BGMlst;
+int curBGMidx;
 
 int main(void)
 {
@@ -38,8 +40,15 @@ int main(void)
     Texture2D texture_settings_button = LoadTexture("resources/settings.png");
     Font font_caption = LoadFontEx("resources/bb2180.ttf", 96, 0, 0);
 
+    InitAudioDevice();
+
     musicList = init_music_vector();
     mlistSize = musicList.size();
+
+    for(auto& music: musicList) {
+        string path = "../songs/" + music.name + ".wav";
+        BGMlst.push_back(LoadMusicStream(path.c_str()));
+    }
 
     SetTargetFPS(60);                           // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -47,6 +56,8 @@ int main(void)
     // Main game loop
     while (!WindowShouldClose())                // Detect window close button or ESC key
     {
+        // 播放
+        play_repeat(BGMlst[curBGMidx]);
         //----------------------------------------------------------------------------------
         BeginDrawing();
             ClearBackground(GRAY);
@@ -115,9 +126,13 @@ int main(void)
 
             //====================键盘操控=================
             if(IsKeyPressed(KEY_W) || IsKeyPressed(KEY_UP)) {
+                curBGMidx = (curBGMidx - 1 + BGMlst.size()) % BGMlst.size();
+                PlayMusicStream(BGMlst[curBGMidx]); 
                 mlistidx = (mlistidx + mlistSize - 1) % mlistSize;
             }
             if(IsKeyPressed(KEY_S) || IsKeyPressed(KEY_DOWN)) {
+                curBGMidx = (curBGMidx + 1) % BGMlst.size();
+                PlayMusicStream(BGMlst[curBGMidx]); 
                 mlistidx = (mlistidx + 1) % mlistSize;
             }
             if(IsKeyPressed(KEY_A) || IsKeyPressed(KEY_LEFT)) {
@@ -140,6 +155,10 @@ int main(void)
     UnloadTexture(texture_return_button);
     UnloadTexture(texture_settings_button);
     UnloadFont(font_caption);
+
+    for(auto& music: BGMlst) {
+        UnloadMusicStream(music);
+    }
 
     CloseWindow();        // Close window and OpenGL context
 

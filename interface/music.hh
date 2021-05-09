@@ -17,6 +17,8 @@ private:
     Texture2D texture_return_button;
     Texture2D texture_settings_button;
     Font font_caption;
+    vector<Music> BGMlst;
+    int curBGMidx;
     bool isEnd = false;
 public:
     string selectedSongName;
@@ -31,12 +33,22 @@ public:
         texture_settings_button = LoadTexture("resources/settings.png");
         font_caption = LoadFontEx("resources/bb2180.ttf", 96, 0, 0);
 
+        InitAudioDevice();
+
         musicList = init_music_vector();
         mlistSize = musicList.size();
+
+        for(auto& music: musicList) {
+            string path = "../songs/" + music.name + ".wav";
+            BGMlst.push_back(LoadMusicStream(path.c_str()));
+        }
 
         SetTargetFPS(60);
     }
     void draw() {
+        // 播放音乐
+        play_repeat(BGMlst[curBGMidx]);
+
         BeginDrawing();
             ClearBackground(GRAY);
             // 手动光栅化！
@@ -106,9 +118,13 @@ public:
     void update() {
         //====================键盘操控=================
         if(IsKeyPressed(KEY_W) || IsKeyPressed(KEY_UP)) {
+            curBGMidx = (curBGMidx - 1 + BGMlst.size()) % BGMlst.size();
+            PlayMusicStream(BGMlst[curBGMidx]); 
             mlistidx = (mlistidx + mlistSize - 1) % mlistSize;
         }
         if(IsKeyPressed(KEY_S) || IsKeyPressed(KEY_DOWN)) {
+            curBGMidx = (curBGMidx + 1) % BGMlst.size();
+            PlayMusicStream(BGMlst[curBGMidx]); 
             mlistidx = (mlistidx + 1) % mlistSize;
         }
         if(IsKeyPressed(KEY_A) || IsKeyPressed(KEY_LEFT)) {
@@ -128,9 +144,12 @@ public:
         UnloadTexture(texture_settings_button);
         UnloadFont(font_caption);
 
+        for(auto& music: BGMlst) {
+            UnloadMusicStream(music);
+        }
+
         CloseWindow(); 
     }
-
     bool is_end() {
         if(!isEnd) return false;
         isEnd = false;
