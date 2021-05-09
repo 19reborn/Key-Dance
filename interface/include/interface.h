@@ -18,9 +18,9 @@ typedef enum {
 } InterfaceState;
 
 typedef enum {
-    MODE_NULL,
+    MODE_GENERATE,
     MODE_PLAY,
-    MODE_GENERATE
+    MODE_NULL
 } ModeState;
 
 class InterfaceBase {

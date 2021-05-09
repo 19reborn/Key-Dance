@@ -3,7 +3,7 @@
 #include "render.h"
 #include <cstdio>
 
-InterfaceState state = INTERFACE_STATE_PLAY;
+InterfaceState state = INTERFACE_STATE_MAIN;
 ModeState mode = MODE_NULL;
 InterfaceBase* interfaces[INTERFACE_STATE_TOT];
 
