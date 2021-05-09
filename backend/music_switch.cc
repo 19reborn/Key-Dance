@@ -46,7 +46,7 @@ vector<MUSIC_STATUS> init_music_vector(){
 
     vector<MUSIC_STATUS> Music_list;
     for(int i=0;i<music_num;i++){
-        if(music_list[i].find(".wav") == -1) continue;
+        if((int)music_list[i].find(".wav") == -1) continue;
         Music_list.push_back(MUSIC_STATUS());
         MUSIC_STATUS& curEnd = Music_list[Music_list.size() - 1];
         curEnd.name = music_list[i].substr(0, music_list[i].find(".wav"));

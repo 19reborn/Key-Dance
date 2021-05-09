@@ -242,7 +242,7 @@ class InterfacePlay: public InterfaceBase{
 		void save(vector <Block> &block_group){
 		    FILE *fp;
 			string path;
-			int highscore;
+			int highscore = 0;
 
 			//todo 修改为用户名
 			SELECTED_OPERN = "saved";
@@ -628,7 +628,7 @@ class InterfacePlay: public InterfaceBase{
 		bool is_end(){
 			if(status==PLAY_NORMAL||status==PLAY_STALL||status==PLAY_AGAIN)
 				return false;
-			else;
+			else
 				return true;
 		}
 		InterfaceState end(){
@@ -647,8 +647,7 @@ class InterfacePlay: public InterfaceBase{
 				return INTERFACE_STATE_SUMMARY;
 			}
 			//CloseWindow();        // Close window and OpenGL context
-
-			save(block_group);			
+			return INTERFACE_STATE_NULL;
 		}
 };
 
