@@ -42,7 +42,7 @@ public:
 	}
 	double get_acc() {
 		if(pure + far + lost == 0) return 0;
-		return (pure + 0.5f*far) / (double)(pure + far + lost);
+		return (pure + 0.5f*far)*100 / (double)(pure + far + lost);
 	}
 	void update(string grade) {
 		if(grade == "pure") {
