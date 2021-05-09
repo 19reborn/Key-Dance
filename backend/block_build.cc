@@ -12,6 +12,7 @@ struct Block {
     float real_init_time;
     float last_time;
     int column;
+    bool to_be_erase=false;
     Block(float _init_time, int _column){
         init_time = _init_time;
         real_init_time = init_time;
