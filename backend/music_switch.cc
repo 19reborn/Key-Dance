@@ -103,7 +103,7 @@ void play_stop(Music & music){
     }
     else{
         StopMusicStream(music);
-        IF_BGM_PLAYING = true;
+        IF_BGM_PLAYING = false;
     }
 }
 /*int main(){
