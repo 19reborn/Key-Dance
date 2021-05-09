@@ -36,6 +36,7 @@ vector<string> music_list;
 vector<Sound> taps;
 
 int init_music_list() {
+    music_list.clear();
     getJustCurrentFile("../songs/", music_list);
     return music_list.size();
 }
@@ -64,6 +65,7 @@ vector<MUSIC_STATUS> init_music_vector(){
                 fgets(line, 100, fp);
             int highscore = atoi(line);
                 fgets(line, 100, fp);
+                fclose(fp);
             float acc = atof(line);
             Music_list[i].opern.push_back(MUSIC_OPERN("../songs/"+Music_list[i].name+"/"+op, userName, highscore, acc));
         }

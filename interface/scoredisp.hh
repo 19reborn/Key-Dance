@@ -50,6 +50,7 @@ public:
             char line[100];
             fgets(line, 100, fp);
             highscore = atoi(line);
+            fclose(fp);
         } else {
             highscore = 0;
         }

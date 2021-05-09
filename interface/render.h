@@ -214,6 +214,8 @@ class InterfacePlay: public InterfaceBase{
 		        B.last_time=stof(s);
 		        block_group.push_back(B);
 		    }
+
+			fclose(fp);
 		}
 		void show_effect(string typ, int trackNum){
 		    Vector2 pos;
@@ -266,6 +268,7 @@ class InterfacePlay: public InterfaceBase{
 					exit(1);
 				}
 				fprintf(fp, "%d\n%.2f", scoreboard.get_score(), scoreboard.get_acc());
+				fclose(fp);
 			}
 
 			//todo 修改为用户名
@@ -277,6 +280,7 @@ class InterfacePlay: public InterfaceBase{
 				if(i) fprintf(fp, "\n");
 				fprintf(fp,"%f %d %f", block_group[i].init_time, block_group[i].column, block_group[i].last_time);
 		    }
+			fclose(fp);
 		}
 		void draw_frame(int mode,vector <Block> &block_group){
 			if(status == PLAY_NORMAL)

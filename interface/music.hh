@@ -56,7 +56,11 @@ public:
         InitAudioDevice();
         init_BGM_play();
 		init_taps();
-        
+
+        musicList.clear();
+        BGMlst.clear();
+        BGlst.clear();
+
         musicList = init_music_vector();
         mlistSize = musicList.size();
 
