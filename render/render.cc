@@ -61,15 +61,38 @@ public:
 };
 list<Effect> curEffects;
 
+class ScoreBoard {
+public:
+    int totNotes;
+    int combo = 0;
+    int pure = 0;
+    int far = 0;
+    int lost = 0;
+    ScoreBoard() {}
+    ScoreBoard(int tot): totNotes(tot) {}
+    int get_score() {
+        int perScore = 10000000 / totNotes + 1;
+        return min(perScore * pure + perScore * far / 2, 10000000);
+    }
+    void update(string grade) {
+        if(grade == "pure") {
+            combo++;
+            pure++;
+        } else if(grade == "far") {
+            combo++;
+            far++;
+        } else if(grade == "lost") {
+            lost++;
+            combo = 0;
+        } else {
+            printf("[ERROR] Wrong Grade!\n");
+        }
+    }
+} scoreboard;
+
 #define MODE 1
 #define SPEED 10.0f   // Number of spritesheet frames shown by second
 const int length = 27.50;
-// Score
-int score_score = 0;
-int score_combo = 0;
-int score_pure = 0;
-int score_far = 0;
-int score_lost = 0;
 
 /*struct block{
     float init_time;
@@ -87,7 +110,7 @@ Texture2D texture_lost_effect;
 Camera camera = { 0 };
 
 void draw_block(float t,int i,float k){
-    float y;
+    float y = 0;    // to avoid warning
     switch (i)
     {
     case 3:
@@ -104,20 +127,23 @@ void draw_block(float t,int i,float k){
         break;
     }
     if(fabs(k)<0.5f){
-        DrawCube((Vector3){ 1.3f-t, -0.2f, y }, 0.5f, 0.5f, 1.57f, RED);
+        DrawCube({ 1.3f-t, -0.2f, y }, 0.5f, 0.5f, 1.57f, RED);
     }
     else{
-        DrawCube((Vector3){ 1.3f-t, -0.2f, y }, fabs(k), 0.5f, 1.57f, RED);
+        DrawCube({ 1.3f-t, -0.2f, y }, fabs(k), 0.5f, 1.57f, RED);
     }
 }
 
-void input(){
+void input(const string& filename) {
     FILE * fp = NULL;
-    fp = fopen("./tmp.txt","r");
+    fp = fopen(filename.c_str(),"r");
     if(!fp){
         printf("file open error!\n");
         exit(1);
     }
+
+    block_group.clear();    // 清空当前的
+
     char line[100];
     while(!feof(fp)){
         fgets(line,100,fp);
@@ -182,20 +208,20 @@ void draw_frame(int mode,vector <Block> &block_group){
         //游玩模式
         BeginDrawing();
         ClearBackground(GRAY);
-        DrawTextureEx(texture_background, (Vector2){ 0, 0 }, 0.0f, 1.0f, WHITE);
+        DrawTextureEx(texture_background, { 0, 0 }, 0.0f, 1.0f, WHITE);
         
         BeginMode3D(camera);
 
-        DrawPlane((Vector3){ 0.0f, 0.0f, 0.0f }, (Vector2){ 1000.0f, 7.17f }, (Color){255, 255, 255, 120}); // Draw ground
-        DrawCubeWires((Vector3){ 0.0f, -0.7f, 0.8f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
-        DrawCubeWires((Vector3){ 0.0f, -0.7f, 2.4f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
-        DrawCubeWires((Vector3){ 0.0f, -0.7f, -0.8f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
-        DrawCubeWires((Vector3){ 0.0f, -0.7f, -2.4f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
+        DrawPlane({ 0.0f, 0.0f, 0.0f }, { 1000.0f, 7.17f }, {255, 255, 255, 120}); // Draw ground
+        DrawCubeWires({ 0.0f, -0.7f, 0.8f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
+        DrawCubeWires({ 0.0f, -0.7f, 2.4f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
+        DrawCubeWires({ 0.0f, -0.7f, -0.8f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
+        DrawCubeWires({ 0.0f, -0.7f, -2.4f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
 
-        DrawCubeTexture(texture_tap, (Vector3){ 1.3f, -0.4f, 0.85f }, 0.5f, 1.0f, 1.57f, WHITE);
-        DrawCubeTexture(texture_tap, (Vector3){ 1.3f, -0.4f, 2.6f }, 0.5f, 1.0f, 1.5f, WHITE);
-        DrawCubeTexture(texture_tap, (Vector3){ 1.3f, -0.4f, -0.85f }, 0.5f, 1.0f, 1.57f, WHITE);
-        DrawCubeTexture(texture_tap, (Vector3){ 1.3f, -0.4f, -2.6f }, 0.5f, 1.0f, 1.5f, WHITE);    
+        DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 0.85f }, 0.5f, 1.0f, 1.57f, WHITE);
+        DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 2.6f }, 0.5f, 1.0f, 1.5f, WHITE);
+        DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -0.85f }, 0.5f, 1.0f, 1.57f, WHITE);
+        DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -2.6f }, 0.5f, 1.0f, 1.5f, WHITE);    
 
         auto i=block_group.begin(); 
         while(i!=block_group.end()){
@@ -212,18 +238,23 @@ void draw_frame(int mode,vector <Block> &block_group){
                     //正确地消除
                     if(dis>=0.8f){
                         show_effect("lost",i->column);
+                        scoreboard.update("lost");
                     }
                     else if(dis>=0.7f){
                         show_effect("far",i->column);
+                        scoreboard.update("far");
                     }
                     else if(dis>=0.2f){
                         show_effect("pure",i->column);
+                        scoreboard.update("pure");
                     }
                     else if(dis>=-0.1f){
                         show_effect("far",i->column);
+                        scoreboard.update("far");
                     }
                     else{
                         show_effect("lost",i->column);
+                        scoreboard.update("lost");
                     }
                     block_group.erase(i);
                 }
@@ -234,6 +265,7 @@ void draw_frame(int mode,vector <Block> &block_group){
                     }
                     else{
                             show_effect("lost",i->column);
+                            scoreboard.update("lost");
                             block_group.erase(i);                        
                     }
                 }
@@ -256,18 +288,23 @@ void draw_frame(int mode,vector <Block> &block_group){
                         //正确地消除
                         if(start_dis>=0.8f){
                             show_effect("lost",i->column);
+                            scoreboard.update("lost");
                         }
                         else if(start_dis>=0.7f){
                             show_effect("far",i->column);
+                            scoreboard.update("far");
                         }
                         else if(start_dis>=0.2f){
                             show_effect("pure",i->column);
+                            scoreboard.update("pure");
                         }
                         else if(start_dis>=-0.1f){
                             show_effect("far",i->column);
+                            scoreboard.update("far");
                         }
                         else{
                             show_effect("lost",i->column);
+                            scoreboard.update("lost");
                         }                 
                     }
                     if(IsKeyDown(tem_keyboard[i->column])&&start_dis>=0.0f){
@@ -281,6 +318,7 @@ void draw_frame(int mode,vector <Block> &block_group){
                         }
                         else{
                             show_effect("pure",i->column);
+                            scoreboard.update("pure");
                             block_group.erase(i);
                         }
                     }
@@ -289,12 +327,15 @@ void draw_frame(int mode,vector <Block> &block_group){
                             float dis=-end_dis;
                             if(dis>=1.0f){
                                 show_effect("lost",i->column);
+                                scoreboard.update("lost");
                             }
                             else if(dis>=0.5){
                                 show_effect("far",i->column);
+                                scoreboard.update("far");
                             }
                             else{
                                 show_effect("pure",i->column);
+                                scoreboard.update("pure");
                             }
                             i->to_be_erase=true;
                             draw_block(length-(GetTime()-i->init_time)*SPEED,i->column,i->last_time*SPEED);
@@ -308,6 +349,7 @@ void draw_frame(int mode,vector <Block> &block_group){
                         }   
                         else{
                             show_effect("lost",i->column);
+                            scoreboard.update("lost");
                             block_group.erase(i);
                         }   
                     }
@@ -315,7 +357,7 @@ void draw_frame(int mode,vector <Block> &block_group){
             }
         }
 
-        DrawCube((Vector3){ 1.3f-27.50f, -0.4f, 0.85f }, 0.5f, 1.0f, 1.57f, BLUE);
+        DrawCube({ 1.3f-27.50f, -0.4f, 0.85f }, 0.5f, 1.0f, 1.57f, BLUE);
 
         EndMode3D();
 
@@ -331,31 +373,31 @@ void draw_frame(int mode,vector <Block> &block_group){
         // DrawTextureRec(texture_tap_effect, frameRec_tap_effect, TRACK3, WHITE);  // Draw part of the texture
         // DrawTextureRec(texture_tap_effect, frameRec_tap_effect, TRACK4, WHITE);  // Draw part of the texture 
 
-           // score board:
-        DrawText(TextFormat("SCORE: %08i", score_score), 1200, 10, 40, LIME);
-        DrawText(TextFormat("%i COMBO!", score_combo), 600, 560, 80, VIOLET);
-        DrawText(TextFormat("PURE: %i", score_pure), 1200, 50, 40, PINK);
-        DrawText(TextFormat("FAR: %i", score_far), 1200, 90, 40, ORANGE);
-        DrawText(TextFormat("LOST: %i", score_lost), 1200, 130, 40, GRAY);
+        // score board:
+        DrawText(TextFormat("SCORE: %08i", scoreboard.get_score()), 1200, 10, 40, LIME);
+        DrawText(TextFormat("%i COMBO!", scoreboard.combo), 600, 560, 80, VIOLET);
+        DrawText(TextFormat("PURE: %i", scoreboard.pure), 1200, 50, 40, PINK);
+        DrawText(TextFormat("FAR: %i", scoreboard.far), 1200, 90, 40, ORANGE);
+        DrawText(TextFormat("LOST: %i", scoreboard.lost), 1200, 130, 40, GRAY);
 
     }
     //制作模式
     else{
         BeginDrawing();
         ClearBackground(GRAY);
-        DrawTextureEx(texture_background, (Vector2){ 0, 0 }, 0.0f, 1.0f, WHITE);
+        DrawTextureEx(texture_background, { 0, 0 }, 0.0f, 1.0f, WHITE);
         BeginMode3D(camera);
 
-        DrawPlane((Vector3){ 0.0f, 0.0f, 0.0f }, (Vector2){ 1000.0f, 7.17f }, (Color){255, 255, 255, 120}); // Draw ground
-        DrawCubeWires((Vector3){ 0.0f, -0.7f, 0.8f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
-        DrawCubeWires((Vector3){ 0.0f, -0.7f, 2.4f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
-        DrawCubeWires((Vector3){ 0.0f, -0.7f, -0.8f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
-        DrawCubeWires((Vector3){ 0.0f, -0.7f, -2.4f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
+        DrawPlane({ 0.0f, 0.0f, 0.0f }, { 1000.0f, 7.17f }, {255, 255, 255, 120}); // Draw ground
+        DrawCubeWires({ 0.0f, -0.7f, 0.8f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
+        DrawCubeWires({ 0.0f, -0.7f, 2.4f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
+        DrawCubeWires({ 0.0f, -0.7f, -0.8f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
+        DrawCubeWires({ 0.0f, -0.7f, -2.4f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
 
-        DrawCubeTexture(texture_tap, (Vector3){ 1.3f, -0.4f, 0.85f }, 0.3f, 1.0f, 1.57f, WHITE);
-        DrawCubeTexture(texture_tap, (Vector3){ 1.3f, -0.4f, 2.6f }, 0.3f, 1.0f, 1.5f, WHITE);
-        DrawCubeTexture(texture_tap, (Vector3){ 1.3f, -0.4f, -0.85f }, 0.3f, 1.0f, 1.57f, WHITE);
-        DrawCubeTexture(texture_tap, (Vector3){ 1.3f, -0.4f, -2.6f }, 0.3f, 1.0f, 1.5f, WHITE);  
+        DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 0.85f }, 0.3f, 1.0f, 1.57f, WHITE);
+        DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 2.6f }, 0.3f, 1.0f, 1.5f, WHITE);
+        DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -0.85f }, 0.3f, 1.0f, 1.57f, WHITE);
+        DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -2.6f }, 0.3f, 1.0f, 1.5f, WHITE);  
 
         for(auto i:block_group){
             draw_block((GetTime()-i.init_time+i.last_time/2)*SPEED+0.5f,i.column,-i.last_time*SPEED);
@@ -374,33 +416,21 @@ void draw_frame(int mode,vector <Block> &block_group){
         // DrawTextureRec(texture_tap_effect, frameRec_tap_effect, TRACK3, WHITE);  // Draw part of the texture
         // DrawTextureRec(texture_tap_effect, frameRec_tap_effect, TRACK4, WHITE);  // Draw part of the texture
 
-                   // score board:
-        DrawText(TextFormat("SCORE: %08i", score_score), 1200, 10, 40, LIME);
-        DrawText(TextFormat("%i COMBO!", score_combo), 600, 560, 80, VIOLET);
-        DrawText(TextFormat("PURE: %i", score_pure), 1200, 50, 40, PINK);
-        DrawText(TextFormat("FAR: %i", score_far), 1200, 90, 40, ORANGE);
-        DrawText(TextFormat("LOST: %i", score_lost), 1200, 130, 40, GRAY); 
+        // score board:
+        DrawText(TextFormat("SCORE: %08i", scoreboard.get_score()), 1200, 10, 40, LIME);
+        DrawText(TextFormat("%i COMBO!", scoreboard.combo), 600, 560, 80, VIOLET);
+        DrawText(TextFormat("PURE: %i", scoreboard.pure), 1200, 50, 40, PINK);
+        DrawText(TextFormat("FAR: %i", scoreboard.far), 1200, 90, 40, ORANGE);
+        DrawText(TextFormat("LOST: %i", scoreboard.lost), 1200, 130, 40, GRAY);
 
     }
     EndDrawing();  
 }
 
-// 这里的totNotes为总音符数，我们可以把一个长按计算为多个音符从而提高分值占比
-int calc_score(int totNotes, int pures, int fars, int losts = 0) {
-    int perScore = 10000000 / totNotes + 1;
-    return min(perScore * pures + perScore * fars / 2, 10000000);
-}
-// 2 => pure, 1 => far, 0 => lost
-int calc_note_grade(float standard, float actual) {
-    float bias = fabs(actual - standard);
-    // 75:100:120
-    if(bias <= 0.03) {
-        return 2;
-    } else if(bias <= 0.07) {
-        return 1;
-    } else {
-        return 0;
-    }
+void init_song() {
+    input("./tmp.txt");
+    //todo 这里并不能这样，因为一个hold并不算作1个note
+    scoreboard = ScoreBoard(block_group.size());    
 }
 
 int main(void)
@@ -411,7 +441,7 @@ int main(void)
     const int screenHeight = 900;
     block_group.clear();
     if(MODE==1){
-        input();
+        init_song();
     }
     InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera first person");
     // Load Textures
@@ -423,9 +453,9 @@ int main(void)
     texture_lost_effect = LoadTexture("resources/lost-effect.png");
 
     // Define the camera to look into our 3d world (position, target, up vector)
-    camera.position = (Vector3){ 2.0f, 2.8f, 0.0f };
-    camera.target = (Vector3){ 0.0f, 0.75f, 0.0f };
-    camera.up = (Vector3){ 0.0f, 0.5f, 0.0f };
+    camera.position = { 2.0f, 2.8f, 0.0f };
+    camera.target = { 0.0f, 0.75f, 0.0f };
+    camera.up = { 0.0f, 0.5f, 0.0f };
     camera.fovy = 80.0f;
     camera.projection = CAMERA_PERSPECTIVE;
     SetCameraMode(camera, CAMERA_CUSTOM); 
@@ -437,19 +467,6 @@ int main(void)
     while (!WindowShouldClose())                // Detect window close button or ESC key
     {
         //----------------------------------------------------------------------------------
-        // Draw
-        //BeginDrawing();
-        //ClearBackground(GRAY);
-        //DrawTextureEx(texture_background, (Vector2){ 0, 0 }, 0.0f, 1.0f, WHITE);
-        //----------------------------------------------------------------------------------
-        // Update Effects
-        // framesCounter++;
-        // if (framesCounter >= (60/framesSpeed)) {
-        //     framesCounter = 0;
-        //     currentFrame++;
-        //     if (currentFrame > 2) currentFrame = 0;
-        //     frameRec_tap_effect.x = (float)currentFrame*(float)texture_tap_effect.width/3;
-        // }
         for(list<Effect>::iterator it = curEffects.begin(); it != curEffects.end(); ++it) {
             // 所有特效都理应只播放一次
             if(it->update()) {
