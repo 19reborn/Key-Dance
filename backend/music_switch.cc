@@ -46,15 +46,17 @@ vector<MUSIC_STATUS> init_music_vector(){
 
     vector<MUSIC_STATUS> Music_list;
     for(int i=0;i<music_num;i++){
+        if(music_list[i].find(".wav") == -1) continue;
         Music_list.push_back(MUSIC_STATUS());
-        Music_list[i].name = music_list[i].substr(0, music_list[i].find(".wav"));
+        MUSIC_STATUS& curEnd = Music_list[Music_list.size() - 1];
+        curEnd.name = music_list[i].substr(0, music_list[i].find(".wav"));
         vector<string> opernNames;
-        getJustCurrentFile("../songs/"+Music_list[i].name+"/", opernNames);
+        getJustCurrentFile("../songs/"+curEnd.name+"/", opernNames);
         for(auto& op: opernNames) {
             string userName = op.substr(0, op.find(".txt"));
             // 读取分数信息
                 FILE * fp = NULL;
-                string path = "../songs/"+Music_list[i].name+"/"+userName+"/score.txt";
+                string path = "../songs/"+curEnd.name+"/"+userName+"/score.txt";
                 fp = fopen(path.c_str(), "r");
                 if(!fp){
                     printf("[ERROR] music list load file open error!\n");
@@ -67,10 +69,10 @@ vector<MUSIC_STATUS> init_music_vector(){
                 fgets(line, 100, fp);
                 fclose(fp);
             float acc = atof(line);
-            Music_list[i].opern.push_back(MUSIC_OPERN("../songs/"+Music_list[i].name+"/"+op, userName, highscore, acc));
+            curEnd.opern.push_back(MUSIC_OPERN("../songs/"+curEnd.name+"/"+op, userName, highscore, acc));
         }
         // 下面这个是用于表示创作模式的虚拟节点
-        Music_list[i].opern.push_back(MUSIC_OPERN("", "", -1, -1));
+        curEnd.opern.push_back(MUSIC_OPERN("", "", -1, -1));
     }
     return Music_list;
 }
