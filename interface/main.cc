@@ -24,7 +24,7 @@ int main()
     interfaces[INTERFACE_STATE_SUMMARY] = new InterfaceScoreDisp();
     InterfaceBase* g = interfaces[state];
 
-    InitWindow(g->screenWidth, g->screenHeight, "game");
+    InitWindow(g->screenWidth, g->screenHeight, "Key Dance");
 #ifdef DEBUG
     printf("[debug] init window successful!\n");
 #endif

@@ -44,7 +44,7 @@ public:
             FILE * fp = NULL;
             fp = fopen(path.c_str(), "r");
             if(!fp){
-                printf("[ERROR] file open error!\n");
+                printf("[ERROR] scoredisp file open error!\n");
                 exit(1);
             }
             char line[100];
@@ -125,6 +125,8 @@ public:
             DrawTriangle({1600, 900}, {1600, 0}, {1200, 900}, Fade(BLACK, 0.8f));
 
         EndDrawing();
+
+        if(IsKeyPressed(KEY_Q)) {isEnd = true;}
     }
     bool is_end() {
         if(!isEnd) return false;

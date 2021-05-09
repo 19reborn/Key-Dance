@@ -56,7 +56,8 @@ vector<MUSIC_STATUS> init_music_vector(){
                 string path = "../songs/"+Music_list[i].name+"/"+userName+"/score.txt";
                 fp = fopen(path.c_str(), "r");
                 if(!fp){
-                    printf("[ERROR] file open error!\n");
+                    printf("[ERROR] music list load file open error!\n");
+                    printf("[INFO] %s", path.c_str());
                     exit(1);
                 }
                 char line[100];

@@ -11,6 +11,7 @@
 #include <iostream>
 #include <string>
 #include <cstring>
+#include <cstdlib>
 #include <cmath>
 #include <list>
 using namespace std;
@@ -175,7 +176,7 @@ class InterfacePlay: public InterfaceBase{
 		    FILE * fp = NULL;
 		    fp = fopen(filename.c_str(),"r");
 		    if(!fp){
-		        printf("[ERROR] file open error!\n");
+		        printf("[ERROR] render file open error!\n");
 				// printf("[INFO] filePath: %s\n", filename.c_str());
 		        exit(1);
 		    }
@@ -242,6 +243,19 @@ class InterfacePlay: public InterfaceBase{
 				if(i) fprintf(fp, "\n");
 				fprintf(fp,"%f %d %f", block_group[i].init_time, block_group[i].column, block_group[i].last_time);
 		    }
+
+			//todo 创建文件夹
+			string command = "md ../songs/" + SELECTED_SONG + "/" + SELECTED_OPERN;
+			system(command.c_str());
+			path = "../songs/" + SELECTED_SONG + "/" + SELECTED_OPERN + "/score.txt";
+			fp = fopen(path.c_str(), "r");
+			char line[100];
+			fgets(line, 100, fp);
+			int highscore = atoi(line);
+			if(scoreboard.get_score() > highscore) {
+				fp = fopen(path.c_str(), "w+");
+				fprintf(fp, "%d\n%.2f", scoreboard.get_score(), scoreboard.get_acc());
+			}
 		}
 		void draw_frame(int mode,vector <Block> &block_group){
 			if(status == PLAY_NORMAL)
@@ -281,8 +295,9 @@ class InterfacePlay: public InterfaceBase{
 
 		        EndMode3D();
 
-		        DrawRectangle( 10, 10, 220, 70, Fade(SKYBLUE, 0.5f));
-		        DrawRectangleLines( 10, 10, 220, 70, BLUE);
+		        // DrawRectangle( 10, 10, 220, 70, Fade(SKYBLUE, 0.5f));
+				DrawText(TextFormat("%.2fs/%.2fs", GetMusicTimePlayed(song), GetMusicTimeLength(song)), 50, 40, 40, PURPLE);
+		        // DrawRectangleLines( 10, 10, 220, 70, BLUE);
 
 		        // 绘制特效
 		        //for(auto& effect: curEffects) {
