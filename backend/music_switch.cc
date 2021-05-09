@@ -54,7 +54,6 @@ vector<MUSIC_STATUS> init_music_vector(){
             // 读取分数信息
                 FILE * fp = NULL;
                 string path = "../songs/"+Music_list[i].name+"/"+userName+"/score.txt";
-            fflush(stdout);
                 fp = fopen(path.c_str(), "r");
                 if(!fp){
                     printf("[ERROR] file open error!\n");
