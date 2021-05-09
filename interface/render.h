@@ -169,7 +169,7 @@ class InterfacePlay: public InterfaceBase{
 		        y=2.6;
 		        break;
 		    }
-		    if(fabs(k)<0.8f){
+		    if(fabs(k)<2.0f){
 		        DrawCubeTexture(texture_tap, { 1.3f-t, -0.2f, y }, 0.5f, 0.5f, 1.57f, SKYBLUE);
 		    }
 		    else{

@@ -167,10 +167,10 @@ public:
         if(isKeyPressed(KEY_A) || isKeyPressed(KEY_LEFT)) {
         	musicList[mlistidx].prev_opern();
         }
-        if(isKeyPressed(KEY_D) || IsKeyPressed(KEY_RIGHT)) {
+        if(isKeyPressed(KEY_D) || isKeyPressed(KEY_RIGHT)) {
             musicList[mlistidx].next_opern();
         }
-        if(IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE)) {
+        if(isKeyPressed(KEY_ENTER) || isKeyPressed(KEY_SPACE)) {
             selectedSongName = musicList[mlistidx].name;
             selectedOpern = musicList[mlistidx].get_opern().username;
             isEnd = true;
