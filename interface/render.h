@@ -28,7 +28,6 @@ typedef enum{
 	PLAY_AGAIN,
 	PLAY_STALL,
 	PLAY_FINISH,
-	PLAY_WAITING,
 	PLAY_NULL
 }PLAY_STATUS;
 PLAY_STATUS status;
@@ -200,7 +199,7 @@ class InterfacePlay: public InterfaceBase{
 		            i++;
 		        }
 		        i++;
-		        B.init_time=stof(s);
+		        B.init_time=stof(s)-length/SPEED;
 		        s="";
 		        while(line[i]!=' '){
 		            s+=line[i];
@@ -350,19 +349,19 @@ class InterfacePlay: public InterfaceBase{
 		        DrawCubeWires({ 0.0f, -0.7f, -0.8f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
 		        DrawCubeWires({ 0.0f, -0.7f, -2.4f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
 
-		        if(IsKeyDown(tem_keyboard[1])&&(status!=PLAY_STALL)&&(!waiting)&&(status!=PLAY_STALL)&&(!waiting))
+		        if(IsKeyDown(tem_keyboard[1])&&(status!=PLAY_STALL)&&(!waiting))
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 0.85f }, 0.5f, 0.9f, 1.57f, BLUE);
 		        else
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 0.85f }, 0.5f, 1.0f, 1.57f, WHITE);
-		        if(IsKeyDown(tem_keyboard[0])&&(status!=PLAY_STALL)&&(!waiting)&&(status!=PLAY_STALL)&&(!waiting))
+		        if(IsKeyDown(tem_keyboard[0])&&(status!=PLAY_STALL)&&(!waiting))
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 2.6f }, 0.5f, 0.9f, 1.5f, BLUE);
 		        else
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 2.6f }, 0.5f, 1.0f, 1.5f, WHITE);
-		        if(IsKeyDown(tem_keyboard[2])&&(status!=PLAY_STALL)&&(!waiting)&&(status!=PLAY_STALL)&&(!waiting))
+		        if(IsKeyDown(tem_keyboard[2])&&(status!=PLAY_STALL)&&(!waiting))
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -0.85f }, 0.5f, 0.9f, 1.57f, BLUE);
 		        else
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -0.85f }, 0.5f, 1.0f, 1.57f, WHITE);
-		        if(IsKeyDown(tem_keyboard[3])&&(status!=PLAY_STALL)&&(!waiting)&&(status!=PLAY_STALL)&&(!waiting))
+		        if(IsKeyDown(tem_keyboard[3])&&(status!=PLAY_STALL)&&(!waiting))
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -2.6f }, 0.5f, 0.9f, 1.5f, BLUE);    
 		        else
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -2.6f }, 0.5f, 1.0f, 1.5f, WHITE);    
@@ -547,6 +546,7 @@ class InterfacePlay: public InterfaceBase{
         void init(){
 		   	InitAudioDevice();
 			init_BGM_play();
+			waiting=false;
 			MODE = (int)mode;
 		    //const int screenWidth = 1600;
 		    //const int screenHeight = 900;

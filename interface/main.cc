@@ -11,7 +11,7 @@ string SELECTED_SONG;
 string SELECTED_OPERN;
 ScoreBoard scoreboard;
 
-InterfaceState state = INTERFACE_STATE_MUSIC_SWITCH;
+InterfaceState state = INTERFACE_STATE_PLAY;
 ModeState mode = MODE_GENERATE;
 InterfaceBase* interfaces[INTERFACE_STATE_TOT];
 
