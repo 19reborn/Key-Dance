@@ -19,6 +19,7 @@ void InterfaceMain::draw()
     ClearBackground(RAYWHITE);
     DrawText("This is main page", 0, 0, 50, BLACK);
     DrawRectangleRec(bt_start.bound, GREEN);
+    DrawText("START", bt_start.bound.x, bt_start.bound.y, 20, BLACK);
     DrawRectangleRec(bt_quit.bound, SKYBLUE);
     EndDrawing();
 }

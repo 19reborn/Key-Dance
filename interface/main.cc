@@ -33,10 +33,15 @@ int main()
         /* Update */
         g->update();
 
-        /* Draw */
-        g->draw();
         if(g->is_end()){
+            #if DEBUG
+            printf("[debug] switching to interface %d\n", state);
+            #endif
             state=g->end();
+        }
+        else {
+            /* Draw */
+            g->draw();
         }
     }
     //Close window and OpenGL context

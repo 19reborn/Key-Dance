@@ -27,10 +27,16 @@ void InterfaceModeSwitch::draw()
 void InterfaceModeSwitch::update()
 {
     if (bt_play.isClicked()) {
+        #if DEBUG
+        printf("[debug] play mode chosen\n");
+        #endif
         state = INTERFACE_STATE_MUSIC_SWITCH;
         mode = MODE_PLAY;
     }
-    else {
+    else if (bt_generate.isClicked()) {
+        #if DEBUG
+        printf("[debug] generate mode chosen\n");
+        #endif
         state = INTERFACE_STATE_MUSIC_SWITCH;
         mode = MODE_GENERATE;
     }
