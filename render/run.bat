@@ -1,3 +1,3 @@
 @echo off
-make render
-render.exe
+make game
+game.exe
