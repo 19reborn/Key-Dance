@@ -35,9 +35,7 @@ int main()
         g->update();
 
         /* Draw */
-        //BeginDrawing();
         g->draw();
-        //EndDrawing();
     }
     g->end();
     //Close window and OpenGL context
