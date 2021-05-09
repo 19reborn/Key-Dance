@@ -17,6 +17,7 @@ private:
     Texture2D texture_return_button;
     Texture2D texture_settings_button;
     Font font_caption;
+    bool isEnd = false;
 public:
     string selectedSongName;
     string selectedOpern;
@@ -119,6 +120,7 @@ public:
         if(IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE)) {
             selectedSongName = musicList[mlistidx].name;
             selectedOpern = musicList[mlistidx].get_opern().filename;
+            isEnd = true;
         }
     }
     void end() {
@@ -127,5 +129,11 @@ public:
         UnloadFont(font_caption);
 
         CloseWindow(); 
+    }
+
+    bool is_end() {
+        if(!isEnd) return false;
+        isEnd = false;
+        return true;
     }
 };

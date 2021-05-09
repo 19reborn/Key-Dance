@@ -32,6 +32,7 @@ class InterfaceBase {
         virtual void update();
         virtual void draw();
         virtual void end();
+        virtual bool is_end();
 };
 
 // just fot test
