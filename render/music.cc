@@ -60,11 +60,11 @@ int main(void)
             DrawTriangle({120, 120}, {160, 20}, {120, 20}, Fade(BLACK, 0.5f));
             DrawTextureEx(texture_return_button, { 30, 40 }, 0.0f, 0.3f, WHITE);
                 // 曲名信息
-            DrawRectangle(0, 150, 500, 200, Fade(BLACK, 0.5f));
-            DrawTriangle({500, 350}, {660, 150}, {500, 150}, Fade(BLACK, 0.5f));
+            DrawRectangle(0, 150, 500, 110, Fade(BLACK, 0.5f));
+            DrawTriangle({500, 260}, {660, 150}, {500, 150}, Fade(BLACK, 0.5f));
             DrawTextEx(font_caption, TextFormat("| %s", musicList[mlistidx].name.c_str()), {10, 160}, 90, 0, WHITE);
             //todo 曲师姓名
-            DrawTextEx(font_caption, TextFormat("%s", musicList[mlistidx].authorName.c_str()), {30, 265}, 60, 0, WHITE);
+            // DrawTextEx(font_caption, TextFormat("%s", musicList[mlistidx].authorName.c_str()), {30, 265}, 60, 0, WHITE);
             // 右上
                 // 设置
             DrawRectangle(1480, 20, 160, 100, Fade(BLACK, 0.5f));

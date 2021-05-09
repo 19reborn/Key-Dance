@@ -197,7 +197,7 @@ class InterfacePlay: public InterfaceBase{
 		    FILE * fp = NULL;
 		    fp = fopen(filename.c_str(),"r");
 		    if(!fp){
-		        printf("file open error!\n");
+		        printf("[ERROR] file open error!\n");
 		        exit(1);
 		    }
 

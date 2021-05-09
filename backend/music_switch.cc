@@ -48,7 +48,26 @@ vector<MUSIC_STATUS> init_music_vector(){
     for(int i=0;i<music_num;i++){
         Music_list.push_back(MUSIC_STATUS());
         Music_list[i].name = music_list[i].substr(0, music_list[i].find(".wav"));
-        //todo 新增读入opern
+        vector<string> opernNames;
+        getJustCurrentFile("../songs/"+Music_list[i].name+"/", opernNames);
+        for(auto& op: opernNames) {
+            string userName = op.substr(0, op.find(".txt"));
+            // 读取分数信息
+                FILE * fp = NULL;
+                string path = "../songs/"+Music_list[i].name+"/"+userName+"/score.txt";
+            fflush(stdout);
+                fp = fopen(path.c_str(), "r");
+                if(!fp){
+                    printf("[ERROR] file open error!\n");
+                    exit(1);
+                }
+                char line[100];
+                fgets(line, 100, fp);
+            int highscore = atoi(line);
+                fgets(line, 100, fp);
+            float acc = atof(line);
+            Music_list[i].opern.push_back(MUSIC_OPERN("../songs/"+Music_list[i].name+"/"+op, userName, highscore, acc));
+        }
         // 下面这个是用于表示创作模式的虚拟节点
         Music_list[i].opern.push_back(MUSIC_OPERN("", "", -1, -1));
     }
