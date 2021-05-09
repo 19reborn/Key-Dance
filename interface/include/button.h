@@ -12,7 +12,7 @@ typedef enum {
 
 class Button {
     private:
-        ButtonState b
+        ButtonState button_state;
     public:
         Rectangle bound;
         Button(float x_topleft, float y_topleft, float width, float height);
