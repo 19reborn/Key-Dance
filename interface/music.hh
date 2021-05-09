@@ -78,7 +78,7 @@ public:
 
         BeginDrawing();
             ClearBackground(GRAY);
-            DrawTextureEx(BGlst[curSongidx], { 0, 0 }, 0.0f, screenWidth / (float)BGlst[curSongidx].width, WHITE);
+            DrawTextureEx(BGlst[curSongidx], { 0, 0 }, 0.0f, screenHeight / (float)BGlst[curSongidx].height, WHITE);
             // 手动光栅化！
             // 左上
                 // 遮罩
