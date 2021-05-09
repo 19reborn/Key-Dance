@@ -2,3 +2,6 @@
 
 extern InterfaceState interface_state;
 
+void InterfaceMain::init() {
+    
+}

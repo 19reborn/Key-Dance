@@ -18,11 +18,6 @@ class InterfaceBase {
 
 class InterfaceMain: public InterfaceBase {
     public:
-        void init() {
-
-        }
-
-        void update() {
-
-        }
+        void init();
+        void update();
 }
