@@ -1,4 +1,5 @@
 #include "raylib.h"
+#include "button.h"
 #ifndef __INTERFACE_H__
 #define __INTERFACE_H__
 
@@ -35,10 +36,13 @@ class InterfaceTest: public InterfaceBase {
         void draw();
 };
 
-class InterfaceTest: public InterfaceBase {
+class InterfaceMain: public InterfaceBase {
     private:
     public:
-        InterfaceTest();
+        Button bt_start;
+        Button bt_quit;
+
+        InterfaceMain();
         void init();
         void update();
         void draw();

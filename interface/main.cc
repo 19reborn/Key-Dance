@@ -2,12 +2,12 @@
 #include "interface.h"
 #include <cstdio>
 
-InterfaceState state = INTERFACE_STATE_TEST;
+InterfaceState state = INTERFACE_STATE_MAIN;
 InterfaceBase* interfaces[INTERFACE_STATE_TOT];
 
 int main()
 {
-    interfaces[INTERFACE_STATE_TEST] = new InterfaceTest();
+    interfaces[INTERFACE_STATE_MAIN] = new InterfaceMain();
     InterfaceBase* g = interfaces[state];
 
     InitWindow(g->screenWidth, g->screenHeight, "sample game");
@@ -27,7 +27,6 @@ int main()
 
         /* Draw */
         BeginDrawing();
-        ClearBackground(RAYWHITE);
         g->draw();
         EndDrawing();
     }
