@@ -28,6 +28,7 @@ typedef enum{
 	PLAY_AGAIN,
 	PLAY_STALL,
 	PLAY_FINISH,
+	PLAY_WAITING,
 	PLAY_NULL
 }PLAY_STATUS;
 PLAY_STATUS status;
@@ -43,6 +44,7 @@ class InterfacePlay: public InterfaceBase{
 		static double getTime(){
 			return GetTime()-zero_time;
 		}
+		bool waiting;
 		bool isKeyDown(KeyboardKey &key){
 			if(IsKeyDown(key)){
 				//play_once(taps[1]);
@@ -138,9 +140,9 @@ class InterfacePlay: public InterfaceBase{
 		KeyboardKey tem_keyboard[4] = {KEY_D, KEY_F, KEY_J, KEY_K};
 		void update_Block(vector<Block> & block_list){
 			for(int i=0;i<4;i++){
-				if (IsKeyPressed(tem_keyboard[i])) 
+				if (IsKeyPressed(tem_keyboard[i])&&(status!=PLAY_STALL)&&(!waiting)) 
 					block_list.push_back(Block(getTime(),i));
-				if (IsKeyDown(tem_keyboard[i])){
+				if (IsKeyDown(tem_keyboard[i])&&(status!=PLAY_STALL)&&(!waiting)){
 					int n = block_list.size();
 					for(int j = n - 1; j>= 0;j--){
 						if(block_list[j].column == i){
@@ -168,7 +170,7 @@ class InterfacePlay: public InterfaceBase{
 		        y=2.6;
 		        break;
 		    }
-		    if(fabs(k)<0.5f){
+		    if(fabs(k)<0.8f){
 		        DrawCubeTexture(texture_tap, { 1.3f-t, -0.2f, y }, 0.5f, 0.5f, 1.57f, SKYBLUE);
 		    }
 		    else{
@@ -298,19 +300,19 @@ class InterfacePlay: public InterfaceBase{
 		        DrawCubeWires({ 0.0f, -0.7f, -0.8f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
 		        DrawCubeWires({ 0.0f, -0.7f, -2.4f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
 
-		        if(isKeyPressed(tem_keyboard[1]))
+		        if(isKeyPressed(tem_keyboard[1])&&(status!=PLAY_STALL)&&(!waiting))
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 0.85f }, 0.5f, 0.9f, 1.57f, BLUE);
 		        else
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 0.85f }, 0.5f, 1.0f, 1.57f, WHITE);
-		        if(isKeyPressed(tem_keyboard[0]))
+		        if(isKeyPressed(tem_keyboard[0])&&(status!=PLAY_STALL)&&(!waiting))
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 2.6f }, 0.5f, 0.9f, 1.5f, BLUE);
 		        else
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 2.6f }, 0.5f, 1.0f, 1.5f, WHITE);
-		        if(isKeyPressed(tem_keyboard[2]))
+		        if(isKeyPressed(tem_keyboard[2])&&(status!=PLAY_STALL)&&(!waiting))
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -0.85f }, 0.5f, 0.9f, 1.57f, BLUE);
 		        else
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -0.85f }, 0.5f, 1.0f, 1.57f, WHITE);
-		        if(isKeyPressed(tem_keyboard[3]))
+		        if(isKeyPressed(tem_keyboard[3])&&(status!=PLAY_STALL)&&(!waiting))
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -2.6f }, 0.5f, 0.9f, 1.5f, BLUE);    
 		        else
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -2.6f }, 0.5f, 1.0f, 1.5f, WHITE);    
@@ -319,7 +321,9 @@ class InterfacePlay: public InterfaceBase{
 		        }
 
 		        EndMode3D();
-
+				if(waiting){
+					DrawText(TextFormat("Start :%.2fs", length/SPEED-GetMusicTimePlayed(song)), 560, 300, 90, YELLOW);
+				}
 		        // DrawRectangle( 10, 10, 220, 70, Fade(SKYBLUE, 0.5f));
 				DrawText(TextFormat("%.2fs/%.2fs", GetMusicTimePlayed(song), GetMusicTimeLength(song)), 50, 40, 40, PURPLE);
 		        // DrawRectangleLines( 10, 10, 220, 70, BLUE);
@@ -346,19 +350,19 @@ class InterfacePlay: public InterfaceBase{
 		        DrawCubeWires({ 0.0f, -0.7f, -0.8f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
 		        DrawCubeWires({ 0.0f, -0.7f, -2.4f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
 
-		        if(IsKeyDown(tem_keyboard[1]))
+		        if(IsKeyDown(tem_keyboard[1])&&(status!=PLAY_STALL)&&(!waiting)&&(status!=PLAY_STALL)&&(!waiting))
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 0.85f }, 0.5f, 0.9f, 1.57f, BLUE);
 		        else
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 0.85f }, 0.5f, 1.0f, 1.57f, WHITE);
-		        if(IsKeyDown(tem_keyboard[0]))
+		        if(IsKeyDown(tem_keyboard[0])&&(status!=PLAY_STALL)&&(!waiting)&&(status!=PLAY_STALL)&&(!waiting))
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 2.6f }, 0.5f, 0.9f, 1.5f, BLUE);
 		        else
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 2.6f }, 0.5f, 1.0f, 1.5f, WHITE);
-		        if(IsKeyDown(tem_keyboard[2]))
+		        if(IsKeyDown(tem_keyboard[2])&&(status!=PLAY_STALL)&&(!waiting)&&(status!=PLAY_STALL)&&(!waiting))
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -0.85f }, 0.5f, 0.9f, 1.57f, BLUE);
 		        else
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -0.85f }, 0.5f, 1.0f, 1.57f, WHITE);
-		        if(IsKeyDown(tem_keyboard[3]))
+		        if(IsKeyDown(tem_keyboard[3])&&(status!=PLAY_STALL)&&(!waiting)&&(status!=PLAY_STALL)&&(!waiting))
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -2.6f }, 0.5f, 0.9f, 1.5f, BLUE);    
 		        else
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -2.6f }, 0.5f, 1.0f, 1.5f, WHITE);    
@@ -373,7 +377,7 @@ class InterfacePlay: public InterfaceBase{
 		            // 0.3 >= dis >=0.1 far 
 		            // 0.1 >= dis >=0.0 lost
 		            if(i->last_time*SPEED<0.5f){
-		                if(IsKeyPressed(tem_keyboard[i->column])&&dis<=0.9f&&dis>=-0.2f){
+		                if(IsKeyPressed(tem_keyboard[i->column])&&(status!=PLAY_STALL)&&(!waiting)&&dis<=0.9f&&dis>=-0.2f){
 		                    //正确地消除
 		                    if(dis>=0.8f){
 		                        show_effect("lost",i->column);
@@ -426,7 +430,7 @@ class InterfacePlay: public InterfaceBase{
 		                    }          
 		                }
 		                else{
-		                    if(IsKeyPressed(tem_keyboard[i->column])&&start_dis>=-0.2f&&start_dis<=0.9f){
+		                    if(IsKeyPressed(tem_keyboard[i->column])&&(status!=PLAY_STALL)&&(!waiting)&&start_dis>=-0.2f&&start_dis<=0.9f){
 		                        //正确地消除
 		                        if(start_dis>=0.8f){
 		                            show_effect("lost",i->column);
@@ -453,7 +457,7 @@ class InterfacePlay: public InterfaceBase{
 		                            scoreboard.update("lost");
 		                        }                 
 		                    }
-		                    if(IsKeyDown(tem_keyboard[i->column])&&start_dis>=0.0f){
+		                    if(IsKeyDown(tem_keyboard[i->column])&&(status!=PLAY_STALL)&&(!waiting)&&start_dis>=0.0f){
 		                        //if(end_dis>=0.5f){
 		                        //    show_effect("lost",i->column);
 		                        //    block_group.erase(i);
@@ -469,7 +473,7 @@ class InterfacePlay: public InterfaceBase{
 		                            block_group.erase(i);
 		                        }
 		                    }
-		                    else if(IsKeyReleased(tem_keyboard[i->column])&&start_dis>=0.0f){
+		                    else if(IsKeyReleased(tem_keyboard[i->column])&&(status!=PLAY_STALL)&&(!waiting)&&start_dis>=0.0f){
 		                        if(end_dis<0.0f){
 		                            float dis=-end_dis;
 		                            if(dis>=1.0f){
@@ -505,8 +509,6 @@ class InterfacePlay: public InterfaceBase{
 		                }
 		            }
 		        }
-
-		        DrawCube({ 1.3f-27.50f, -0.4f, 0.85f }, 0.5f, 1.0f, 1.57f, BLUE);
 
 		        EndMode3D();
 
@@ -583,6 +585,10 @@ class InterfacePlay: public InterfaceBase{
 	                curEffects.erase(it);
 	            }
 	        }
+			if(GetMusicTimePlayed(song)<=length/SPEED-0.1)
+				waiting = true;
+			else
+				waiting = false;
 	        if(MODE!=1)
 	            update_Block(block_group);
 			//根据按键或鼠标操作控制暂停/返回上一界面/重新开始
