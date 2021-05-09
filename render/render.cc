@@ -147,7 +147,7 @@ void draw_block(float t,int i,float k){
     }
 }
 
-void input(const string& filename) {
+void input(string filename) {
     FILE * fp = NULL;
     fp = fopen(filename.c_str(),"r");
     if(!fp){
@@ -187,7 +187,7 @@ void input(const string& filename) {
     }
 }
 
-void show_effect(const string& typ, int trackNum) {
+void show_effect(string typ, int trackNum) {
     Vector2 pos;
     if(typ == "pure" || typ == "far" || typ == "lost") {
         if(trackNum == 0) {
@@ -216,6 +216,7 @@ void save(vector <Block> &block_group){
         fprintf(fp,"%f %d %f\n",i.init_time,i.column,i.last_time);
     }
 }
+
 void draw_frame(int mode,vector <Block> &block_group){
     if(mode == 1){
         //游玩模式
@@ -231,10 +232,22 @@ void draw_frame(int mode,vector <Block> &block_group){
         DrawCubeWires({ 0.0f, -0.7f, -0.8f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
         DrawCubeWires({ 0.0f, -0.7f, -2.4f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
 
-        DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 0.85f }, 0.5f, 1.0f, 1.57f, WHITE);
-        DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 2.6f }, 0.5f, 1.0f, 1.5f, WHITE);
-        DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -0.85f }, 0.5f, 1.0f, 1.57f, WHITE);
-        DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -2.6f }, 0.5f, 1.0f, 1.5f, WHITE);    
+        if(IsKeyDown(tem_keyboard[1]))
+            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 0.85f }, 0.5f, 0.8f, 1.57f, BLUE);
+        else
+            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 0.85f }, 0.5f, 1.0f, 1.57f, WHITE);
+        if(IsKeyDown(tem_keyboard[0]))
+            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 2.6f }, 0.5f, 1.0f, 1.5f, BLUE);
+        else
+            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 2.6f }, 0.5f, 1.0f, 1.5f, WHITE);
+        if(IsKeyDown(tem_keyboard[2]))
+            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -0.85f }, 0.5f, 1.0f, 1.57f, BLUE);
+        else
+            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -0.85f }, 0.5f, 1.0f, 1.57f, WHITE);
+        if(IsKeyDown(tem_keyboard[3]))
+            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -2.6f }, 0.5f, 1.0f, 1.5f, BLUE);    
+        else
+            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -2.6f }, 0.5f, 1.0f, 1.5f, WHITE);    
 
         auto i=block_group.begin(); 
         while(i!=block_group.end()){
@@ -428,8 +441,8 @@ void draw_frame(int mode,vector <Block> &block_group){
     EndDrawing();  
 }
 
-void init_song() {
-    input("./tmp.txt");
+void init_song(string songName) {
+    input(songName);
     //todo 这里并不能这样，因为一个hold并不算作1个note
     scoreboard = ScoreBoard(block_group.size());    
 }
@@ -442,7 +455,7 @@ int main(void)
     const int screenHeight = 900;
     block_group.clear();
     if(MODE==1){
-        init_song();
+        init_song("./tmp.txt");
     }
     InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera first person");
     // Load Textures
