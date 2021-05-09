@@ -15,61 +15,26 @@
 #include <iostream>
 #include <string>
 #include <cmath>
-#include <list>
 using namespace std;
 
-class Effect {
-public:
-    Texture2D texture;
-    Rectangle frameRec;
-    int frames;
-    int currentFrame = 0;
-    int framesCounter = 0;
-    int framesSpeed = 8;  
-    Vector2 pos;
-    bool fade;
-    Effect() {}
-    Effect(const Texture2D& tex, const Vector2& position, bool fad=false, int f = 3, int fspeed = 8) {
-        texture = tex;
-        pos = position;
-        fade = fad;
-        frames = f;
-        framesSpeed = fspeed;
-        frameRec = { 0.0f, 0.0f, (float)texture.width/frames, (float)texture.height};
-    }
-    bool update() {
-        bool ret = false;
-        framesCounter++;
-        if (framesCounter >= (60/framesSpeed)) {
-            framesCounter = 0;
-            currentFrame++;
-            if (currentFrame >= frames) {
-                currentFrame = 0;
-                ret = true; // finished play once
-            }
-            frameRec.x = (float)currentFrame*(float)texture.width/frames;
-        }
-        return ret;
-    }
-    void draw() {
-        if(!fade) {
-            DrawTextureRec(texture, frameRec, pos, WHITE);
-        } else {
-            DrawTextureRec(texture, frameRec, pos, {255, 255, 255, (unsigned char)(255*(1-currentFrame/frames))});
-        }
-    }
-};
-list<Effect> curEffects;
-
 #define MODE 1
-#define SPEED 5.0f   // Number of spritesheet frames shown by second
+#define SPEED 10.0f
 const int length = 27.50;
-// Score
-int score_score = 0;
-int score_combo = 0;
-int score_pure = 0;
-int score_far = 0;
-int score_lost = 0;
+const Vector2 TRACK1 = {160.0f, 700.0f};
+const Vector2 TRACK2 = {550.0f, 700.0f};
+const Vector2 TRACK3 = {930.0f, 700.0f};
+const Vector2 TRACK4 = {1320.0f, 700.0f};
+    // Effects
+int currentFrame = 0;
+int framesCounter = 0;
+int framesSpeed = 8;            // Number of spritesheet frames shown by second
+
+    // Score
+    int score_score = 0;
+    int score_combo = 0;
+    int score_pure = 0;
+    int score_far = 0;
+    int score_lost = 0;
 
 /*struct block{
     float init_time;
@@ -81,9 +46,7 @@ vector <Block> block_group;
 Texture2D texture_background;
 Texture2D texture_tap;
 Texture2D texture_tap_effect;
-Texture2D texture_pure_effect;
-Texture2D texture_far_effect;
-Texture2D texture_lost_effect;
+Rectangle frameRec_tap_effect;
 Camera camera = { 0 };
 
 void draw_block(float t,int i,float k){
@@ -148,36 +111,14 @@ void input(){
     }
 }
 
-void show_effect(const string& typ, int trackNum) {
-    Vector2 pos;
-    if(typ == "pure" || typ == "far" || typ == "lost") {
-        if(trackNum == 1) {
-            pos = {25.0f, 660.0f};
-        } else if (trackNum == 2) {
-            pos = {420.0f, 660.0f};
-        } else if (trackNum == 3) {
-            pos = {800.0f, 660.0f};
-        } else if (trackNum == 4) {
-            pos = {1180.0f, 660.0f};
-        }
-        if(typ == "pure") {
-            curEffects.push_back(Effect(texture_pure_effect, pos, true));
-        } else if(typ == "far") {
-            curEffects.push_back(Effect(texture_far_effect, pos, true));
-        } else if(typ == "lost") {
-            curEffects.push_back(Effect(texture_lost_effect, pos, true));
-        }
-    }
-}
-
 void save(vector <Block> &block_group){
     FILE *fp;
-    fp = fopen("./out","w");
+    fp = fopen("./out.txt","w");
     for(auto i:block_group){
         fprintf(fp,"%f %d %f\n",i.init_time,i.column,i.last_time);
     }
 }
-void draw_frame(int mode,vector <Block> &block_group){
+void draw_frame(int mode,vector <Block> & block_group){
     if(mode == 1){
         //游玩模式
         BeginDrawing();
@@ -191,18 +132,16 @@ void draw_frame(int mode,vector <Block> &block_group){
         DrawCubeWires((Vector3){ 0.0f, -0.7f, 2.4f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
         DrawCubeWires((Vector3){ 0.0f, -0.7f, -0.8f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
         DrawCubeWires((Vector3){ 0.0f, -0.7f, -2.4f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
-
+   
         DrawCubeTexture(texture_tap, (Vector3){ 1.3f, -0.4f, 0.85f }, 0.5f, 1.0f, 1.57f, WHITE);
         DrawCubeTexture(texture_tap, (Vector3){ 1.3f, -0.4f, 2.6f }, 0.5f, 1.0f, 1.5f, WHITE);
         DrawCubeTexture(texture_tap, (Vector3){ 1.3f, -0.4f, -0.85f }, 0.5f, 1.0f, 1.57f, WHITE);
-        DrawCubeTexture(texture_tap, (Vector3){ 1.3f, -0.4f, -2.6f }, 0.5f, 1.0f, 1.5f, WHITE);    
+        DrawCubeTexture(texture_tap, (Vector3){ 1.3f, -0.4f, -2.6f }, 0.5f, 1.0f, 1.5f, WHITE); 
 
         auto i=block_group.begin(); 
         while(i!=block_group.end()){
-            //单个节奏块
             if(i->last_time*SPEED<0.5f){
                 if(IsKeyPressed(tem_keyboard[i->column])&&length-(GetTime()-i->init_time)*SPEED<=0.8f){
-                    //正确地消除
                     block_group.erase(i);
                 }
                 else{
@@ -226,7 +165,27 @@ void draw_frame(int mode,vector <Block> &block_group){
                 }
             }
         }
-
+        /*
+        for(auto i:block_group){
+            if(i.last_time<0.5f){
+                if(IsKeyDown(tem_keyboard[i.column])&&length-(GetTime()-i.init_time)*SPEED<=5){
+                    block_group.erase(i);
+                }
+                else{
+                    draw_block(length-(GetTime()-i.init_time)*SPEED,i.column,i.last_time*SPEED);
+                }
+            }
+            else{
+                if(IsKeyPressed(tem_keyboard[i.column])&&length-(GetTime()-i.init_time)*SPEED<=0){
+                    draw_block(0,i.column,(i.last_time+length-(GetTime()-i.init_time))*SPEED);
+                }
+                else{
+                    draw_block(length-(GetTime()-i.init_time)*SPEED,i.column,i.last_time*SPEED);
+                }
+            }
+        }
+        */
+        
         DrawCube((Vector3){ 1.3f-27.50f, -0.4f, 0.85f }, 0.5f, 1.0f, 1.57f, BLUE);
 
         EndMode3D();
@@ -234,14 +193,10 @@ void draw_frame(int mode,vector <Block> &block_group){
         DrawRectangle( 10, 10, 220, 70, Fade(SKYBLUE, 0.5f));
         DrawRectangleLines( 10, 10, 220, 70, BLUE);
 
-        // 绘制特效
-        for(auto& effect: curEffects) {
-            effect.draw();
-        }
-        // DrawTextureRec(texture_tap_effect, frameRec_tap_effect, TRACK1, WHITE);  // Draw part of the texture
-        // DrawTextureRec(texture_tap_effect, frameRec_tap_effect, TRACK2, WHITE);  // Draw part of the texture
-        // DrawTextureRec(texture_tap_effect, frameRec_tap_effect, TRACK3, WHITE);  // Draw part of the texture
-        // DrawTextureRec(texture_tap_effect, frameRec_tap_effect, TRACK4, WHITE);  // Draw part of the texture 
+        DrawTextureRec(texture_tap_effect, frameRec_tap_effect, TRACK1, WHITE);  // Draw part of the texture
+        DrawTextureRec(texture_tap_effect, frameRec_tap_effect, TRACK2, WHITE);  // Draw part of the texture
+        DrawTextureRec(texture_tap_effect, frameRec_tap_effect, TRACK3, WHITE);  // Draw part of the texture
+        DrawTextureRec(texture_tap_effect, frameRec_tap_effect, TRACK4, WHITE);  // Draw part of the texture 
 
            // score board:
         DrawText(TextFormat("SCORE: %08i", score_score), 1200, 10, 40, LIME);
@@ -259,6 +214,8 @@ void draw_frame(int mode,vector <Block> &block_group){
         BeginMode3D(camera);
 
         DrawPlane((Vector3){ 0.0f, 0.0f, 0.0f }, (Vector2){ 1000.0f, 7.17f }, (Color){255, 255, 255, 120}); // Draw ground
+
+
         DrawCubeWires((Vector3){ 0.0f, -0.7f, 0.8f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
         DrawCubeWires((Vector3){ 0.0f, -0.7f, 2.4f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
         DrawCubeWires((Vector3){ 0.0f, -0.7f, -0.8f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
@@ -277,14 +234,10 @@ void draw_frame(int mode,vector <Block> &block_group){
         DrawRectangle( 10, 10, 220, 70, Fade(SKYBLUE, 0.5f));
         DrawRectangleLines( 10, 10, 220, 70, BLUE);
 
-        // 绘制特效
-        for(auto& effect: curEffects) {
-            effect.draw();
-        }
-        // DrawTextureRec(texture_tap_effect, frameRec_tap_effect, TRACK1, WHITE);  // Draw part of the texture
-        // DrawTextureRec(texture_tap_effect, frameRec_tap_effect, TRACK2, WHITE);  // Draw part of the texture
-        // DrawTextureRec(texture_tap_effect, frameRec_tap_effect, TRACK3, WHITE);  // Draw part of the texture
-        // DrawTextureRec(texture_tap_effect, frameRec_tap_effect, TRACK4, WHITE);  // Draw part of the texture
+        DrawTextureRec(texture_tap_effect, frameRec_tap_effect, TRACK1, WHITE);  // Draw part of the texture
+        DrawTextureRec(texture_tap_effect, frameRec_tap_effect, TRACK2, WHITE);  // Draw part of the texture
+        DrawTextureRec(texture_tap_effect, frameRec_tap_effect, TRACK3, WHITE);  // Draw part of the texture
+        DrawTextureRec(texture_tap_effect, frameRec_tap_effect, TRACK4, WHITE);  // Draw part of the texture
 
                    // score board:
         DrawText(TextFormat("SCORE: %08i", score_score), 1200, 10, 40, LIME);
@@ -317,9 +270,11 @@ int main(void)
     texture_background = LoadTexture("resources/single_conflict_resized.png");
     texture_tap = LoadTexture("resources/tap-v1.png");
     texture_tap_effect = LoadTexture("resources/tap-effect.png");
-    texture_pure_effect = LoadTexture("resources/pure-effect.png");
-    texture_far_effect = LoadTexture("resources/far-effect.png");
-    texture_lost_effect = LoadTexture("resources/lost-effect.png");
+
+    frameRec_tap_effect = { 0.0f, 0.0f, (float)texture_tap_effect.width/3, (float)texture_tap_effect.height};
+    // Generates some random columns
+
+    // Load Textures
 
     // Define the camera to look into our 3d world (position, target, up vector)
     camera.position = (Vector3){ 2.0f, 2.8f, 0.0f };
@@ -332,11 +287,6 @@ int main(void)
     SetTargetFPS(60);                           // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
 
-    show_effect("pure", 1);
-    show_effect("far", 2);
-    show_effect("lost", 3);
-    show_effect("lost", 4);
-
     // Main game loop
     while (!WindowShouldClose())                // Detect window close button or ESC key
     {
@@ -346,19 +296,14 @@ int main(void)
         //ClearBackground(GRAY);
         //DrawTextureEx(texture_background, (Vector2){ 0, 0 }, 0.0f, 1.0f, WHITE);
         //----------------------------------------------------------------------------------
-        // Update Effects
-        // framesCounter++;
-        // if (framesCounter >= (60/framesSpeed)) {
-        //     framesCounter = 0;
-        //     currentFrame++;
-        //     if (currentFrame > 2) currentFrame = 0;
-        //     frameRec_tap_effect.x = (float)currentFrame*(float)texture_tap_effect.width/3;
-        // }
-        for(list<Effect>::iterator it = curEffects.begin(); it != curEffects.end(); ++it) {
-            // 所有特效都理应只播放一次
-            if(it->update()) {
-                curEffects.erase(it);
-            }
+                // Update Effects
+        
+        framesCounter++;
+        if (framesCounter >= (60/framesSpeed)) {
+            framesCounter = 0;
+            currentFrame++;
+            if (currentFrame > 2) currentFrame = 0;
+            frameRec_tap_effect.x = (float)currentFrame*(float)texture_tap_effect.width/3;
         }
         if(MODE!=1)
             update_Block(block_group);
@@ -372,11 +317,7 @@ int main(void)
     //--------------------------------------------------------------------------------------
     UnloadTexture(texture_background);
     UnloadTexture(texture_tap);    
-    UnloadTexture(texture_tap_effect);
-    UnloadTexture(texture_pure_effect);    
-    UnloadTexture(texture_far_effect);
-    UnloadTexture(texture_lost_effect);
-
+    UnloadTexture(texture_tap_effect);    
     CloseWindow();        // Close window and OpenGL context
 
     save(block_group);
