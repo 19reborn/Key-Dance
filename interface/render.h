@@ -1,6 +1,6 @@
 #include "interface.h"
 #include "raylib.h"
-#include "../backend/block_build.cc"
+//#include "../backend/block_build.cc"
 #include "../backend/music_switch.cc"
 #include <vector>
 #include <iostream>
@@ -8,13 +8,17 @@
 #include <cstring>
 #include <cmath>
 #include <list>
+#include "interface.h"
 using namespace std;
+
+extern ModeState mode;
+static int MODE = 0;
 
 class InterfacePlay: public InterfaceBase{
 	private:
 		bool isKeyDown(KeyboardKey &key){
 			if(IsKeyDown(key)){
-				play_repeat(taps[1]);
+				play_once(taps[1]);
 				return true;
 			}
 			return false;
@@ -121,9 +125,26 @@ class InterfacePlay: public InterfaceBase{
 			        DrawText(TextFormat("ACC: %.2f%%", get_acc()), 1350, 170, 40, MAROON);
 			    }
 			} scoreboard;
+		struct Block {
+			float init_time;
+			float real_init_time;
+			float last_time;
+			int column;
+			bool to_be_erase=false;
+			Block(float _init_time, int _column){
+				init_time = _init_time;
+				real_init_time = init_time;
+				last_time = 0;
+				column = _column;
+			}
+			void update_down(){
+				init_time = GetTime();
+				last_time = GetTime() - real_init_time;
+			}
+		};
 		int SPEED;
 		int OFFSET;
-		const int length;
+		const int length = 27.50f;
 		vector <Block> block_group;
 		Texture2D texture_background;
 		Texture2D texture_tap;
@@ -132,6 +153,22 @@ class InterfacePlay: public InterfaceBase{
 		Texture2D texture_far_effect;
 		Texture2D texture_lost_effect;
 		Camera camera;
+		KeyboardKey tem_keyboard[4] = {KEY_D, KEY_F, KEY_J, KEY_K};
+		void update_Block(vector<Block> & block_list){
+			for(int i=0;i<4;i++){
+				if (IsKeyPressed(tem_keyboard[i])) 
+					block_list.push_back(Block(GetTime(),i));
+				if (IsKeyDown(tem_keyboard[i])){
+					int n = block_list.size();
+					for(int j = n - 1; j>= 0;j--){
+						if(block_list[j].column == i){
+							block_list[j].update_down();
+							break;
+						}
+					}
+				}
+			}
+		}
 		void draw_block(float t,int i,float k){
 		   	float y = 0;    // to avoid warning
 		    switch (i)
@@ -218,7 +255,7 @@ class InterfacePlay: public InterfaceBase{
 		};
 		void save(vector <Block> &block_group){
 		    FILE *fp;
-		    fp = fopen("./out","w");
+		    fp = fopen("./out.txt","w+");
 		    for(auto i:block_group){
 		        fprintf(fp,"%f %d %f\n",i.init_time,i.column,i.last_time);
 		    }
@@ -253,7 +290,6 @@ class InterfacePlay: public InterfaceBase{
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -2.6f }, 0.5f, 0.9f, 1.5f, BLUE);    
 		        else
 		            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -2.6f }, 0.5f, 1.0f, 1.5f, WHITE);    
-
 		        for(auto i:block_group){
 		            draw_block((GetTime()-i.init_time+i.last_time/2)*SPEED+0.5f,i.column,-i.last_time*SPEED);
 		        }
@@ -464,16 +500,19 @@ class InterfacePlay: public InterfaceBase{
 			scoreboard = ScoreBoard(block_group.size());    			
 		}
     public:
-        void init(int mode):MODE(mode){
-		    const int screenWidth = 1600;
-		    const int screenHeight = 900;
+        void init(){
+			MODE = (int)mode;
+		    //const int screenWidth = 1600;
+		    //const int screenHeight = 900;
 		    block_group.clear();
+			SPEED=15.0f;
+			OFFSET=0.05f;
 		    if(MODE==1){
 		        init_song("./tmp.txt");
 		    }
 		    InitAudioDevice();
 		    init_taps();
-		    InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera first person");
+		    //InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera first person");
 		    // Load Textures
 		    texture_background = LoadTexture("resources/single_conflict_resized.png");
 		    texture_tap = LoadTexture("resources/tap-v1.png");

@@ -10,6 +10,8 @@ typedef enum {
     INTERFACE_STATE_MAIN, 
     INTERFACE_STATE_MODE_SWITCH, 
     INTERFACE_STATE_MUSIC_SWITCH, 
+    INTERFACE_STATE_PLAY,
+    INTERFACE_STATE_GENERATE,
     INTERFACE_STATE_SUMMARY,
     INTERFACE_STATE_TEST, // ball drop
     INTERFACE_STATE_TOT
@@ -23,12 +25,13 @@ typedef enum {
 
 class InterfaceBase {
     public:
-        static const int screenWidth = 800;
-        static const int screenHeight = 450;
+        static const int screenWidth = 1600;
+        static const int screenHeight = 900;
 
         virtual void init();
         virtual void update();
         virtual void draw();
+        virtual void end();
 };
 
 // just fot test
@@ -40,6 +43,7 @@ class InterfaceTest: public InterfaceBase {
         void init();
         void update();
         void draw();
+        void end();
 };
 
 class InterfaceMain: public InterfaceBase {
@@ -52,6 +56,7 @@ class InterfaceMain: public InterfaceBase {
         void init();
         void update();
         void draw();
+        void end();
 };
 
 class InterfaceModeSwitch: public InterfaceBase {
@@ -64,6 +69,7 @@ class InterfaceModeSwitch: public InterfaceBase {
         void init();
         void update();
         void draw();
+        void end();
 };
 
 class InterfaceMusicSwitch: public InterfaceBase {
@@ -73,6 +79,7 @@ class InterfaceMusicSwitch: public InterfaceBase {
         void init();
         void update();
         void draw();
+        void end();
 };
 
 

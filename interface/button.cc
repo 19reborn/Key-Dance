@@ -1,8 +1,6 @@
 #include "button.h"
 #include <cstdio>
 
-float Button::last_hit_time = 0.;
-
 Button::Button(float x_topleft, float y_topleft, float width, float height)
 {
     bound = {x_topleft, y_topleft, width, height};

@@ -24,6 +24,8 @@ void InterfaceTest::draw()
     DrawCircleV(this->pos, 50, MAROON);
 }
 
+void InterfaceTest::end() {}
+
 /* MAIN */
 
 InterfaceMain::InterfaceMain() : 
@@ -48,6 +50,8 @@ void InterfaceMain::update()
     else if (bt_quit.isClicked())
         state = INTERFACE_STATE_NULL;
 }
+
+void InterfaceMain::end() {}
 
 /* MODE SWITCH */
 InterfaceModeSwitch::InterfaceModeSwitch() :
@@ -79,6 +83,8 @@ void InterfaceModeSwitch::update()
     }
 }
 
+void InterfaceModeSwitch::end() {}
+
 InterfaceMusicSwitch::InterfaceMusicSwitch() {}
 
 void InterfaceMusicSwitch::init() {}
@@ -90,3 +96,5 @@ void InterfaceMusicSwitch::draw()
 }
 
 void InterfaceMusicSwitch::update() {}
+
+void InterfaceMusicSwitch::end() {}
