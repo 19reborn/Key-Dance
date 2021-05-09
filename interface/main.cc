@@ -3,6 +3,7 @@
 #include "music.hh"
 #include "render.h"
 #include <cstdio>
+#define DEBUG
 
 InterfaceState state = INTERFACE_STATE_MUSIC_SWITCH;
 ModeState mode = MODE_PLAY;
@@ -18,7 +19,7 @@ int main()
     InterfaceBase* g = interfaces[state];
 
     InitWindow(g->screenWidth, g->screenHeight, "game");
-#if DEBUG
+#ifdef DEBUG
     printf("[debug] init window successful!\n");
 #endif
     g->init();
@@ -36,7 +37,7 @@ int main()
         g->update();
 
         if(g->is_end()){
-            #if DEBUG
+            #ifdef DEBUG
             printf("[debug] switching to interface %d\n", state);
             #endif
             state=g->end();
