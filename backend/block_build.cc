@@ -6,6 +6,7 @@
 using std::vector;
 using std::string;
 using std::stack;
+KeyboardKey tem_keyboard[4] = {KEY_D, KEY_F, KEY_J, KEY_K};
 struct Block {
     float init_time;
     float real_init_time;
@@ -23,7 +24,6 @@ struct Block {
     }
 };
 void update_Block(vector<Block> & block_list){
-    KeyboardKey tem_keyboard[4] = {KEY_D, KEY_F,KEY_J,KEY_K};
     for(int i=0;i<4;i++){
         if (IsKeyPressed(tem_keyboard[i])) 
             block_list.push_back(Block(GetTime(),i));
