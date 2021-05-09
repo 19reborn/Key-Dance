@@ -3,26 +3,44 @@
 #include <vector>
 using std::vector;
 using std::string;
-struct MUSIC_OPERN
-{
+class MUSIC_OPERN {
+public:
     string filename;
     string username;
-    float max_score;
+    int max_score = 0;
+    float accRate = 0.0f;  //todo 准确率
+    MUSIC_OPERN() {}
+    MUSIC_OPERN(string fileName, string userName, int maxScore, float acc): 
+        filename(fileName), username(userName), max_score(maxScore), accRate(acc) {}
 };
-struct MUSIC_STATUS{
+class MUSIC_STATUS {
+public:
     string name;
-    int node;
+    string authorName;  //todo 曲师名字
+    string bgPath;      //todo 曲绘(背景图片)路径
+    int opernIdx;
     vector<MUSIC_OPERN> opern;
+    MUSIC_OPERN& get_opern() {
+        return opern[opernIdx];
+    }
+    void next_opern() {
+        opernIdx = (opernIdx + 1) % opern.size();
+    }
+    void prev_opern() {
+        opernIdx = (opernIdx + opern.size() - 1) % opern.size();
+    }
 };
 const int music_num = 4;
-string music_list[music_num] = {"AboutUs0.wav","AnotherMe.wav","Aventyr.wav","Burn.wav"};
+string music_list[music_num] = {"AboutUs0.wav","AnotherMe.wav","cryout.wav","Burn.wav"};
 vector<Sound> taps;
 vector<MUSIC_STATUS> init_music_vector(){
     vector<MUSIC_STATUS> Music_list;
     for(int i=0;i<music_num;i++){
         Music_list.push_back(MUSIC_STATUS());
         Music_list[i].name = "music/"+music_list[i];
-        Music_list[i].node = i;
+        //todo 新增读入opern
+        // 下面这个是用于表示创作模式的虚拟节点
+        Music_list[i].opern.push_back(MUSIC_OPERN("", "", -1, -1));
     }
     return Music_list;
 }
