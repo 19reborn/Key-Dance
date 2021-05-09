@@ -86,6 +86,10 @@ void play_once(Sound &tap){
     PlaySound(tap);
 }
 bool IF_BGM_PLAYING = false;
+void init_BGM_play() {
+    IF_BGM_PLAYING = false;
+}
+
 void play_repeat(Music &music){
     if (IF_BGM_PLAYING == false){
         PlayMusicStream(music);

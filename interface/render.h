@@ -3,8 +3,9 @@
 
 #include "interface.h"
 #include "raylib.h"
-//#include "../backend/block_build.cc"
-//#include "../backend/music_switch.cc"
+// #include "./interfaces/public.cc"
+// #include "../backend/block_build.cc"
+// #include "../backend/music_switch.cc"
 #include <vector>
 #include <algorithm>
 #include <iostream>
@@ -15,6 +16,7 @@
 using namespace std;
 
 extern ModeState mode;
+extern ScoreBoard scoreboard;
 static int MODE = 1;
 typedef enum{
 	PLAY_NORMAL,
@@ -26,54 +28,8 @@ typedef enum{
 }PLAY_STATUS;
 PLAY_STATUS status;
 
-class ScoreBoard{
-public:
-	int totNotes;
-	int maxCombo = 0;
-	int combo = 0;
-	int pure = 0;
-	int far = 0;
-	int lost = 0;
-	ScoreBoard() {}
-	ScoreBoard(int tot): totNotes(tot) {}
-	int get_score() {
-		int perScore = 10000000 / totNotes + 1;
-		return min(perScore * pure + perScore * far / 2, 10000000);
-	}
-	double get_acc() {
-		if(pure + far + lost == 0) return 0;
-		return (pure + 0.5f*far)*100 / (double)(pure + far + lost);
-	}
-	void update(string grade) {
-		if(grade == "pure") {
-			combo++;
-			pure++;
-		} else if(grade == "far") {
-			combo++;
-			far++;
-		} else if(grade == "lost") {
-			lost++;
-			combo = 0;
-		} else {
-			printf("[ERROR] Wrong Grade!\n");
-		}
-		maxCombo = max(maxCombo, combo);
-	}
-	void draw() {
-		DrawText(TextFormat("SCORE: %08i", get_score()), 1235, 10, 40, LIME);
-		if(combo < 50) {
-			DrawText(TextFormat("%i COMBO", combo), 600, 560, 80, VIOLET);
-		} else if(combo < 100) {
-			DrawText(TextFormat("%i COMBO!", combo), 600, 560, 80, PURPLE);
-		} else {
-			DrawText(TextFormat("%i COMBO!!!", combo), 600, 560, 80, PINK);
-		}
-		DrawText(TextFormat("PURE: %i", pure), 1350, 50, 40, PINK);
-		DrawText(TextFormat("FAR: %i", far), 1350, 90, 40, ORANGE);
-		DrawText(TextFormat("LOST: %i", lost), 1350, 130, 40, GRAY);
-		DrawText(TextFormat("ACC: %.2f%%", get_acc()), 1350, 170, 40, MAROON);
-	}
-};
+extern string SELECTED_SONG;
+extern string SELECTED_OPERN;
 
 class InterfacePlay: public InterfaceBase{
 	private:
@@ -146,7 +102,6 @@ class InterfacePlay: public InterfaceBase{
 			    }
 			};
 		list<Effect> curEffects;
-		ScoreBoard scoreboard;
 		struct Block {
 			float init_time;
 			float real_init_time;
@@ -174,6 +129,7 @@ class InterfacePlay: public InterfaceBase{
 		Texture2D texture_pure_effect;
 		Texture2D texture_far_effect;
 		Texture2D texture_lost_effect;
+		Music song;
 		Camera camera;
 		KeyboardKey tem_keyboard[4] = {KEY_D, KEY_F, KEY_J, KEY_K};
 		void update_Block(vector<Block> & block_list){
@@ -220,6 +176,7 @@ class InterfacePlay: public InterfaceBase{
 		    fp = fopen(filename.c_str(),"r");
 		    if(!fp){
 		        printf("[ERROR] file open error!\n");
+				// printf("[INFO] filePath: %s\n", filename.c_str());
 		        exit(1);
 		    }
 
@@ -277,12 +234,18 @@ class InterfacePlay: public InterfaceBase{
 		};
 		void save(vector <Block> &block_group){
 		    FILE *fp;
-		    fp = fopen("./out.txt","w+");
-		    for(auto i:block_group){
-		        fprintf(fp,"%f %d %f\n",i.init_time,i.column,i.last_time);
+			//todo 修改为用户名
+			string path = "../songs/" + SELECTED_SONG + "/" + "saved.txt";
+		    fp = fopen(path.c_str(), "w+");
+			int bgsize = block_group.size();
+		    for(int i=0; i<bgsize; i++){
+				if(i) fprintf(fp, "\n");
+				fprintf(fp,"%f %d %f", block_group[i].init_time, block_group[i].column, block_group[i].last_time);
 		    }
 		}
 		void draw_frame(int mode,vector <Block> &block_group){
+			if(status == PLAY_NORMAL)
+				play_repeat(song);
 		    //制作模式
 		    if(mode == 0){
 		        BeginDrawing();
@@ -507,8 +470,9 @@ class InterfacePlay: public InterfaceBase{
 
 		        EndMode3D();
 
-		        DrawRectangle( 10, 10, 220, 70, Fade(SKYBLUE, 0.5f));
-		        DrawRectangleLines( 10, 10, 220, 70, BLUE);
+		        // DrawRectangle( 10, 10, 220, 70, Fade(SKYBLUE, 0.5f));
+				DrawText(TextFormat("%.2fs/%.2fs", GetMusicTimePlayed(song), GetMusicTimeLength(song)), 50, 40, 40, PURPLE);
+		        // DrawRectangleLines( 10, 10, 220, 70, BLUE);
 
 		        // 绘制特效
 		        for(auto& effect: curEffects) {
@@ -528,13 +492,19 @@ class InterfacePlay: public InterfaceBase{
 			}
 		    EndDrawing();  			
 		}
-		void init_song(string songName){
-			input(songName);
+		void init_song(){
+			string songPath = "../songs/" + SELECTED_SONG + ".wav";
+			// printf("[INFO] songPath=%s\n", songPath.c_str());
+			string opernPath = "../songs/" + SELECTED_SONG + "/" + SELECTED_OPERN + ".txt";
+			input(opernPath);
+			song = LoadMusicStream(songPath.c_str());
 			//todo 这里并不能这样，因为一个hold并不算作1个note
-			scoreboard = ScoreBoard(block_group.size());    			
+			scoreboard = ScoreBoard(block_group.size());    		
 		}
     public:
         void init(){
+		   	InitAudioDevice();
+			init_BGM_play();
 			MODE = (int)mode;
 		    //const int screenWidth = 1600;
 		    //const int screenHeight = 900;
@@ -544,9 +514,8 @@ class InterfacePlay: public InterfaceBase{
 			SPEED=15.0f;
 			OFFSET=0.05f;
 		    if(MODE==1){
-		        init_song("./tmp.txt");
+		        init_song();
 		    }
-		   	//InitAudioDevice();
 		    init_taps();
 		    //InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera first person");
 		    // Load Textures
@@ -594,14 +563,17 @@ class InterfacePlay: public InterfaceBase{
 				status=PLAY_BACK;
 			if(IsKeyPressed(KEY_R)){
 				status=PLAY_NORMAL;
+
+				init_BGM_play();
+
 				zero_time=GetTime();
 				block_group.clear();
 				if(MODE==1)
-					init_song("./tmp.txt");
+					init_song();
 			}
-			//if(getTime()>=){
-			//	status=PLAY_FINISH;
-			//}
+			if(GetMusicTimePlayed(song) >= GetMusicTimeLength(song) - 0.1) {
+				status = PLAY_FINISH;
+			}
         }
         void draw(){
         	draw_frame(MODE,block_group);

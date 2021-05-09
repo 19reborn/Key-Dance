@@ -1,7 +1,6 @@
-#include "raylib.h"
-
 #ifndef __BUTTON_H__
 #define __BUTTON_H__
+#include "raylib.h"
 
 typedef enum {
     BUTTON_STATE_NULL,

@@ -14,12 +14,12 @@
 #include <list>
 using namespace std;
 
+extern ScoreBoard scoreboard;
+
 class InterfaceScoreDisp: public InterfaceBase {
 private:
-    //todo 应该传入这些
-    string songName = "Burn";
-    string opernName = "wr786";
-    ScoreBoard scoreboard;
+    string songName;
+    string opernName;
 
     int highscore;
 
@@ -29,9 +29,16 @@ private:
     bool isEnd = false;
 public:
     void init() {
+        songName = SELECTED_SONG;
+        opernName = SELECTED_OPERN;
+
         font_caption = LoadFontEx("../resources/bb2180.ttf", 96, 0, 0);
         string path = "../resources/song_bg/" + songName + ".png";
-        texture_background = LoadTexture(path.c_str());
+        if(!_access(path.c_str(), 0)) {
+            texture_background = LoadTexture(path.c_str());
+        } else {
+            texture_background = LoadTexture("../resources/song_bg/default.png");
+        }
         path = "../songs/" + songName + "/" + opernName + "/score.txt";
         if(!_access(path.c_str(), 0)) {
             FILE * fp = NULL;

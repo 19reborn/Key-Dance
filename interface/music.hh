@@ -5,6 +5,7 @@
 #include "raylib.h"
 #include "../backend/fileio.h"
 #include "../backend/music_switch.cc"
+// #include "./interfaces/public.cc"
 #include <vector>
 #include <algorithm>
 #include <iostream>
@@ -14,6 +15,9 @@
 #include <list>
 using namespace std;
 extern ModeState mode;
+
+extern string SELECTED_SONG;
+extern string SELECTED_OPERN;
 
 class InterfaceMusic: public InterfaceBase {
 private:
@@ -49,7 +53,8 @@ public:
         texture_settings_button = LoadTexture("../resources/settings.png");
         font_caption = LoadFontEx("../resources/bb2180.ttf", 96, 0, 0);
 
-        //InitAudioDevice();
+        InitAudioDevice();
+        init_BGM_play();
 		init_taps();
         
         musicList = init_music_vector();
@@ -163,7 +168,7 @@ public:
         }
         if(IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE)) {
             selectedSongName = musicList[mlistidx].name;
-            selectedOpern = musicList[mlistidx].get_opern().filename;
+            selectedOpern = musicList[mlistidx].get_opern().username;
             isEnd = true;
         }
     }
@@ -179,6 +184,11 @@ public:
         for(auto& text: BGlst) {
             UnloadTexture(text);
         }
+
+        // upload data
+        SELECTED_SONG = selectedSongName;
+        SELECTED_OPERN = selectedOpern;
+
         //CloseWindow(); 
         if(selectedOpern == "") {
             mode = MODE_GENERATE;

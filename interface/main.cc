@@ -1,11 +1,17 @@
-#include "raylib.h"
 #include "interface.h"
+#include "raylib.h"
+#include <cstdio>
 #include "music.hh"
 #include "render.h"
 #include "scoredisp.hh"
-#include <cstdio>
+#include <string>
+using std::string;
 
-InterfaceState state = INTERFACE_STATE_PLAY;
+string SELECTED_SONG;
+string SELECTED_OPERN;
+ScoreBoard scoreboard;
+
+InterfaceState state = INTERFACE_STATE_MUSIC_SWITCH;
 ModeState mode = MODE_GENERATE;
 InterfaceBase* interfaces[INTERFACE_STATE_TOT];
 
