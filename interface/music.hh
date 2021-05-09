@@ -23,6 +23,14 @@ private:
     vector<Texture2D> BGlst;
     int curSongidx;
     bool isEnd = false;
+    
+    bool isKeyPressed(KeyboardKey key){
+      if(IsKeyPressed(key)){
+          play_once(taps[0]);
+          return true;
+      }
+      return false;
+  }
 public:
     string selectedSongName;
     string selectedOpern;
@@ -37,7 +45,8 @@ public:
         font_caption = LoadFontEx("../resources/bb2180.ttf", 96, 0, 0);
 
         InitAudioDevice();
-
+		init_taps();
+        
         musicList = init_music_vector();
         mlistSize = musicList.size();
 
@@ -79,7 +88,7 @@ public:
             DrawTriangle({120, 120}, {160, 20}, {120, 20}, Fade(BLACK, 0.5f));
             DrawTextureEx(texture_return_button, { 30, 40 }, 0.0f, 0.3f, WHITE);
                 // 曲名信息
-            DrawRectangle(0, 150, 500, 200, Fade(BLACK, 0.5f));
+            DrawRectangle(0, 150, 500, 110, Fade(BLACK, 0.5f));
             DrawTriangle({500, 260}, {660, 150}, {500, 150}, Fade(BLACK, 0.5f));
             DrawTextEx(font_caption, TextFormat("| %s", musicList[mlistidx].name.c_str()), {10, 160}, 90, 0, WHITE);
             //todo 曲师姓名
@@ -136,20 +145,20 @@ public:
     }
     void update() {
         //====================键盘操控=================
-        if(IsKeyPressed(KEY_W) || IsKeyPressed(KEY_UP)) {
-            curSongidx = (curSongidx - 1 + BGMlst.size()) % BGMlst.size();
-            PlayMusicStream(BGMlst[curSongidx]); 
-            mlistidx = (mlistidx + mlistSize - 1) % mlistSize;
+        if(isKeyPressed(KEY_W) || isKeyPressed(KEY_UP)) {
+          curSongidx = (curSongidx - 1 + BGMlst.size()) % BGMlst.size();
+          PlayMusicStream(BGMlst[curSongidx]); 
+          mlistidx = (mlistidx + mlistSize - 1) % mlistSize;
         }
-        if(IsKeyPressed(KEY_S) || IsKeyPressed(KEY_DOWN)) {
-            curSongidx = (curSongidx + 1) % BGMlst.size();
-            PlayMusicStream(BGMlst[curSongidx]); 
-            mlistidx = (mlistidx + 1) % mlistSize;
+        if(isKeyPressed(KEY_S) || isKeyPressed(KEY_DOWN)) {
+          curSongidx = (curSongidx + 1) % BGMlst.size();
+          PlayMusicStream(BGMlst[curSongidx]); 
+          mlistidx = (mlistidx + 1) % mlistSize;
         }
-        if(IsKeyPressed(KEY_A) || IsKeyPressed(KEY_LEFT)) {
-            musicList[mlistidx].prev_opern();
+        if(isKeyPressed(KEY_A) || isKeyPressed(KEY_LEFT)) {
+        	musicList[mlistidx].prev_opern();
         }
-        if(IsKeyPressed(KEY_D) || IsKeyPressed(KEY_RIGHT)) {
+        if(isKeyPressed(KEY_D) || IsKeyPressed(KEY_RIGHT)) {
             musicList[mlistidx].next_opern();
         }
         if(IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE)) {
