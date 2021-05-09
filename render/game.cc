@@ -11,6 +11,7 @@
 
 #include "raylib.h"
 #include "../backend/block_build.cc"
+#include "../backend/music_switch.cc"
 #include <vector>
 #include <iostream>
 #include <string>
@@ -61,6 +62,27 @@ public:
     }
 };
 list<Effect> curEffects;
+bool isKeyDown(KeyboardKey &key){
+    if(IsKeyDown(key)){
+        play_once(taps[1]);
+        return true;
+    }
+    return false;
+}
+bool isKeyPressed(KeyboardKey &key){
+    if(IsKeyPressed(key)){
+        play_once(taps[2]);
+        return true;
+    }
+    return false;
+}
+bool isKeyReleased(KeyboardKey &key){
+    if(IsKeyReleased(key)){
+        play_once(taps[3]);
+        return true;
+    }
+    return false;
+}
 
 class ScoreBoard {
 public:
@@ -150,7 +172,7 @@ void draw_block(float t,int i,float k){
         DrawCubeTexture(texture_tap, { 1.3f-t, -0.2f, y }, 0.5f, 0.5f, 1.57f, SKYBLUE);
     }
     else{
-        DrawCubeTexture(texture_tap, { 1.3f-t, -0.2f, y }, fabs(k), 0.5f, 1.57f, GREEN);
+        DrawCubeTexture(texture_tap, { 1.3f-t, -0.2f, y }, fabs(k), 0.5f, 1.57f, {0, 233, 0, 255});
     }
 }
 
@@ -240,19 +262,19 @@ void draw_frame(int mode,vector <Block> &block_group){
         DrawCubeWires({ 0.0f, -0.7f, -0.8f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
         DrawCubeWires({ 0.0f, -0.7f, -2.4f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
 
-        if(IsKeyDown(tem_keyboard[1]))
+        if(isKeyDown(tem_keyboard[1]))
             DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 0.85f }, 0.5f, 0.9f, 1.57f, BLUE);
         else
             DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 0.85f }, 0.5f, 1.0f, 1.57f, WHITE);
-        if(IsKeyDown(tem_keyboard[0]))
+        if(isKeyDown(tem_keyboard[0]))
             DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 2.6f }, 0.5f, 0.9f, 1.5f, BLUE);
         else
             DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 2.6f }, 0.5f, 1.0f, 1.5f, WHITE);
-        if(IsKeyDown(tem_keyboard[2]))
+        if(isKeyDown(tem_keyboard[2]))
             DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -0.85f }, 0.5f, 0.9f, 1.57f, BLUE);
         else
             DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -0.85f }, 0.5f, 1.0f, 1.57f, WHITE);
-        if(IsKeyDown(tem_keyboard[3]))
+        if(isKeyDown(tem_keyboard[3]))
             DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -2.6f }, 0.5f, 0.9f, 1.5f, BLUE);    
         else
             DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -2.6f }, 0.5f, 1.0f, 1.5f, WHITE);    
@@ -267,7 +289,7 @@ void draw_frame(int mode,vector <Block> &block_group){
             // 0.3 >= dis >=0.1 far 
             // 0.1 >= dis >=0.0 lost
             if(i->last_time*SPEED<0.5f){
-                if(IsKeyPressed(tem_keyboard[i->column])&&dis<=0.9f&&dis>=-0.2f){
+                if(isKeyPressed(tem_keyboard[i->column])&&dis<=0.9f&&dis>=-0.2f){
                     //printf("%f\n",dis);
                     //正确地消除
                     if(dis>=0.8f){
@@ -317,7 +339,7 @@ void draw_frame(int mode,vector <Block> &block_group){
                     }          
                 }
                 else{
-                    if(IsKeyPressed(tem_keyboard[i->column])&&start_dis>=-0.2f&&start_dis<=0.9f){
+                    if(isKeyPressed(tem_keyboard[i->column])&&start_dis>=-0.2f&&start_dis<=0.9f){
                         //printf("%f\n",dis);
                         //正确地消除
                         if(start_dis>=0.8f){
@@ -341,7 +363,7 @@ void draw_frame(int mode,vector <Block> &block_group){
                             scoreboard.update("lost");
                         }                 
                     }
-                    if(IsKeyDown(tem_keyboard[i->column])&&start_dis>=0.0f){
+                    if(isKeyDown(tem_keyboard[i->column])&&start_dis>=0.0f){
                         //if(end_dis>=0.5f){
                         //    show_effect("lost",i->column);
                         //    block_group.erase(i);
@@ -356,7 +378,7 @@ void draw_frame(int mode,vector <Block> &block_group){
                             block_group.erase(i);
                         }
                     }
-                    else if(IsKeyReleased(tem_keyboard[i->column])&&start_dis>=0.0f){
+                    else if(isKeyReleased(tem_keyboard[i->column])&&start_dis>=0.0f){
                         if(end_dis<0.0f){
                             float dis=-end_dis;
                             if(dis>=1.0f){
@@ -424,26 +446,39 @@ void draw_frame(int mode,vector <Block> &block_group){
         DrawCubeWires({ 0.0f, -0.7f, -0.8f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
         DrawCubeWires({ 0.0f, -0.7f, -2.4f }, 1000.0f, 2.0f, 1.6f, LIGHTGRAY);
 
-        DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 0.85f }, 0.3f, 1.0f, 1.57f, WHITE);
-        DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 2.6f }, 0.3f, 1.0f, 1.5f, WHITE);
-        DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -0.85f }, 0.3f, 1.0f, 1.57f, WHITE);
-        DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -2.6f }, 0.3f, 1.0f, 1.5f, WHITE);  
+        if(isKeyDown(tem_keyboard[1]))
+            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 0.85f }, 0.5f, 0.9f, 1.57f, BLUE);
+        else
+            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 0.85f }, 0.5f, 1.0f, 1.57f, WHITE);
+        if(isKeyDown(tem_keyboard[0]))
+            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 2.6f }, 0.5f, 0.9f, 1.5f, BLUE);
+        else
+            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, 2.6f }, 0.5f, 1.0f, 1.5f, WHITE);
+        if(isKeyDown(tem_keyboard[2]))
+            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -0.85f }, 0.5f, 0.9f, 1.57f, BLUE);
+        else
+            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -0.85f }, 0.5f, 1.0f, 1.57f, WHITE);
+        if(isKeyDown(tem_keyboard[3]))
+            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -2.6f }, 0.5f, 0.9f, 1.5f, BLUE);    
+        else
+            DrawCubeTexture(texture_tap, { 1.3f, -0.4f, -2.6f }, 0.5f, 1.0f, 1.5f, WHITE);    
 
         for(auto i:block_group){
             draw_block((GetTime()-i.init_time+i.last_time/2)*SPEED+0.5f,i.column,-i.last_time*SPEED);
         }
+
         EndMode3D();
 
         DrawRectangle( 10, 10, 220, 70, Fade(SKYBLUE, 0.5f));
         DrawRectangleLines( 10, 10, 220, 70, BLUE);
 
         // 绘制特效
-        for(auto& effect: curEffects) {
-            effect.draw();
-        }
+        //for(auto& effect: curEffects) {
+        //   effect.draw();
+        //}
 
         // score board:
-        scoreboard.draw();
+        //scoreboard.draw();
 
     }
     EndDrawing();  
@@ -465,6 +500,8 @@ int main(void)
     if(MODE==1){
         init_song("./tmp.txt");
     }
+    InitAudioDevice();
+    init_taps();
     InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera first person");
     // Load Textures
     texture_background = LoadTexture("resources/single_conflict_resized.png");
@@ -497,7 +534,7 @@ int main(void)
         }
         if(MODE!=1)
             update_Block(block_group);
-        draw_frame(1,block_group);
+        draw_frame(MODE,block_group);
 
 
         //----------------------------------------------------------------------------------
