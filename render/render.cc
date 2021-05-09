@@ -88,6 +88,19 @@ public:
             printf("[ERROR] Wrong Grade!\n");
         }
     }
+    void draw() {
+        DrawText(TextFormat("SCORE: %08i", get_score()), 1200, 10, 40, LIME);
+        if(combo < 50) {
+            DrawText(TextFormat("%i COMBO", combo), 600, 560, 80, VIOLET);
+        } else if(combo < 100) {
+            DrawText(TextFormat("%i COMBO!", combo), 600, 560, 80, PURPLE);
+        } else {
+            DrawText(TextFormat("%i COMBO!!!", combo), 600, 560, 80, PINK);
+        }
+        DrawText(TextFormat("PURE: %i", pure), 1200, 50, 40, PINK);
+        DrawText(TextFormat("FAR: %i", far), 1200, 90, 40, ORANGE);
+        DrawText(TextFormat("LOST: %i", lost), 1200, 130, 40, GRAY);
+    }
 } scoreboard;
 
 #define MODE 1
@@ -127,10 +140,10 @@ void draw_block(float t,int i,float k){
         break;
     }
     if(fabs(k)<0.5f){
-        DrawCube({ 1.3f-t, -0.2f, y }, 0.5f, 0.5f, 1.57f, RED);
+        DrawCubeTexture(texture_tap, { 1.3f-t, -0.2f, y }, 0.5f, 0.5f, 1.57f, SKYBLUE);
     }
     else{
-        DrawCube({ 1.3f-t, -0.2f, y }, fabs(k), 0.5f, 1.57f, RED);
+        DrawCubeTexture(texture_tap, { 1.3f-t, -0.2f, y }, fabs(k), 0.5f, 1.57f, GREEN);
     }
 }
 
@@ -374,11 +387,7 @@ void draw_frame(int mode,vector <Block> &block_group){
         // DrawTextureRec(texture_tap_effect, frameRec_tap_effect, TRACK4, WHITE);  // Draw part of the texture 
 
         // score board:
-        DrawText(TextFormat("SCORE: %08i", scoreboard.get_score()), 1200, 10, 40, LIME);
-        DrawText(TextFormat("%i COMBO!", scoreboard.combo), 600, 560, 80, VIOLET);
-        DrawText(TextFormat("PURE: %i", scoreboard.pure), 1200, 50, 40, PINK);
-        DrawText(TextFormat("FAR: %i", scoreboard.far), 1200, 90, 40, ORANGE);
-        DrawText(TextFormat("LOST: %i", scoreboard.lost), 1200, 130, 40, GRAY);
+        scoreboard.draw();
 
     }
     //制作模式
@@ -411,17 +420,9 @@ void draw_frame(int mode,vector <Block> &block_group){
         for(auto& effect: curEffects) {
             effect.draw();
         }
-        // DrawTextureRec(texture_tap_effect, frameRec_tap_effect, TRACK1, WHITE);  // Draw part of the texture
-        // DrawTextureRec(texture_tap_effect, frameRec_tap_effect, TRACK2, WHITE);  // Draw part of the texture
-        // DrawTextureRec(texture_tap_effect, frameRec_tap_effect, TRACK3, WHITE);  // Draw part of the texture
-        // DrawTextureRec(texture_tap_effect, frameRec_tap_effect, TRACK4, WHITE);  // Draw part of the texture
 
         // score board:
-        DrawText(TextFormat("SCORE: %08i", scoreboard.get_score()), 1200, 10, 40, LIME);
-        DrawText(TextFormat("%i COMBO!", scoreboard.combo), 600, 560, 80, VIOLET);
-        DrawText(TextFormat("PURE: %i", scoreboard.pure), 1200, 50, 40, PINK);
-        DrawText(TextFormat("FAR: %i", scoreboard.far), 1200, 90, 40, ORANGE);
-        DrawText(TextFormat("LOST: %i", scoreboard.lost), 1200, 130, 40, GRAY);
+        scoreboard.draw();
 
     }
     EndDrawing();  
