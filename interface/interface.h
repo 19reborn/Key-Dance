@@ -15,6 +15,12 @@ typedef enum {
     INTERFACE_STATE_TOT
 } InterfaceState;
 
+typedef enum {
+    MODE_NULL,
+    MODE_PLAY,
+    MODE_GENERATE
+} ModeState;
+
 class InterfaceBase {
     public:
         static const int screenWidth = 800;
@@ -47,6 +53,28 @@ class InterfaceMain: public InterfaceBase {
         void update();
         void draw();
 };
+
+class InterfaceModeSwitch: public InterfaceBase {
+    private:
+    public:
+        Button bt_play;
+        Button bt_generate;
+
+        InterfaceModeSwitch();
+        void init();
+        void update();
+        void draw();
+};
+
+class InterfaceMusicSwitch: public InterfaceBase {
+    private:
+    public:
+        InterfaceMusicSwitch();
+        void init();
+        void update();
+        void draw();
+};
+
 
 
 #endif
