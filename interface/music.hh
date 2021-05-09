@@ -1,3 +1,6 @@
+#ifndef MUSIC_H
+#define MUSIC_H
+
 #include "interface.h"
 #include "raylib.h"
 #include "../backend/fileio.h"
@@ -46,7 +49,7 @@ public:
         texture_settings_button = LoadTexture("../resources/settings.png");
         font_caption = LoadFontEx("../resources/bb2180.ttf", 96, 0, 0);
 
-        InitAudioDevice();
+        //InitAudioDevice();
 		init_taps();
         
         musicList = init_music_vector();
@@ -75,7 +78,7 @@ public:
 
         BeginDrawing();
             ClearBackground(GRAY);
-            DrawTextureEx(BGlst[curSongidx], { 0, 0 }, 0.0f, screenWidth / (float)BGlst[curSongidx].width, WHITE);
+            DrawTextureEx(BGlst[curSongidx], { 0, 0 }, 0.0f, screenHeight / (float)BGlst[curSongidx].height, WHITE);
             // 手动光栅化！
             // 左上
                 // 遮罩
@@ -190,3 +193,5 @@ public:
         return true;
     }
 };
+
+#endif

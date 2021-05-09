@@ -2,13 +2,11 @@
 #include "interface.h"
 #include "music.hh"
 #include "render.h"
+#include "scoredisp.hh"
 #include <cstdio>
-#ifndef DEBUG
-#define DEBUG 1
-#endif
 
 InterfaceState state = INTERFACE_STATE_MAIN;
-ModeState mode = MODE_PLAY;
+ModeState mode = MODE_GENERATE;
 InterfaceBase* interfaces[INTERFACE_STATE_TOT];
 
 int main()
@@ -17,6 +15,7 @@ int main()
     interfaces[INTERFACE_STATE_MAIN] = new InterfaceMain();
     interfaces[INTERFACE_STATE_MUSIC_SWITCH] = new InterfaceMusic();
     interfaces[INTERFACE_STATE_PLAY] = new InterfacePlay();
+    interfaces[INTERFACE_STATE_SUMMARY] = new InterfaceScoreDisp();
     InterfaceBase* g = interfaces[state];
 
     InitWindow(g->screenWidth, g->screenHeight, "game");
@@ -26,7 +25,7 @@ int main()
     g->init();
 
     SetTargetFPS(60);
-
+    InitAudioDevice();
     //Main game loop
     //Detect window close button or ESC key
     while (!WindowShouldClose()) 
@@ -35,13 +34,11 @@ int main()
 
         /* Update */
         g->update();
-
         if(g->is_end()){
             #ifdef DEBUG
             printf("[debug] switching to interface %d\n", state);
             #endif
             state=g->end();
-            /* Switch Interface */
             g = interfaces[state];
             g->init();
         }

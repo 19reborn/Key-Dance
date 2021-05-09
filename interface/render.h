@@ -1,8 +1,12 @@
+#ifndef RENDER_H
+#define RENDER_H
+
 #include "interface.h"
 #include "raylib.h"
 //#include "../backend/block_build.cc"
 //#include "../backend/music_switch.cc"
 #include <vector>
+#include <algorithm>
 #include <iostream>
 #include <string>
 #include <cstring>
@@ -17,13 +21,65 @@ typedef enum{
 	PLAY_BACK,
 	PLAY_AGAIN,
 	PLAY_STALL,
-	PLAY_FINISH
+	PLAY_FINISH,
+	PLAY_NULL
 }PLAY_STATUS;
-PLAY_STATUS status=PLAY_NORMAL;
+PLAY_STATUS status;
+
+class ScoreBoard{
+public:
+	int totNotes;
+	int maxCombo = 0;
+	int combo = 0;
+	int pure = 0;
+	int far = 0;
+	int lost = 0;
+	ScoreBoard() {}
+	ScoreBoard(int tot): totNotes(tot) {}
+	int get_score() {
+		int perScore = 10000000 / totNotes + 1;
+		return min(perScore * pure + perScore * far / 2, 10000000);
+	}
+	double get_acc() {
+		if(pure + far + lost == 0) return 0;
+		return (pure + 0.5f*far) / (double)(pure + far + lost);
+	}
+	void update(string grade) {
+		if(grade == "pure") {
+			combo++;
+			pure++;
+		} else if(grade == "far") {
+			combo++;
+			far++;
+		} else if(grade == "lost") {
+			lost++;
+			combo = 0;
+		} else {
+			printf("[ERROR] Wrong Grade!\n");
+		}
+		maxCombo = max(maxCombo, combo);
+	}
+	void draw() {
+		DrawText(TextFormat("SCORE: %08i", get_score()), 1235, 10, 40, LIME);
+		if(combo < 50) {
+			DrawText(TextFormat("%i COMBO", combo), 600, 560, 80, VIOLET);
+		} else if(combo < 100) {
+			DrawText(TextFormat("%i COMBO!", combo), 600, 560, 80, PURPLE);
+		} else {
+			DrawText(TextFormat("%i COMBO!!!", combo), 600, 560, 80, PINK);
+		}
+		DrawText(TextFormat("PURE: %i", pure), 1350, 50, 40, PINK);
+		DrawText(TextFormat("FAR: %i", far), 1350, 90, 40, ORANGE);
+		DrawText(TextFormat("LOST: %i", lost), 1350, 130, 40, GRAY);
+		DrawText(TextFormat("ACC: %.2f%%", get_acc()), 1350, 170, 40, MAROON);
+	}
+};
 
 class InterfacePlay: public InterfaceBase{
 	private:
 		static double zero_time;
+		static double start_time;
+		static double end_time;
 		static double getTime(){
 			return GetTime()-zero_time;
 		}
@@ -36,7 +92,7 @@ class InterfacePlay: public InterfaceBase{
 		}
 		bool isKeyPressed(KeyboardKey &key){
 			if(IsKeyPressed(key)){
-				play_once(taps[14]);
+				play_once(taps[0]);
 				return true;
 			}
 			return false;
@@ -90,52 +146,7 @@ class InterfacePlay: public InterfaceBase{
 			    }
 			};
 		list<Effect> curEffects;
-		class ScoreBoard{
-			public:
-			    int totNotes;
-			    int combo = 0;
-			    int pure = 0;
-			    int far = 0;
-			    int lost = 0;
-			    ScoreBoard() {}
-			    ScoreBoard(int tot): totNotes(tot) {}
-			    int get_score() {
-			        int perScore = 10000000 / totNotes + 1;
-			        return min(perScore * pure + perScore * far / 2, 10000000);
-			    }
-			    double get_acc() {
-			        if(pure + far + lost == 0) return 0;
-			        return (pure + 0.5f*far) / (double)(pure + far + lost);
-			    }
-			    void update(string grade) {
-			        if(grade == "pure") {
-			            combo++;
-			            pure++;
-			        } else if(grade == "far") {
-			            combo++;
-			            far++;
-			        } else if(grade == "lost") {
-			            lost++;
-			            combo = 0;
-			        } else {
-			            printf("[ERROR] Wrong Grade!\n");
-			        }
-			    }
-			    void draw() {
-			        DrawText(TextFormat("SCORE: %08i", get_score()), 1235, 10, 40, LIME);
-			        if(combo < 50) {
-			            DrawText(TextFormat("%i COMBO", combo), 600, 560, 80, VIOLET);
-			        } else if(combo < 100) {
-			            DrawText(TextFormat("%i COMBO!", combo), 600, 560, 80, PURPLE);
-			        } else {
-			            DrawText(TextFormat("%i COMBO!!!", combo), 600, 560, 80, PINK);
-			        }
-			        DrawText(TextFormat("PURE: %i", pure), 1350, 50, 40, PINK);
-			        DrawText(TextFormat("FAR: %i", far), 1350, 90, 40, ORANGE);
-			        DrawText(TextFormat("LOST: %i", lost), 1350, 130, 40, GRAY);
-			        DrawText(TextFormat("ACC: %.2f%%", get_acc()), 1350, 170, 40, MAROON);
-			    }
-			} scoreboard;
+		ScoreBoard scoreboard;
 		struct Block {
 			float init_time;
 			float real_init_time;
@@ -367,22 +378,22 @@ class InterfacePlay: public InterfaceBase{
 		                    }
 		                    else if(dis>=0.7f){
 		                        show_effect("far",i->column);
-								play_once(taps[1]);
+								play_once(taps[0]);
 		                        scoreboard.update("far");
 		                    }
 		                    else if(dis>=0.2f){
 		                        show_effect("pure",i->column);
-								play_once(taps[1]);
+								play_once(taps[0]);
 		                        scoreboard.update("pure");
 		                    }
 		                    else if(dis>=-0.1f){
 		                        show_effect("far",i->column);
-								play_once(taps[1]);
+								play_once(taps[0]);
 		                        scoreboard.update("far");
 		                    }
 		                    else{
 		                        show_effect("lost",i->column);
-								play_once(taps[1]);
+								play_once(taps[0]);
 		                        scoreboard.update("lost");
 		                    }
 		                    block_group.erase(i);
@@ -421,22 +432,22 @@ class InterfacePlay: public InterfaceBase{
 		                        }
 		                        else if(start_dis>=0.7f){
 		                            show_effect("far",i->column);
-									play_once(taps[1]);
+									play_once(taps[0]);
 		                            scoreboard.update("far");
 		                        }
 		                        else if(start_dis>=0.2f){
 		                            show_effect("pure",i->column);
-									play_once(taps[1]);
+									play_once(taps[0]);
 		                            scoreboard.update("pure");
 		                        }
 		                        else if(start_dis>=-0.1f){
 		                            show_effect("far",i->column);
-									play_once(taps[1]);
+									play_once(taps[0]);
 		                            scoreboard.update("far");
 		                        }
 		                        else{
 		                            show_effect("lost",i->column);
-									play_once(taps[1]);
+									play_once(taps[0]);
 		                            scoreboard.update("lost");
 		                        }                 
 		                    }
@@ -451,7 +462,7 @@ class InterfacePlay: public InterfaceBase{
 		                        }
 		                        else{
 		                            show_effect("pure",i->column);
-									play_once(taps[1]);
+									play_once(taps[0]);
 		                            scoreboard.update("pure");
 		                            block_group.erase(i);
 		                        }
@@ -465,12 +476,12 @@ class InterfacePlay: public InterfaceBase{
 		                            }
 		                            else if(dis>=0.5){
 		                                show_effect("far",i->column);
-										play_once(taps[1]);
+										play_once(taps[0]);
 		                                scoreboard.update("far");
 		                            }
 		                            else{
 		                                show_effect("pure",i->column);
-										play_once(taps[1]);
+										play_once(taps[0]);
 		                                scoreboard.update("pure");
 		                            }
 		                            i->to_be_erase=true;
@@ -525,6 +536,7 @@ class InterfacePlay: public InterfaceBase{
 			MODE = (int)mode;
 		    //const int screenWidth = 1600;
 		    //const int screenHeight = 900;
+			status = PLAY_NORMAL;
 		    block_group.clear();
 			zero_time=GetTime();
 			SPEED=15.0f;
@@ -532,7 +544,7 @@ class InterfacePlay: public InterfaceBase{
 		    if(MODE==1){
 		        init_song("./tmp.txt");
 		    }
-		    InitAudioDevice();
+		   	//InitAudioDevice();
 		    init_taps();
 		    //InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera first person");
 		    // Load Textures
@@ -563,24 +575,40 @@ class InterfacePlay: public InterfaceBase{
 	        if(MODE!=1)
 	            update_Block(block_group);
 			//根据按键或鼠标操作控制暂停/返回上一界面/重新开始
-
-
+			if(IsKeyPressed(KEY_ENTER)){
+				if(status==PLAY_NORMAL){
+					start_time=GetTime();
+					status=PLAY_STALL;
+				}
+				else if(status==PLAY_STALL){
+					status=PLAY_NORMAL;
+				}
+			}
+			if(status==PLAY_STALL){
+				zero_time+=GetTime()-start_time;
+				start_time=GetTime();
+			}
+			if(IsKeyPressed(KEY_Q))
+				status=PLAY_BACK;
+			if(IsKeyPressed(KEY_R)){
+				status=PLAY_NORMAL;
+				zero_time=GetTime();
+				block_group.clear();
+				if(MODE==1)
+					init_song("./tmp.txt");
+			}
         }
         void draw(){
         	draw_frame(MODE,block_group);
         }
 		bool is_end(){
-			if(status!=PLAY_NORMAL)
-				return true;
-			else;
+			if(status==PLAY_NORMAL||status==PLAY_STALL||status==PLAY_AGAIN)
 				return false;
+			else;
+				return true;
 		}
 		InterfaceState end(){
-			if(status==PLAY_STALL){
-				zero_time=GetTime();
-				return INTERFACE_STATE_PLAY;
-			}
-			else if(status==PLAY_BACK){
+			if(status==PLAY_BACK){
 				UnloadTexture(texture_background);
 				UnloadTexture(texture_tap);    
 				UnloadTexture(texture_tap_effect);
@@ -590,14 +618,7 @@ class InterfacePlay: public InterfaceBase{
 
 				return INTERFACE_STATE_MUSIC_SWITCH;
 			}
-			else if(status==PLAY_AGAIN){
-				zero_time=GetTime();
-				block_group.clear();
-				if(MODE==1)
-					init_song("./tmp.txt");
-				return INTERFACE_STATE_PLAY;
-			}
-			else if(status=PLAY_FINISH){
+			else if(status==PLAY_FINISH){
 				save(block_group);
 			}
 			//CloseWindow();        // Close window and OpenGL context
@@ -607,3 +628,7 @@ class InterfacePlay: public InterfaceBase{
 };
 
 double InterfacePlay::zero_time = 0.0f;
+double InterfacePlay::start_time = 0.0f;
+double InterfacePlay::end_time = 0.0f;
+
+#endif
