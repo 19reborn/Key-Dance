@@ -12,8 +12,10 @@ void InterfaceMusicSwitch::init() {}
 
 void InterfaceMusicSwitch::draw()
 {
+    BeginDrawing();
     ClearBackground(RAYWHITE);
     DrawText("Choose your music!", 0, 0, 50, BLACK);
+    EndDrawing();
 }
 
 void InterfaceMusicSwitch::update() {}

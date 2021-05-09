@@ -20,8 +20,10 @@ void InterfaceTest::update()
 
 void InterfaceTest::draw()
 {
+    BeginDrawing();
     ClearBackground(RAYWHITE);
     DrawCircleV(this->pos, 50, MAROON);
+    EndDrawing();
 }
 
 void InterfaceTest::end() {}

@@ -15,10 +15,12 @@ void InterfaceMain::init() {}
 
 void InterfaceMain::draw()
 {
+    BeginDrawing();
     ClearBackground(RAYWHITE);
     DrawText("This is main page", 0, 0, 50, BLACK);
     DrawRectangleRec(bt_start.bound, GREEN);
     DrawRectangleRec(bt_quit.bound, SKYBLUE);
+    EndDrawing();
 }
 
 void InterfaceMain::update()
