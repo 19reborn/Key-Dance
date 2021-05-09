@@ -2,9 +2,10 @@
 #include "interface.h"
 #include "music.hh"
 #include "render.h"
+#include "scoredisp.hh"
 #include <cstdio>
 
-InterfaceState state = INTERFACE_STATE_MAIN;
+InterfaceState state = INTERFACE_STATE_SUMMARY;
 ModeState mode = MODE_PLAY;
 InterfaceBase* interfaces[INTERFACE_STATE_TOT];
 
@@ -14,6 +15,7 @@ int main()
     interfaces[INTERFACE_STATE_MAIN] = new InterfaceMain();
     interfaces[INTERFACE_STATE_MUSIC_SWITCH] = new InterfaceMusic();
     interfaces[INTERFACE_STATE_PLAY] = new InterfacePlay();
+    interfaces[INTERFACE_STATE_SUMMARY] = new InterfaceScoreDisp();
     InterfaceBase* g = interfaces[state];
 
     InitWindow(g->screenWidth, g->screenHeight, "game");

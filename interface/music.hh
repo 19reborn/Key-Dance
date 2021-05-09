@@ -1,3 +1,6 @@
+#ifndef MUSIC_H
+#define MUSIC_H
+
 #include "interface.h"
 #include "raylib.h"
 #include "../backend/fileio.h"
@@ -190,3 +193,5 @@ public:
         return true;
     }
 };
+
+#endif

@@ -1,8 +1,12 @@
+#ifndef RENDER_H
+#define RENDER_H
+
 #include "interface.h"
 #include "raylib.h"
 //#include "../backend/block_build.cc"
 //#include "../backend/music_switch.cc"
 #include <vector>
+#include <algorithm>
 #include <iostream>
 #include <string>
 #include <cstring>
@@ -21,6 +25,55 @@ typedef enum{
 	PLAY_NULL
 }PLAY_STATUS;
 PLAY_STATUS status;
+
+class ScoreBoard{
+public:
+	int totNotes;
+	int maxCombo = 0;
+	int combo = 0;
+	int pure = 0;
+	int far = 0;
+	int lost = 0;
+	ScoreBoard() {}
+	ScoreBoard(int tot): totNotes(tot) {}
+	int get_score() {
+		int perScore = 10000000 / totNotes + 1;
+		return min(perScore * pure + perScore * far / 2, 10000000);
+	}
+	double get_acc() {
+		if(pure + far + lost == 0) return 0;
+		return (pure + 0.5f*far) / (double)(pure + far + lost);
+	}
+	void update(string grade) {
+		if(grade == "pure") {
+			combo++;
+			pure++;
+		} else if(grade == "far") {
+			combo++;
+			far++;
+		} else if(grade == "lost") {
+			lost++;
+			combo = 0;
+		} else {
+			printf("[ERROR] Wrong Grade!\n");
+		}
+		maxCombo = max(maxCombo, combo);
+	}
+	void draw() {
+		DrawText(TextFormat("SCORE: %08i", get_score()), 1235, 10, 40, LIME);
+		if(combo < 50) {
+			DrawText(TextFormat("%i COMBO", combo), 600, 560, 80, VIOLET);
+		} else if(combo < 100) {
+			DrawText(TextFormat("%i COMBO!", combo), 600, 560, 80, PURPLE);
+		} else {
+			DrawText(TextFormat("%i COMBO!!!", combo), 600, 560, 80, PINK);
+		}
+		DrawText(TextFormat("PURE: %i", pure), 1350, 50, 40, PINK);
+		DrawText(TextFormat("FAR: %i", far), 1350, 90, 40, ORANGE);
+		DrawText(TextFormat("LOST: %i", lost), 1350, 130, 40, GRAY);
+		DrawText(TextFormat("ACC: %.2f%%", get_acc()), 1350, 170, 40, MAROON);
+	}
+};
 
 class InterfacePlay: public InterfaceBase{
 	private:
@@ -93,52 +146,7 @@ class InterfacePlay: public InterfaceBase{
 			    }
 			};
 		list<Effect> curEffects;
-		class ScoreBoard{
-			public:
-			    int totNotes;
-			    int combo = 0;
-			    int pure = 0;
-			    int far = 0;
-			    int lost = 0;
-			    ScoreBoard() {}
-			    ScoreBoard(int tot): totNotes(tot) {}
-			    int get_score() {
-			        int perScore = 10000000 / totNotes + 1;
-			        return min(perScore * pure + perScore * far / 2, 10000000);
-			    }
-			    double get_acc() {
-			        if(pure + far + lost == 0) return 0;
-			        return (pure + 0.5f*far) / (double)(pure + far + lost);
-			    }
-			    void update(string grade) {
-			        if(grade == "pure") {
-			            combo++;
-			            pure++;
-			        } else if(grade == "far") {
-			            combo++;
-			            far++;
-			        } else if(grade == "lost") {
-			            lost++;
-			            combo = 0;
-			        } else {
-			            printf("[ERROR] Wrong Grade!\n");
-			        }
-			    }
-			    void draw() {
-			        DrawText(TextFormat("SCORE: %08i", get_score()), 1235, 10, 40, LIME);
-			        if(combo < 50) {
-			            DrawText(TextFormat("%i COMBO", combo), 600, 560, 80, VIOLET);
-			        } else if(combo < 100) {
-			            DrawText(TextFormat("%i COMBO!", combo), 600, 560, 80, PURPLE);
-			        } else {
-			            DrawText(TextFormat("%i COMBO!!!", combo), 600, 560, 80, PINK);
-			        }
-			        DrawText(TextFormat("PURE: %i", pure), 1350, 50, 40, PINK);
-			        DrawText(TextFormat("FAR: %i", far), 1350, 90, 40, ORANGE);
-			        DrawText(TextFormat("LOST: %i", lost), 1350, 130, 40, GRAY);
-			        DrawText(TextFormat("ACC: %.2f%%", get_acc()), 1350, 170, 40, MAROON);
-			    }
-			} scoreboard;
+		ScoreBoard scoreboard;
 		struct Block {
 			float init_time;
 			float real_init_time;
@@ -620,3 +628,5 @@ class InterfacePlay: public InterfaceBase{
 double InterfacePlay::zero_time = 0.0f;
 double InterfacePlay::start_time = 0.0f;
 double InterfacePlay::end_time = 0.0f;
+
+#endif
