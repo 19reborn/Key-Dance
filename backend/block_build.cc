@@ -6,7 +6,7 @@
 using std::vector;
 using std::string;
 using std::stack;
-KeyboardKey tem_keyboard[4] = {KEY_D, KEY_F,KEY_J,KEY_K};
+KeyboardKey tem_keyboard[4] = {KEY_D, KEY_F, KEY_J, KEY_K};
 struct Block {
     float init_time;
     float real_init_time;

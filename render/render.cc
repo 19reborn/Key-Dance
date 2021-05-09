@@ -62,7 +62,7 @@ public:
 list<Effect> curEffects;
 
 #define MODE 1
-#define SPEED 5.0f   // Number of spritesheet frames shown by second
+#define SPEED 10.0f   // Number of spritesheet frames shown by second
 const int length = 27.50;
 // Score
 int score_score = 0;
@@ -151,13 +151,13 @@ void input(){
 void show_effect(const string& typ, int trackNum) {
     Vector2 pos;
     if(typ == "pure" || typ == "far" || typ == "lost") {
-        if(trackNum == 1) {
+        if(trackNum == 0) {
             pos = {25.0f, 660.0f};
-        } else if (trackNum == 2) {
+        } else if (trackNum == 1) {
             pos = {420.0f, 660.0f};
-        } else if (trackNum == 3) {
+        } else if (trackNum == 2) {
             pos = {800.0f, 660.0f};
-        } else if (trackNum == 4) {
+        } else if (trackNum == 3) {
             pos = {1180.0f, 660.0f};
         }
         if(typ == "pure") {
@@ -203,6 +203,9 @@ void draw_frame(int mode,vector <Block> &block_group){
             if(i->last_time*SPEED<0.5f){
                 if(IsKeyPressed(tem_keyboard[i->column])&&length-(GetTime()-i->init_time)*SPEED<=0.8f){
                     //正确地消除
+                    show_effect("pure", i->column);
+                    printf("[INFO] i->column: %d\n", i->column);
+
                     block_group.erase(i);
                 }
                 else{
@@ -297,9 +300,23 @@ void draw_frame(int mode,vector <Block> &block_group){
     EndDrawing();  
 }
 
+// 这里的totNotes为总音符数，我们可以把一个长按计算为多个音符从而提高分值占比
 int calc_score(int totNotes, int pures, int fars, int losts = 0) {
-    int perScore = 10000000 / totNotes;
-    return perScore * pures + perScore * fars / 2;
+    int perScore = 10000000 / totNotes + 1;
+    return min(perScore * pures + perScore * fars / 2, 10000000);
+}
+
+// 2 => pure, 1 => far, 0 => lost
+int calc_note_grade(float standard, float actual) {
+    float bias = fabs(actual - standard);
+    // 75:100:120
+    if(bias <= 0.03) {
+        return 2;
+    } else if(bias <= 0.07) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 int main(void)
@@ -331,11 +348,6 @@ int main(void)
 
     SetTargetFPS(60);                           // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
-
-    show_effect("pure", 1);
-    show_effect("far", 2);
-    show_effect("lost", 3);
-    show_effect("lost", 4);
 
     // Main game loop
     while (!WindowShouldClose())                // Detect window close button or ESC key
