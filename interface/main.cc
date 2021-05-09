@@ -4,9 +4,8 @@
 #include <cstdio>
 
 InterfaceState state = INTERFACE_STATE_MAIN;
-ModeState mode = MODE_NULL;
+ModeState mode = MODE_PLAY;
 InterfaceBase* interfaces[INTERFACE_STATE_TOT];
-
 
 int main()
 {
@@ -22,7 +21,9 @@ int main()
     printf("[debug] init window successful!\n");
 #endif
     g->init();
+
     SetTargetFPS(60);
+
     //Main game loop
     //Detect window close button or ESC key
     while (!WindowShouldClose()) 
@@ -46,5 +47,4 @@ int main()
     }
     //Close window and OpenGL context
     CloseWindow();
-
 }

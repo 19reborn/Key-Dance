@@ -77,8 +77,8 @@ void init_taps(){
     //一定要预先InitAudioDevice()
     for(int i = 1;i<=15;i++){
         char tap_filename[30] = "../sounds/Tap 00.wav";
-        tap_filename[21] = '0' + i/10;
-        tap_filename[22] = '0' + i%10;  
+        tap_filename[14] = '0' + i/10;
+        tap_filename[15] = '0' + i%10;  
         taps.push_back(LoadSound(tap_filename));
     }
 }
