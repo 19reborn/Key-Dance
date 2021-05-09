@@ -18,7 +18,6 @@ class MUSIC_STATUS {
 public:
     string name;
     string authorName;  //todo 曲师名字
-    string bgPath;      //todo 曲绘(背景图片)路径
     int opernIdx;
     vector<MUSIC_OPERN> opern;
     MUSIC_OPERN& get_opern() {

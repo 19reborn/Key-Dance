@@ -1,7 +1,9 @@
 #include "interface.h"
 #include "raylib.h"
+#include "../backend/fileio.h"
 #include "../backend/music_switch.cc"
 #include <vector>
+#include <algorithm>
 #include <iostream>
 #include <string>
 #include <cstring>
@@ -17,6 +19,9 @@ private:
     Texture2D texture_return_button;
     Texture2D texture_settings_button;
     Font font_caption;
+    vector<Music> BGMlst;
+    vector<Texture2D> BGlst;
+    int curSongidx;
     bool isEnd = false;
 public:
     string selectedSongName;
@@ -27,18 +32,44 @@ public:
         const int screenHeight = 900;
         InitWindow(screenWidth, screenHeight, "Select your song");
         // Load Textures
-        texture_return_button = LoadTexture("resources/return.png");
-        texture_settings_button = LoadTexture("resources/settings.png");
-        font_caption = LoadFontEx("resources/bb2180.ttf", 96, 0, 0);
+        texture_return_button = LoadTexture("../resources/return.png");
+        texture_settings_button = LoadTexture("../resources/settings.png");
+        font_caption = LoadFontEx("../resources/bb2180.ttf", 96, 0, 0);
+
+        InitAudioDevice();
 
         musicList = init_music_vector();
         mlistSize = musicList.size();
 
+        for(auto& music: musicList) {
+            string path = "../songs/" + music.name + ".wav";
+            BGMlst.push_back(LoadMusicStream(path.c_str()));
+        }
+
+        for(auto& music: musicList) {
+            string path = "../songs/" + music.name + ".wav";
+            BGMlst.push_back(LoadMusicStream(path.c_str()));
+            path = "../resources/song_bg/";
+            vector<string> bg_lst;
+            getJustCurrentFile(path.c_str(), bg_lst);
+            if(find(bg_lst.begin(), bg_lst.end(), music.name+".png") != bg_lst.end()) {
+                string curPath = path + music.name + ".png";
+                BGlst.push_back(LoadTexture(curPath.c_str()));
+            } else {
+                string curPath = path + "default.png";
+                BGlst.push_back(LoadTexture(curPath.c_str()));
+            }
+        }
+
         SetTargetFPS(60);
     }
     void draw() {
+        // 播放音乐
+        play_repeat(BGMlst[curSongidx]);
+
         BeginDrawing();
             ClearBackground(GRAY);
+            DrawTextureEx(BGlst[curSongidx], { 0, 0 }, 0.0f, screenWidth / (float)BGlst[curSongidx].width, WHITE);
             // 手动光栅化！
             // 左上
                 // 遮罩
@@ -106,9 +137,13 @@ public:
     void update() {
         //====================键盘操控=================
         if(IsKeyPressed(KEY_W) || IsKeyPressed(KEY_UP)) {
+            curSongidx = (curSongidx - 1 + BGMlst.size()) % BGMlst.size();
+            PlayMusicStream(BGMlst[curSongidx]); 
             mlistidx = (mlistidx + mlistSize - 1) % mlistSize;
         }
         if(IsKeyPressed(KEY_S) || IsKeyPressed(KEY_DOWN)) {
+            curSongidx = (curSongidx + 1) % BGMlst.size();
+            PlayMusicStream(BGMlst[curSongidx]); 
             mlistidx = (mlistidx + 1) % mlistSize;
         }
         if(IsKeyPressed(KEY_A) || IsKeyPressed(KEY_LEFT)) {
@@ -128,9 +163,16 @@ public:
         UnloadTexture(texture_settings_button);
         UnloadFont(font_caption);
 
+        for(auto& music: BGMlst) {
+            UnloadMusicStream(music);
+        }
+
+        for(auto& text: BGlst) {
+            UnloadTexture(text);
+        }
+
         CloseWindow(); 
     }
-
     bool is_end() {
         if(!isEnd) return false;
         isEnd = false;
