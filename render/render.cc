@@ -74,6 +74,10 @@ public:
         int perScore = 10000000 / totNotes + 1;
         return min(perScore * pure + perScore * far / 2, 10000000);
     }
+    double get_acc() {
+        if(pure + far + lost == 0) return 0;
+        return (pure + 0.5f*far) / (double)(pure + far + lost);
+    }
     void update(string grade) {
         if(grade == "pure") {
             combo++;
@@ -98,8 +102,9 @@ public:
             DrawText(TextFormat("%i COMBO!!!", combo), 600, 560, 80, PINK);
         }
         DrawText(TextFormat("PURE: %i", pure), 1200, 50, 40, PINK);
-        DrawText(TextFormat("FAR: %i", far), 1200, 90, 40, ORANGE);
-        DrawText(TextFormat("LOST: %i", lost), 1200, 130, 40, GRAY);
+        DrawText(TextFormat("FAR: %i", far), 1400, 50, 40, ORANGE);
+        DrawText(TextFormat("LOST: %i", lost), 1200, 90, 40, GRAY);
+        DrawText(TextFormat("ACC: %.2f", get_acc()), 1400, 90, 40, MAROON);
     }
 } scoreboard;
 
