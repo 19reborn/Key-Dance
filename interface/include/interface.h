@@ -24,6 +24,8 @@ typedef enum {
 } ModeState;
 
 class InterfaceBase {
+    private:
+        static Button bt_goback;
     public:
         static const int screenWidth = 1600;
         static const int screenHeight = 900;
@@ -33,6 +35,8 @@ class InterfaceBase {
         virtual void draw();
         virtual InterfaceState end();
         virtual bool is_end();
+
+        static void draw_goback_button(InterfaceState prev_interface);
 };
 
 // just fot test
@@ -52,9 +56,9 @@ class InterfaceTest: public InterfaceBase {
 class InterfaceMain: public InterfaceBase {
     private:
         static const InterfaceState origin_state = INTERFACE_STATE_MAIN;
-    public:
         Button bt_start;
         Button bt_quit;
+    public:
 
         InterfaceMain();
         void init();
@@ -67,10 +71,9 @@ class InterfaceMain: public InterfaceBase {
 class InterfaceModeSwitch: public InterfaceBase {
     private:
         static const InterfaceState origin_state = INTERFACE_STATE_MODE_SWITCH;
-    public:
         Button bt_play;
         Button bt_generate;
-
+    public:
         InterfaceModeSwitch();
         void init();
         void update();
@@ -90,7 +93,5 @@ class InterfaceMusicSwitch: public InterfaceBase {
         InterfaceState end();
         bool is_end();
 };
-
-
 
 #endif
