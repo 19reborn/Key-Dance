@@ -27,10 +27,12 @@ public:
     int framesCounter = 0;
     int framesSpeed = 8;  
     Vector2 pos;
-    Effect(): pos({0, 0}) {}
-    Effect(const Texture2D& tex, const Vector2& position, int f = 3, int fspeed = 8) {
+    bool fade;
+    Effect() {}
+    Effect(const Texture2D& tex, const Vector2& position, bool fad=false, int f = 3, int fspeed = 8) {
         texture = tex;
         pos = position;
+        fade = fad;
         frames = f;
         framesSpeed = fspeed;
         frameRec = { 0.0f, 0.0f, (float)texture.width/frames, (float)texture.height};
@@ -50,23 +52,18 @@ public:
         return ret;
     }
     void draw() {
-        DrawTextureRec(texture, frameRec, pos, WHITE);
+        if(!fade) {
+            DrawTextureRec(texture, frameRec, pos, WHITE);
+        } else {
+            DrawTextureRec(texture, frameRec, pos, {255, 255, 255, (unsigned char)(255*(1-currentFrame/frames))});
+        }
     }
 };
 list<Effect> curEffects;
 
 #define MODE 1
-#define SPEED 5.0f
+#define SPEED 5.0f   // Number of spritesheet frames shown by second
 const int length = 27.50;
-const Vector2 TRACK1 = {160.0f, 700.0f};
-const Vector2 TRACK2 = {550.0f, 700.0f};
-const Vector2 TRACK3 = {930.0f, 700.0f};
-const Vector2 TRACK4 = {1320.0f, 700.0f};
-// Effects
-int currentFrame = 0;
-int framesCounter = 0;
-int framesSpeed = 8;            // Number of spritesheet frames shown by second
-
 // Score
 int score_score = 0;
 int score_combo = 0;
@@ -85,8 +82,8 @@ Texture2D texture_background;
 Texture2D texture_tap;
 Texture2D texture_tap_effect;
 Texture2D texture_pure_effect;
-Rectangle frameRec_tap_effect;
-Rectangle frameRec_pure_effect;
+Texture2D texture_far_effect;
+Texture2D texture_lost_effect;
 Camera camera = { 0 };
 
 void draw_block(float t,int i,float k){
@@ -148,6 +145,28 @@ void input(){
         }    
         B.last_time=stof(s);
         block_group.push_back(B);
+    }
+}
+
+void show_effect(const string& typ, int trackNum) {
+    Vector2 pos;
+    if(typ == "pure" || typ == "far" || typ == "lost") {
+        if(trackNum == 1) {
+            pos = {25.0f, 660.0f};
+        } else if (trackNum == 2) {
+            pos = {420.0f, 660.0f};
+        } else if (trackNum == 3) {
+            pos = {800.0f, 660.0f};
+        } else if (trackNum == 4) {
+            pos = {1180.0f, 660.0f};
+        }
+        if(typ == "pure") {
+            curEffects.push_back(Effect(texture_pure_effect, pos, true));
+        } else if(typ == "far") {
+            curEffects.push_back(Effect(texture_far_effect, pos, true));
+        } else if(typ == "lost") {
+            curEffects.push_back(Effect(texture_lost_effect, pos, true));
+        }
     }
 }
 
@@ -273,11 +292,8 @@ int main(void)
     texture_tap = LoadTexture("resources/tap-v1.png");
     texture_tap_effect = LoadTexture("resources/tap-effect.png");
     texture_pure_effect = LoadTexture("resources/pure-effect.png");
-
-    frameRec_tap_effect = { 0.0f, 0.0f, (float)texture_tap_effect.width/3, (float)texture_tap_effect.height};
-
-    //===================测试用================
-    curEffects.push_back(Effect(texture_pure_effect, TRACK1));
+    texture_far_effect = LoadTexture("resources/far-effect.png");
+    texture_lost_effect = LoadTexture("resources/lost-effect.png");
 
     // Define the camera to look into our 3d world (position, target, up vector)
     camera.position = (Vector3){ 2.0f, 2.8f, 0.0f };
@@ -289,6 +305,11 @@ int main(void)
 
     SetTargetFPS(60);                           // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
+
+    show_effect("pure", 1);
+    show_effect("far", 2);
+    show_effect("lost", 3);
+    show_effect("lost", 4);
 
     // Main game loop
     while (!WindowShouldClose())                // Detect window close button or ESC key
@@ -327,6 +348,9 @@ int main(void)
     UnloadTexture(texture_tap);    
     UnloadTexture(texture_tap_effect);
     UnloadTexture(texture_pure_effect);    
+    UnloadTexture(texture_far_effect);
+    UnloadTexture(texture_lost_effect);
+
     CloseWindow();        // Close window and OpenGL context
 
     save(block_group);
