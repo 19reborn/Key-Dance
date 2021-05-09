@@ -256,7 +256,7 @@ class InterfacePlay: public InterfaceBase{
 			// printf("[INFO] mkdir Done!");
 			path = "../songs/" + SELECTED_SONG + "/" + SELECTED_OPERN + "/score.txt";
 			printf("[INFO] %s\n", path.c_str());
-			// if(_access(path.c_str(), F_OK) != -1) {
+			// if(access(path.c_str(), F_OK) != -1) {
 			// 	fp = fopen(path.c_str(), "r");
 			// 	char line[100];
 			// 	fgets(line, 100, fp);
@@ -281,6 +281,7 @@ class InterfacePlay: public InterfaceBase{
 				if(i) fprintf(fp, "\n");
 				fprintf(fp,"%f %d %f", block_group[i].init_time, block_group[i].column, block_group[i].last_time);
 		    }
+			
 			fclose(fp);
 		}
 		void draw_frame(int mode,vector <Block> &block_group){
