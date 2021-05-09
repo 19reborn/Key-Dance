@@ -8,6 +8,7 @@ InterfaceBase* interfaces[INTERFACE_STATE_TOT];
 
 int main()
 {
+    /* Register interfaces */
     interfaces[INTERFACE_STATE_MAIN] = new InterfaceMain();
     interfaces[INTERFACE_STATE_MODE_SWITCH] = new InterfaceModeSwitch();
     interfaces[INTERFACE_STATE_MUSIC_SWITCH] = new InterfaceMusicSwitch();

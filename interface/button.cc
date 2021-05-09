@@ -9,6 +9,7 @@ Button::Button(float x_topleft, float y_topleft, float width, float height)
 }
 
 bool Button::isClicked(MouseButton mousebutton) {
+    /* TODO: introduce button state for better detection */
     Vector2 mousePoint = GetMousePosition();
     bool collision = CheckCollisionPointRec(mousePoint, bound);
     bool released = IsMouseButtonReleased(mousebutton);
