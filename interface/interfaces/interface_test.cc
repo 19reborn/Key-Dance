@@ -26,4 +26,6 @@ void InterfaceTest::draw()
     EndDrawing();
 }
 
-void InterfaceTest::end() {}
+InterfaceState InterfaceTest::end() { return state; }
+
+bool InterfaceTest::is_end() { return state != origin_state; }

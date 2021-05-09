@@ -31,4 +31,6 @@ void InterfaceMain::update()
         state = INTERFACE_STATE_NULL;
 }
 
-void InterfaceMain::end() {}
+InterfaceState InterfaceMain::end() { return state; }
+
+bool InterfaceMain::is_end() { return state != origin_state; }
