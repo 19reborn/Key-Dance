@@ -2,8 +2,6 @@
 .vscode
 .idea
 backend/data/blocks_1.txt
-raylib.h
-libraylib.a
 render/out
 render/tmp
 render/*.txt
