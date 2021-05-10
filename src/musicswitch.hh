@@ -73,6 +73,7 @@ public:
             path = "../resources/song_bg/";
             vector<string> bg_lst;
             getJustCurrentFile(path.c_str(), bg_lst);
+            printf("[INFO] path=%s", (bg_lst.begin(), bg_lst.end(), music.name+".png").c_str());
             if(find(bg_lst.begin(), bg_lst.end(), music.name+".png") != bg_lst.end()) {
                 string curPath = path + music.name + ".png";
                 BGlst.push_back(LoadTexture(curPath.c_str()));
