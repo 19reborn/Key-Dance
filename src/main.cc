@@ -10,8 +10,9 @@ using std::string;
 string SELECTED_SONG;
 string SELECTED_OPERN;
 ScoreBoard scoreboard;
+int createScore;
 
-InterfaceState state = INTERFACE_STATE_SUMMARY;
+InterfaceState state = INTERFACE_STATE_MAIN;
 ModeState mode = MODE_GENERATE;
 InterfaceBase* interfaces[INTERFACE_STATE_TOT];
 

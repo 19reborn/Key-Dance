@@ -3,6 +3,7 @@
 
 #include "interface.h"
 #include "raylib.h"
+#include "../score/score.cpp"
 // #include "./interfaces/public.cc"
 // #include "../backend/block_build.cc"
 // #include "../backend/music_switch.cc"
@@ -21,6 +22,7 @@ using namespace std;
 
 extern ModeState mode;
 extern ScoreBoard scoreboard;
+extern int createScore;
 static int MODE = 1;
 typedef enum{
 	PLAY_NORMAL,
@@ -269,6 +271,12 @@ class InterfacePlay: public InterfaceBase{
 				fclose(fp);
 
 				SELECTED_OPERN = opernbak;
+
+				string music_sampled ="../score/song_sampled/"+SELECTED_SONG+"_sampled.txt";
+				printf("%s\n",music_sampled.c_str());
+				printf("%s\n",path.c_str());
+				createScore=score(path.c_str(),music_sampled.c_str(),0)*1000;
+
 			} else if(mode == 1) {
 				path = "../songs/" + SELECTED_SONG + "/" + SELECTED_OPERN + "/score.txt";
 				printf("[INFO] %s\n", path.c_str());
@@ -563,6 +571,7 @@ class InterfacePlay: public InterfaceBase{
 			status = PLAY_NORMAL;
 		    block_group.clear();
 			zero_time=GetTime();
+			createScore = 0;
 			SPEED=15.0f;
 			OFFSET=0.05f;
 

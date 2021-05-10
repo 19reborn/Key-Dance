@@ -15,13 +15,11 @@
 using namespace std;
 
 extern ScoreBoard scoreboard;
-
+extern int createScore;
 class InterfaceScoreDisp: public InterfaceBase {
 private:
     string songName;
     string opernName;
-
-    int createScore = 10000000;    //todo 换成extern
 
     int highscore;
 

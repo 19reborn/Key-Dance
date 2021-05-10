@@ -14,7 +14,7 @@ struct block{
     double in_t;
 }MY_block[10005];
 
-double score(char *out_file,char *wav_file,double offset){
+double score(const char *out_file,const char *wav_file,double offset){
 /*
 #include<cstdio>
 #include<cmath>
@@ -60,7 +60,7 @@ double score(char *out_file,char *wav_file,double offset){
     aver = (cnt[0] + cnt[1] + cnt[2] + cnt[3])/4;
     var = ((cnt[0]-aver)*(cnt[0]-aver)+(cnt[1]-aver)*(cnt[1]-aver)+(cnt[2]-aver)*(cnt[2]-aver)+(cnt[3]-aver)*(cnt[3]-aver))/4;
     // bigger sum means more convergent，so more penalty will come...
-    tot_score += S * exp(-var) / log(sum);
+    tot_score += S * exp(-var) / log(sum+0.5);
         //printf("%lf\n",tot_score); // test
 
 
@@ -104,25 +104,15 @@ double score(char *out_file,char *wav_file,double offset){
         length_wave += zf[i][1] * (double)zf[i][1];
         length_key += aj[i][1] * aj[i][1];
     }
-    dot_sum /= (sqrt(length_key) * sqrt(length_wave));
+    dot_sum /= ((sqrt(length_key) * sqrt(length_wave))+0.2);
     tot_score += L * dot_sum;   
 
-    aver_key /= length;
-    length_key /= length;
+    aver_key /= (length+0.1);
+    length_key /= (length+0.1);
     tot_score += M * (length_key - aver_key*aver_key);
 
+    tot_score;
+    if(tot_score<(double)0.0)
+        tot_score=0.0;
     return tot_score;    
-}
-
-int main(){
-    char out[105],music[105];
-    double offset;
-    freopen("read.txt","r",stdin);
-    scanf("%s",out),scanf("%s",music);
-    scanf("%lf",&offset);
-
-    double a=score(out,music,offset);
-    freopen("score.txt","w",stdout);
-    printf("%.2lf\n",a);
-    return 0;
 }
