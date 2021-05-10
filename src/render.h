@@ -124,9 +124,9 @@ class InterfacePlay: public InterfaceBase{
 				last_time = getTime() - real_init_time;
 			}
 		};
-		int SPEED;
-		int OFFSET;
-		const int length = 27.50f;
+		float SPEED;
+		float OFFSET;
+		const float length = 27.50f;
 		vector <Block> block_group;
 		Texture2D texture_background;
 		Texture2D texture_tap;
@@ -460,7 +460,8 @@ class InterfacePlay: public InterfaceBase{
 		                            show_effect("lost",i->column);
 									play_once(taps[0]);
 		                            scoreboard.update("lost");
-		                        }                 
+		                        }    
+                                block_group.erase(i);             
 		                    }
 		                    if(IsKeyDown(tem_keyboard[i->column])&&(status!=PLAY_STALL)&&(!waiting)&&start_dis>=0.0f){
 		                        //if(end_dis>=0.5f){
@@ -499,6 +500,9 @@ class InterfacePlay: public InterfaceBase{
 		                            draw_block(length-(getTime()-i->init_time)*SPEED,i->column,i->last_time*SPEED);
 		                            i++;
 		                        }
+                                else{
+                                    block_group.erase(i);
+                                }
 		                    }
 		                    else{
 		                        if(end_dis<=1.0f){
