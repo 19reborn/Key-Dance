@@ -279,12 +279,16 @@ class InterfacePlay: public InterfaceBase{
 
 			} else if(mode == 1) {
 				path = "../songs/" + SELECTED_SONG + "/" + SELECTED_OPERN + "/score.txt";
-				printf("[INFO] %s\n", path.c_str());
+				// printf("[INFO] %s\n", path.c_str());
 				// if(access(path.c_str(), F_OK) != -1) {
-				// 	fp = fopen(path.c_str(), "r");
-				// 	char line[100];
-				// 	fgets(line, 100, fp);
-				// 	highscore = atoi(line);
+				fp = fopen(path.c_str(), "r");
+				if(!fp){
+					highscore = 0;
+				} else {
+					char line[100];
+					fgets(line, 100, fp);
+					highscore = atoi(line);
+				}
 				// }
 				if(scoreboard.get_score() >= highscore) {
 					fp = fopen(path.c_str(), "w+");
