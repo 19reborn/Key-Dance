@@ -381,7 +381,7 @@ class InterfacePlay: public InterfaceBase{
 		            // 0.5 >= dis >=0.3 pure
 		            // 0.3 >= dis >=0.1 far 
 		            // 0.1 >= dis >=0.0 lost
-		            if(i->last_time*SPEED<0.5f){
+		            if(i->last_time*SPEED<2.0f){
 		                if(IsKeyPressed(tem_keyboard[i->column])&&(status!=PLAY_STALL)&&(!waiting)&&dis<=0.9f&&dis>=-0.2f){
 		                    //正确地消除
 		                    if(dis>=0.8f){
@@ -461,7 +461,7 @@ class InterfacePlay: public InterfaceBase{
 									play_once(taps[0]);
 		                            scoreboard.update("lost");
 		                        }    
-                                block_group.erase(i);             
+                                // block_group.erase(i);             
 		                    }
 		                    if(IsKeyDown(tem_keyboard[i->column])&&(status!=PLAY_STALL)&&(!waiting)&&start_dis>=0.0f){
 		                        //if(end_dis>=0.5f){
