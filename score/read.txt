@@ -1,1 +1,0 @@
-out.txt xndy.txt 0.0

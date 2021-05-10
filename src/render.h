@@ -275,7 +275,7 @@ class InterfacePlay: public InterfaceBase{
 				string music_sampled ="../score/song_sampled/"+SELECTED_SONG+"_sampled.txt";
 				//printf("%s\n",music_sampled.c_str());
 				//printf("%s\n",path.c_str());
-				createScore=score(path.c_str(),music_sampled.c_str(),0)*1000;
+				createScore=score(path.c_str(),music_sampled.c_str(),0)*10000000;
 
 			} else if(mode == 1) {
 				path = "../songs/" + SELECTED_SONG + "/" + SELECTED_OPERN + "/score.txt";
@@ -390,23 +390,23 @@ class InterfacePlay: public InterfaceBase{
 		            // 0.3 >= dis >=0.1 far 
 		            // 0.1 >= dis >=0.0 lost
 		            if(i->last_time*SPEED<2.0f){
-		                if(IsKeyPressed(tem_keyboard[i->column])&&(status!=PLAY_STALL)&&(!waiting)&&dis<=1.6f&&dis>=-0.9f){
+		                if(IsKeyPressed(tem_keyboard[i->column])&&(status!=PLAY_STALL)&&(!waiting)&&dis<=1.8f&&dis>=-1.2f){
 		                    //正确地消除
-		                    if(dis>=1.4f){
+		                    if(dis>=1.6f){
 		                        show_effect("lost",i->column);
 		                        scoreboard.update("lost");
 		                    }
-		                    else if(dis>=1.0f){
+		                    else if(dis>=1.3f){
 		                        show_effect("far",i->column);
 								play_once(taps[0]);
 		                        scoreboard.update("far");
 		                    }
-		                    else if(dis>=0.5f){
+		                    else if(dis>=0.0f){
 		                        show_effect("pure",i->column);
 								play_once(taps[0]);
 		                        scoreboard.update("pure");
 		                    }
-		                    else if(dis>=-0.4f){
+		                    else if(dis>=-0.6f){
 		                        show_effect("far",i->column);
 								play_once(taps[0]);
 		                        scoreboard.update("far");

@@ -1,7 +1,7 @@
 #include<cstdio>
 #include<cmath>
 #include<cstring>
-
+#include <iostream>
 #define S 100
 #define M 1000
 #define L 10000
@@ -14,6 +14,14 @@ struct block{
     double in_t;
 }MY_block[10005];
 
+double ajust_score(double x){
+    for(int y=4;y;y--) x = sqrt(x) * 10;
+    x = (x - 65) * 4;
+    if(x < 1e-6) return 0;
+    for(int y=1;y;y--) x = sqrt(x) * 10;
+    return x;
+}
+
 double score(const char *out_file,const char *wav_file,double offset){
 /*
 #include<cstdio>
@@ -24,10 +32,8 @@ double score(const char *out_file,const char *wav_file,double offset){
     // read in keyboard data
     int block_num = 0;
     freopen(out_file,"r",stdin);
-    while(scanf("%lf %d %lf",&MY_block[block_num].Begin,&MY_block[block_num].col,&MY_block[block_num].in_t) == 3) block_num++;
-    
+    while(scanf("%lf %d %lf",&MY_block[block_num].Begin,&MY_block[block_num].col,&MY_block[block_num].in_t) == 3) MY_block[block_num].col--,block_num++;
     fclose(stdin);
-
     // read in music data
     freopen(wav_file,"r",stdin);
     int length; scanf("%d",&length);
@@ -50,7 +56,7 @@ double score(const char *out_file,const char *wav_file,double offset){
     */
 
 // get score
-    double tot_score = 0;
+    double tot_score = 0,bound = 0;
     
     // First compute the Variance of the numbers of each type Block
     double cnt[4] = {0,0,0,0},sum,aver,var;
@@ -62,6 +68,7 @@ double score(const char *out_file,const char *wav_file,double offset){
     // bigger sum means more convergent，so more penalty will come...
     tot_score += S * exp(-var) / log(sum+0.5);
         //printf("%lf\n",tot_score); // test
+    bound += S/log(sum+0.5);
 
 
 
@@ -75,7 +82,7 @@ double score(const char *out_file,const char *wav_file,double offset){
     // bigger sum means more convergent，so more penalty will come...
     tot_score += S * exp(-var) / log(sum * 10); // in average one block ~ 0.1 second
         // printf("%lf\n",tot_score); // test
-    
+    bound += S/log(sum * 10);
     
 
     // compare out.txt with the wav-file   using cosine 
@@ -111,7 +118,12 @@ double score(const char *out_file,const char *wav_file,double offset){
     length_key /= (length+0.1);
     tot_score += M * (length_key - aver_key*aver_key);
 
-    if(tot_score<(double)0.0)
-        tot_score=0.0;
-    return tot_score;    
+    /*
+    if(tot_score<(double)10000.0)
+        tot_score=10000;
+    */
+
+    bound += 2*L + 2*M;
+    return ajust_score(tot_score/bound*100);    
+    //return tot_score;
 }
