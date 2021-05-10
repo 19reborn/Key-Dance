@@ -244,45 +244,50 @@ class InterfacePlay: public InterfaceBase{
 			string path;
 			int highscore = 0;
 
-			//todo 修改为用户名
-			SELECTED_OPERN = "saved";
+			string opernbak = SELECTED_OPERN;
 
-			//todo 创建文件夹
-			// path = string(GetWorkingDirectory())  +  "\\..\\songs\\" + SELECTED_SONG + "\\" + SELECTED_OPERN;
-			// string command = "mkdir " + path;
-			// printf("[INFO] %s\n", command.c_str());
-			// if(access((path+"\\score.txt").c_str(), F_OK) != -1);
-			// 	system(command.c_str());
-			// printf("[INFO] mkdir Done!");
-			path = "../songs/" + SELECTED_SONG + "/" + SELECTED_OPERN + "/score.txt";
-			printf("[INFO] %s\n", path.c_str());
-			// if(access(path.c_str(), F_OK) != -1) {
-			// 	fp = fopen(path.c_str(), "r");
-			// 	char line[100];
-			// 	fgets(line, 100, fp);
-			// 	highscore = atoi(line);
-			// }
-			if(scoreboard.get_score() >= highscore) {
+			// 创造模式不需要存储最高分，游玩模式不需要存储scores
+			if(mode == 0) {
+				SELECTED_OPERN = "saved";
+				//todo 创建文件夹
+				// path = string(GetWorkingDirectory())  +  "\\..\\songs\\" + SELECTED_SONG + "\\" + SELECTED_OPERN;
+				// string command = "mkdir " + path;
+				// printf("[INFO] %s\n", command.c_str());
+				// if(access((path+"\\score.txt").c_str(), F_OK) != -1);
+				// 	system(command.c_str());
+				// printf("[INFO] mkdir Done!");
+				//todo 修改为用户名
+				path = "../songs/" + SELECTED_SONG + "/" + SELECTED_OPERN + ".txt";
+				printf("[INFO] %s\n", path.c_str());
 				fp = fopen(path.c_str(), "w+");
-				if(!fp){
-					printf("[ERROR] render file open error!\n");
-					exit(1);
+				int bgsize = block_group.size();
+				for(int i=0; i<bgsize; i++){
+					if(i) fprintf(fp, "\n");
+					fprintf(fp,"%f %d %f", block_group[i].init_time, block_group[i].column, block_group[i].last_time);
 				}
-				fprintf(fp, "%d\n%.2f", scoreboard.get_score(), scoreboard.get_acc());
+				
 				fclose(fp);
-			}
 
-			//todo 修改为用户名
-			path = "../songs/" + SELECTED_SONG + "/" + SELECTED_OPERN + ".txt";
-			printf("[INFO] %s\n", path.c_str());
-		    fp = fopen(path.c_str(), "w+");
-			int bgsize = block_group.size();
-		    for(int i=0; i<bgsize; i++){
-				if(i) fprintf(fp, "\n");
-				fprintf(fp,"%f %d %f", block_group[i].init_time, block_group[i].column, block_group[i].last_time);
-		    }
-			
-			fclose(fp);
+				SELECTED_OPERN = opernbak;
+			} else if(mode == 1) {
+				path = "../songs/" + SELECTED_SONG + "/" + SELECTED_OPERN + "/score.txt";
+				printf("[INFO] %s\n", path.c_str());
+				// if(access(path.c_str(), F_OK) != -1) {
+				// 	fp = fopen(path.c_str(), "r");
+				// 	char line[100];
+				// 	fgets(line, 100, fp);
+				// 	highscore = atoi(line);
+				// }
+				if(scoreboard.get_score() >= highscore) {
+					fp = fopen(path.c_str(), "w+");
+					if(!fp){
+						printf("[ERROR] render file open error!\n");
+						exit(1);
+					}
+					fprintf(fp, "%d\n%.2f", scoreboard.get_score(), scoreboard.get_acc());
+					fclose(fp);
+				}
+			}
 		}
 		void draw_frame(int mode,vector <Block> &block_group){
 			if(status == PLAY_NORMAL)
