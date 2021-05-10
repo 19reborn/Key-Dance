@@ -7,3 +7,4 @@ libraylib.a
 render/out
 render/tmp
 render/*.txt
+network
