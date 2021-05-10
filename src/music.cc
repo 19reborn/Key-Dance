@@ -1,4 +1,4 @@
-#include "include/raylib.h"
+#include "raylib.h"
 #include "fileio.h"
 #include <string>
 #include <vector>
