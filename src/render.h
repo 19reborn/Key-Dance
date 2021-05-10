@@ -273,8 +273,8 @@ class InterfacePlay: public InterfaceBase{
 				SELECTED_OPERN = opernbak;
 
 				string music_sampled ="../score/song_sampled/"+SELECTED_SONG+"_sampled.txt";
-				printf("%s\n",music_sampled.c_str());
-				printf("%s\n",path.c_str());
+				//printf("%s\n",music_sampled.c_str());
+				//printf("%s\n",path.c_str());
 				createScore=score(path.c_str(),music_sampled.c_str(),0)*1000;
 
 			} else if(mode == 1) {
@@ -390,23 +390,23 @@ class InterfacePlay: public InterfaceBase{
 		            // 0.3 >= dis >=0.1 far 
 		            // 0.1 >= dis >=0.0 lost
 		            if(i->last_time*SPEED<2.0f){
-		                if(IsKeyPressed(tem_keyboard[i->column])&&(status!=PLAY_STALL)&&(!waiting)&&dis<=0.9f&&dis>=-0.2f){
+		                if(IsKeyPressed(tem_keyboard[i->column])&&(status!=PLAY_STALL)&&(!waiting)&&dis<=1.6f&&dis>=-0.9f){
 		                    //正确地消除
-		                    if(dis>=0.8f){
+		                    if(dis>=1.4f){
 		                        show_effect("lost",i->column);
 		                        scoreboard.update("lost");
 		                    }
-		                    else if(dis>=0.7f){
+		                    else if(dis>=1.0f){
 		                        show_effect("far",i->column);
 								play_once(taps[0]);
 		                        scoreboard.update("far");
 		                    }
-		                    else if(dis>=0.2f){
+		                    else if(dis>=0.5f){
 		                        show_effect("pure",i->column);
 								play_once(taps[0]);
 		                        scoreboard.update("pure");
 		                    }
-		                    else if(dis>=-0.1f){
+		                    else if(dis>=-0.4f){
 		                        show_effect("far",i->column);
 								play_once(taps[0]);
 		                        scoreboard.update("far");
@@ -419,7 +419,7 @@ class InterfacePlay: public InterfaceBase{
 		                    block_group.erase(i);
 		                }
 		                else{
-		                    if(dis>=-0.8f){
+		                    if(dis>=-1.6f){
 		                        draw_block(length-(getTime()-i->init_time)*SPEED,i->column,i->last_time*SPEED);
 		                        i++;
 		                    }

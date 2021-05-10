@@ -111,7 +111,6 @@ double score(const char *out_file,const char *wav_file,double offset){
     length_key /= (length+0.1);
     tot_score += M * (length_key - aver_key*aver_key);
 
-    tot_score;
     if(tot_score<(double)0.0)
         tot_score=0.0;
     return tot_score;    
