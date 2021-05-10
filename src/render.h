@@ -263,7 +263,7 @@ class InterfacePlay: public InterfaceBase{
 				int bgsize = block_group.size();
 				for(int i=0; i<bgsize; i++){
 					if(i) fprintf(fp, "\n");
-					fprintf(fp,"%f %d %f", block_group[i].init_time, block_group[i].column, block_group[i].last_time);
+					fprintf(fp,"%f %d %f", block_group[i].init_time, block_group[i].column+1, block_group[i].last_time);
 				}
 				
 				fclose(fp);
