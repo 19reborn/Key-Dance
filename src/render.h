@@ -394,13 +394,13 @@ class InterfacePlay: public InterfaceBase{
 		            // 0.3 >= dis >=0.1 far 
 		            // 0.1 >= dis >=0.0 lost
 		            if(i->last_time*SPEED<2.0f){
-		                if(IsKeyPressed(tem_keyboard[i->column])&&(status!=PLAY_STALL)&&(!waiting)&&dis<=1.8f&&dis>=-1.2f){
+		                if(IsKeyPressed(tem_keyboard[i->column])&&(status!=PLAY_STALL)&&(!waiting)&&dis<=2.4+i->last_time*SPEED/2&&dis>=-1.8f-i->last_time*SPEED/2){
 		                    //正确地消除
-		                    if(dis>=1.6f){
+		                    if(dis>=2.0f+i->last_time*SPEED/2){
 		                        show_effect("lost",i->column);
 		                        scoreboard.update("lost");
 		                    }
-		                    else if(dis>=1.3f){
+		                    else if(dis>=1.3f+i->last_time*SPEED/2){
 		                        show_effect("far",i->column);
 								play_once(taps[0]);
 		                        scoreboard.update("far");
@@ -410,7 +410,7 @@ class InterfacePlay: public InterfaceBase{
 								play_once(taps[0]);
 		                        scoreboard.update("pure");
 		                    }
-		                    else if(dis>=-0.6f){
+		                    else if(dis>=-1.2f-i->last_time*SPEED/2){
 		                        show_effect("far",i->column);
 								play_once(taps[0]);
 		                        scoreboard.update("far");
@@ -447,23 +447,23 @@ class InterfacePlay: public InterfaceBase{
 		                    }          
 		                }
 		                else{
-		                    if(IsKeyPressed(tem_keyboard[i->column])&&(status!=PLAY_STALL)&&(!waiting)&&start_dis>=-0.2f&&start_dis<=0.9f){
+		                    if(IsKeyPressed(tem_keyboard[i->column])&&(status!=PLAY_STALL)&&(!waiting)&&start_dis>=-1.0f&&start_dis<=1.6f){
 		                        //正确地消除
-		                        if(start_dis>=0.8f){
+		                        if(start_dis>=1.3f){
 		                            show_effect("lost",i->column);
 		                            scoreboard.update("lost");
 		                        }
-		                        else if(start_dis>=0.7f){
+		                        else if(start_dis>=0.8f){
 		                            show_effect("far",i->column);
 									play_once(taps[0]);
 		                            scoreboard.update("far");
 		                        }
-		                        else if(start_dis>=0.2f){
+		                        else if(start_dis>=-0.2f){
 		                            show_effect("pure",i->column);
 									play_once(taps[0]);
 		                            scoreboard.update("pure");
 		                        }
-		                        else if(start_dis>=-0.1f){
+		                        else if(start_dis>=--0.6f){
 		                            show_effect("far",i->column);
 									play_once(taps[0]);
 		                            scoreboard.update("far");
