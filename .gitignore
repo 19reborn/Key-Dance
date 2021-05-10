@@ -2,7 +2,4 @@
 .vscode
 .idea
 backend/data/blocks_1.txt
-render/out
-render/tmp
-render/*.txt
 network
