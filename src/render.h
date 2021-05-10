@@ -275,7 +275,7 @@ class InterfacePlay: public InterfaceBase{
 				string music_sampled ="../score/song_sampled/"+SELECTED_SONG+"_sampled.txt";
 				//printf("%s\n",music_sampled.c_str());
 				//printf("%s\n",path.c_str());
-				createScore=score(path.c_str(),music_sampled.c_str(),0)*10000000;
+				createScore=score(path.c_str(),music_sampled.c_str(),0)*100000;
 
 			} else if(mode == 1) {
 				path = "../songs/" + SELECTED_SONG + "/" + SELECTED_OPERN + "/score.txt";
@@ -463,7 +463,7 @@ class InterfacePlay: public InterfaceBase{
 									play_once(taps[0]);
 		                            scoreboard.update("pure");
 		                        }
-		                        else if(start_dis>=--0.6f){
+		                        else if(start_dis>=-0.6f){
 		                            show_effect("far",i->column);
 									play_once(taps[0]);
 		                            scoreboard.update("far");
