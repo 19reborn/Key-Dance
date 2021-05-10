@@ -573,7 +573,7 @@ class InterfacePlay: public InterfaceBase{
 			zero_time=GetTime();
 			createScore = 0;
 			SPEED=15.0f;
-			OFFSET=0.05f;
+			OFFSET=0.10f;
 
 			init_song();
 
