@@ -1,6 +1,6 @@
 # Key Dance 
-> Porject For HackPku 2021,
->     By Potential.   
+> Project for HackPku 2021,
+>     By team Potential.   
 ### 游戏简介
 
 Key Dance 是一款音乐游戏，配合炫酷的音乐和敲击键盘，与节奏吻合即可得分！
