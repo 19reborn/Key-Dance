@@ -18,6 +18,7 @@ extern ModeState mode;
 
 extern string SELECTED_SONG;
 extern string SELECTED_OPERN;
+extern int curSelectedHighscore;
 
 class InterfaceMusic: public InterfaceBase {
 private:
@@ -177,6 +178,7 @@ public:
         if(isKeyPressed(KEY_ENTER) || isKeyPressed(KEY_SPACE)) {
             selectedSongName = musicList[mlistidx].name;
             selectedOpern = musicList[mlistidx].get_opern().username;
+            curSelectedHighscore = musicList[mlistidx].get_opern().max_score;
             isEnd = true;
         }
         if(isKeyPressed(KEY_ESCAPE)) {

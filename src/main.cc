@@ -11,6 +11,7 @@ string SELECTED_SONG;
 string SELECTED_OPERN;
 ScoreBoard scoreboard;
 int createScore;
+int curSelectedHighscore;
 
 InterfaceState state = INTERFACE_STATE_MAIN;
 ModeState mode = MODE_GENERATE;

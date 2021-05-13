@@ -16,12 +16,11 @@ using namespace std;
 
 extern ScoreBoard scoreboard;
 extern int createScore;
+extern int curSelectedHighscore;
 class InterfaceScoreDisp: public InterfaceBase {
 private:
     string songName;
     string opernName;
-
-    int highscore;
 
     Texture2D texture_background;
     Font font_caption;
@@ -38,23 +37,6 @@ public:
             texture_background = LoadTexture(path.c_str());
         } else {
             texture_background = LoadTexture("../resources/song_bg/default.png");
-        }
-        path = "../songs/" + songName + "/" + opernName + "/score.txt";
-        if(!_access(path.c_str(), 0)) {
-            FILE * fp = NULL;
-            fp = fopen(path.c_str(), "r");
-            if(!fp){
-                printf("[ERROR] scoredisp file open error!\n");
-                highscore = 0;
-                // exit(1);
-            } else {
-                char line[100];
-                fgets(line, 100, fp);
-                highscore = atoi(line);
-                fclose(fp);
-            }
-        } else {
-            highscore = 0;
         }
         
         SetTargetFPS(60);
@@ -119,13 +101,13 @@ public:
             } else if(score == 10000000) {
                 DrawTextEx(font_caption, TextFormat("P"), centerPos, 150, 0, PINK);
             }
-            // 画历史分 //todo 如果当前成绩是NEW BEST，会获取不到旧成绩（因为覆盖了
+            // 画历史分
             if(!createScore) {  // 如果
-                if(scoreboard.get_score() >= highscore)
+                if(scoreboard.get_score() >= curSelectedHighscore)
                     DrawTextEx(font_caption, TextFormat("NEW BEST"), {660, 280}, 40, 0, GREEN);
-                DrawTextEx(font_caption, TextFormat("%08d", highscore), {960, 280}, 40, 0, WHITE);
-                string fmt = scoreboard.get_score() >= highscore? "+%8d" : "-%8d";
-                DrawTextEx(font_caption, TextFormat(fmt.c_str(), abs(scoreboard.get_score() - highscore)), {1200, 280}, 40, 0, WHITE);
+                DrawTextEx(font_caption, TextFormat("%08d",curSelectedHighscore), {960, 280}, 40, 0, WHITE);
+                string fmt = scoreboard.get_score() >= curSelectedHighscore? "+%8d" : "-%8d";
+                DrawTextEx(font_caption, TextFormat(fmt.c_str(), abs(scoreboard.get_score() - curSelectedHighscore)), {1200, 280}, 40, 0, WHITE);
             }
             // 画字幕
             if(createScore) {

@@ -282,7 +282,7 @@ class InterfacePlay: public InterfaceBase{
 				// printf("[INFO] %s\n", path.c_str());
 				// if(access(path.c_str(), F_OK) != -1) {
 				fp = fopen(path.c_str(), "r");
-				if(!fp){
+				if(!fp) {
 					highscore = 0;
 				} else {
 					char line[100];
