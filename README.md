@@ -1,6 +1,10 @@
 # Key Dance 
-> Project for HackPKU 2021,
->     By team Potential.   
+<img src="images/hackpku.webp" alt="image-hackpku" style="zoom: 25%;" />
+
+<div align="center"><strong>HackPKU 2021 #3 Winner</strong></div>
+
+> Project for HackPKU 2021,  by team Potential.
+
 ### 游戏简介
 
 Key Dance 是一款4K下落式音游，配合炫酷的音乐和敲击键盘，与节奏吻合即可得分！
